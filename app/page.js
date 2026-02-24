@@ -89,11 +89,11 @@ export default function LandingPage() {
         
         <div className="hero-content">
           <h1 className="hero-title">
-            <span className="title-white">REDFLAG</span>
-            <span className="title-red">AI SCANNER <span className="title-emoji">🚩</span></span>
+            <span className="title-white">Dating</span>
+            <span className="title-red">Intelligence <span className="title-emoji">🔍</span></span>
           </h1>
           <p className="hero-subtitle">
-            "La IA que expone a los mentirosos. Sube capturas de su chat o su foto y descubre sus verdaderas intenciones."
+            "Descubre la intención real detrás de cualquier conversación. Sube tus capturas y analiza la dinámica antes de involucrarte más."
           </p>
         </div>
 
@@ -105,20 +105,12 @@ export default function LandingPage() {
               id="target-name-input"
               type="text" 
               className={`target-input ${showNameError ? 'error-shake' : ''}`} 
-              placeholder="Nombre de tu ex o casi algo (Req.)"
+              placeholder="Nombre de la persona (Opcional)"
               value={targetName}
               onChange={(e) => {
                 setTargetName(e.target.value);
                 if (showNameError) setShowNameError(false);
               }}
-            />
-            <input 
-              id="target-zodiac-input"
-              type="text" 
-              className="target-input" 
-              placeholder="Su signo zodiacal (Opcional)"
-              value={targetZodiac}
-              onChange={(e) => setTargetZodiac(e.target.value)}
             />
           </div>
 
@@ -131,17 +123,35 @@ export default function LandingPage() {
               <span className="spinner"></span>
             ) : (
               <>
-                <span className="btn-icon">🔥</span>
-                <span className="btn-primary-text">SUBIR EVIDENCIAS</span>
-                <span className="btn-secondary-text">(1 A 3 FOTOS O CAPTURAS)</span>
+                <span className="btn-icon">⚡</span>
+                <span className="btn-primary-text">ESCANEAR CHAT</span>
+                <span className="btn-secondary-text">ANÁLISIS INSTANTÁNEO</span>
               </>
             )}
           </button>
         </div>
 
+        <div className="features-grid">
+          <div className="feature-card">
+            <span className="feature-icon">📊</span>
+            <h3 className="feature-title">Métricas Reales</h3>
+            <p className="feature-desc">Coqueteo, intención física y probabilidad de ghosting.</p>
+          </div>
+          <div className="feature-card">
+            <span className="feature-icon">🔍</span>
+            <h3 className="feature-title">Análisis de Dinámica</h3>
+            <p className="feature-desc">Detecta desbalances de interés e intenciones ocultas.</p>
+          </div>
+          <div className="feature-card">
+            <span className="feature-icon">🧠</span>
+            <h3 className="feature-title">Estrategia Táctica</h3>
+            <p className="feature-desc">Descubre cómo responder sin perder tu ventaja.</p>
+          </div>
+        </div>
+
         <div className="hero-footer">
           <p>
-            Ya hemos arruinado <span className="footer-highlight">14,023</span> relaciones hoy.
+            Prueba Social: <span className="footer-highlight">+4,200</span> análisis realizados esta semana.
           </p>
         </div>
       </div>
@@ -247,13 +257,12 @@ export default function LandingPage() {
         }
 
         .hero-subtitle {
-          font-size: clamp(1rem, 4vw, 1.1rem);
+          font-size: clamp(1rem, 4vw, 1.2rem);
           color: rgba(255,255,255,0.7);
-          max-width: 340px;
+          max-width: 450px;
           margin: 0 auto;
-          line-height: 1.4;
+          line-height: 1.5;
           font-weight: 500;
-          font-style: italic;
         }
 
         .hero-action {
@@ -414,19 +423,75 @@ export default function LandingPage() {
         }
 
         .hero-footer {
-          position: absolute;
-          bottom: 30px;
-          width: 100%;
+          margin-top: 40px;
           text-align: center;
           z-index: 10;
         }
 
-        .hero-footer p {
-          font-size: 0.7rem;
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+          max-width: 900px;
+          width: 100%;
+          margin: 40px auto;
+          z-index: 10;
+          padding: 0 20px;
+        }
+
+        .feature-card {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          padding: 24px;
+          text-align: center;
+          transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+          transform: translateY(-5px);
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(175, 82, 222, 0.3);
+        }
+
+        .feature-icon {
+          font-size: 2rem;
+          display: block;
+          margin-bottom: 12px;
+        }
+
+        .feature-title {
+          font-size: 1rem;
           font-weight: 800;
-          color: rgba(255,255,255,0.3);
+          color: white;
+          margin-bottom: 8px;
+        }
+
+        .feature-desc {
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.6);
+          line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+          .features-grid {
+            grid-template-columns: 1fr;
+            margin: 20px auto;
+          }
+          .landing-container {
+            height: auto;
+            min-height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 40px;
+          }
+        }
+
+        .hero-footer p {
+          font-size: 0.75rem;
+          font-weight: 800;
+          color: rgba(255,255,255,0.4);
           text-transform: uppercase;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.1em;
         }
 
         .footer-highlight {
