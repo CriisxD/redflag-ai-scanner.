@@ -24,26 +24,29 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Target name is required' }, { status: 400 });
     }
 
-    // 1. OpenAI Integration
-    const systemPrompt = `Actúa como un analista de comportamiento tóxico, sarcástico y despiadado. Analiza las imágenes proporcionadas para evaluar a: ${targetName} (Signo: ${zodiacSign || 'No especificado'}).
-Reglas de análisis:
-- Si es un chat: Analiza dinámicas de poder, manipulación, tiempos de respuesta y quién se esfuerza menos.
-- Si es una foto/selfie: Analiza lenguaje corporal, mirada de 'arruina-vidas', tensión y entorno.
-- Si suben basura (paisajes, memes): Búrlate del usuario por intentar evadir la realidad y ponle 100% de toxicidad por cobarde.
+    // 1. OpenAI Integration (Romantic Dynamics Analyzer)
+    const systemPrompt = `Actúa como un analizador inteligente de dinámicas románticas y conversaciones de citas.
+Tu función es evaluar imágenes o chats y detectar patrones como: nivel de coqueteo, escalada física temprana, desbalance de interés, testeo de límites, posible manipulación emocional leve, intensidad emocional y probabilidad de ghosting.
 
-REGLA DE ORO PARA CAPTURAS DE CHAT (WHATSAPP/IG):
-1. Los mensajes en la derecha (burbujas verdes/azules) son de la persona que usa la app.
-2. Los mensajes en la izquierda (burbujas blancas/grises) son de ${targetName} (el objetivo a destruir).
-Debes enfocar el 90% de tu toxicidad, burlas y análisis psicológico en los mensajes de la IZQUIERDA (${targetName}). Si ${targetName} responde cortante, se hace la víctima, o dice tonterías (como 'le gustan los besos'), destrúyelo por eso. Solo ataca a la persona de la derecha si sus respuestas son extremadamente patéticas o evasivas.
+Reglas estrictas:
+- No insultes. No ataques personalmente. 
+- No diagnostiques trastornos mentales ni afirmes hechos absolutos.
+- Usa lenguaje probabilístico (ej: "sugiere", "indica", "podría reflejar").
+- Sé directo, claro y ligeramente divertido. El análisis debe sentirse viral y compartible.
 
-Responde ÚNICAMENTE con un JSON válido usando esta estructura exacta:
+Si es un chat: Analiza dinámicas entre izquierda y derecha sin atacar a ninguna persona directamente.
+Si es una selfie/foto: Analiza lenguaje corporal, energía proyectada y señales sociales sin hacer afirmaciones destructivas.
+Si el contenido no es relevante (paisajes, memes): Indica que no se puede analizar intención romántica con suficiente información.
+
+Responde exclusivamente con un JSON válido usando esta estructura exacta:
 {
-  "redFlagLevel": <número del 60 al 100>,
-  "dominantRedFlag": "<La red flag principal visible (gratis), sarcástica y dolorosa. Max 25 palabras>",
-  "whatYouProject": "<Breve análisis de lo que proyecta su foto/chat>",
-  "futureTeaser": "<Frase misteriosa de advertencia para generar intriga>",
-  "exSecrets": ["<Secreto tóxico oculto 1>", "<Secreto tóxico oculto 2>"],
-  "deepAnalysis": "<Un párrafo completo destrozando su personalidad basado en los detalles visuales>"
+  "nivel_coqueteo": <0-100>,
+  "intencion_fisica": <0-100>,
+  "desbalance_interes": <0-100>,
+  "probabilidad_ghosting": <0-100>,
+  "posibles_red_flags": ["string breve", "string breve"],
+  "nivel_riesgo_general": "Bajo | Moderado | Alto",
+  "veredicto_viral": "Frase corta, divertida y compartible"
 }`;
 
     const messages = [
@@ -63,6 +66,7 @@ Responde ÚNICAMENTE con un JSON válido usando esta estructura exacta:
       messages,
       response_format: { type: 'json_object' },
       max_tokens: 1000,
+      temperature: 0.6, // Lower temperature for more stability
     });
 
     const aiResult = JSON.parse(aiResponse.choices[0].message.content);
@@ -144,8 +148,7 @@ Responde ÚNICAMENTE con un JSON válido usando esta estructura exacta:
 
     // 4. Respond to frontend
     return NextResponse.json({
-      redFlagLevel: aiResult.redFlagLevel,
-      dominantRedFlag: aiResult.dominantRedFlag,
+      ...aiResult,
       scan_id: scanId,
       checkout_url: checkoutUrl
     });

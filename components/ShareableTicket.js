@@ -13,16 +13,16 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
       <div className="ticket-border">
         {/* Header */}
         <div className="ticket-header">
-          <span className="logo-emoji">🚩</span>
-          <h1 className="logo-text">REDFLAG AI SCANNER</h1>
+          <span className="logo-emoji">📈</span>
+          <h1 className="logo-text">ROMANTIC ANALYZER</h1>
         </div>
 
         <div className="ticket-content">
-          <div className="vibe-tag">INFORME DE TOXICIDAD</div>
+          <div className="vibe-tag">ANÁLISIS DE DINÁMICA</div>
           
           <div className="score-area">
             <div className="score-value">{score}%</div>
-            <div className="score-label">NIVEL CRÍTICO</div>
+            <div className="score-label"> NIVEL DE CONEXIÓN</div>
           </div>
 
           <div className="target-info">
@@ -31,22 +31,22 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           </div>
 
           <div className="evidence-box">
-            <h3 className="evidence-title">🚩 Red Flag #1:</h3>
+            <h3 className="evidence-title">✨ Veredicto Viral:</h3>
             <p className="evidence-text">
-              {redFlag || 'Manipulación detected. Se observa una tendencia constante a evadir la responsabilidad afectiva y proyectar inseguridades.'}
+              {redFlag || "Analizando patrones de interacción romántica con Inteligencia Artificial."}
             </p>
           </div>
 
           <div className="fomo-banner">
             <span className="lock-icon">🔒</span>
-            <span className="fomo-text">+2 Red Flags Críticas Ocultas</span>
+            <span className="fomo-text">+2 Señales de Interés Ocultas</span>
           </div>
         </div>
 
         {/* Footer */}
         <div className="ticket-footer">
-          <p className="footer-callout">Escanea el tuyo en:</p>
-          <div className="domain-text">redflagscanner.ai</div>
+          <p className="footer-callout">Analiza tu relación en:</p>
+          <div className="domain-text">redflagscanner.xyz</div>
         </div>
       </div>
 
@@ -68,7 +68,7 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
 
         .ticket-border {
           flex: 1;
-          border: 4px solid #ff2d55;
+          border: 4px solid #af52de;
           border-radius: 24px;
           padding: 40px;
           display: flex;
@@ -109,8 +109,8 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           font-size: 0.9rem;
           font-weight: 800;
           letter-spacing: 0.2em;
-          color: #ff2d55;
-          border: 1px solid rgba(255, 45, 85, 0.5);
+          color: #af52de;
+          border: 1px solid rgba(175, 82, 222, 0.5);
           padding: 6px 16px;
           border-radius: 20px;
           margin-bottom: 40px;
@@ -126,8 +126,8 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           font-size: 8rem;
           font-weight: 950;
           line-height: 1;
-          color: #ff2d55;
-          text-shadow: 0 0 30px rgba(255, 45, 85, 0.6);
+          color: #39ff14;
+          text-shadow: 0 0 30px rgba(57, 255, 20, 0.6);
           margin-bottom: 10px;
         }
 
@@ -165,8 +165,8 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
         .evidence-title {
           font-size: 1.3rem;
           font-weight: 900;
-          color: #39ff14;
-          margin: 0 0 16px 0;
+          color: #af52de;
+          margin: 0 10px 16px 0;
         }
 
         .evidence-text {
@@ -214,7 +214,7 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           font-family: 'Inter Black', sans-serif;
           font-size: 1.8rem;
           font-weight: 900;
-          color: #39ff14;
+          color: #af52de;
           letter-spacing: -0.02em;
         }
       `}</style>

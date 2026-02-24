@@ -68,57 +68,57 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         {/* Urgent Header */}
         <div className="header-section">
           <h1 className="critical-title">
-            <span className="warning-icon">⚠️</span>
-            ¡ANÁLISIS COMPLETADO: <br/> NIVEL CRÍTICO!
+            <span className="warning-icon">📈</span>
+            {aiResult?.veredicto_viral || 'ANÁLISIS DE DINÁMICA COMPLETADO'}
           </h1>
-          <p className="subtitle text-muted">Archivos analizados exitosamente{name ? ` para ${name}` : ''}.</p>
+          <p className="subtitle text-muted">Inteligencia Artificial aplicada a tu conexión{name ? ` con ${name}` : ''}.</p>
         </div>
 
         {/* Dynamic Scan Result */}
         <div className="report-card">
           <div className="report-header">
-            <span className="report-badge">DIAGNÓSTICO PRELIMINAR</span>
-            <h2 className="toxicity-score">Toxicidad Detectada: <span className="score-red">{aiResult?.redFlagLevel || 88}% (Muy Alta)</span></h2>
+            <span className="report-badge">ANÁLISIS DE INTERACCIÓN</span>
+            <h2 className="toxicity-score">Nivel de Riesgo: <span className={aiResult?.nivel_riesgo_general === 'Bajo' ? 'score-green' : 'score-red'}>
+              {aiResult?.nivel_riesgo_general || 'Evaluando...'}
+            </span></h2>
           </div>
 
           <div className="report-body">
-            {/* Free Evidence (The Hook) */}
-            <div className="free-evidence-section">
-              <h3 className="red-flags-title visible">🚩 Red Flag Principal</h3>
-              <p className="visible-text">
-                {aiResult?.dominantRedFlag || 'El sujeto demuestra patrones claros de gaslighting encubierto.'}
-              </p>
-              <button 
-                className={`share-story-btn ${downloading ? 'loading' : ''}`}
-                onClick={handleDownload}
-                disabled={downloading}
-              >
-                {downloading ? 'Generando...' : 'Descargar para Stories 📸'}
-              </button>
+            {/* Metrics Section */}
+            <div className="metrics-grid">
+              <div className="metric-item">
+                <div className="metric-label">🔥 Coqueteo / Tensión</div>
+                <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${aiResult?.nivel_coqueteo || 0}%`, background: '#ff2d55' }} /></div>
+              </div>
+              <div className="metric-item">
+                <div className="metric-label">🌡️ Interés Físico</div>
+                <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${aiResult?.intencion_fisica || 0}%`, background: '#ff9500' }} /></div>
+              </div>
+              <div className="metric-item">
+                <div className="metric-label">⚖️ Desbalance de Interés</div>
+                <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${aiResult?.desbalance_interes || 0}%`, background: '#af52de' }} /></div>
+              </div>
+              <div className="metric-item">
+                <div className="metric-label">👻 Prob. de Ghosting</div>
+                <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${aiResult?.probabilidad_ghosting || 0}%`, background: '#5856d6' }} /></div>
+              </div>
             </div>
 
             <div className="divider-section">
-              <span className="divider-text">⚠️ 2 RED FLAGS CRÍTICAS OCULTAS</span>
+              <span className="divider-text">⚠️ 2 SEÑALES CRÍTICAS DETECTADAS</span>
             </div>
             
             <div className={`blurred-section-wrapper ${isUnlocked ? 'unlocked' : ''}`}>
               <div className="blurred-content">
-                {aiResult?.exSecrets && aiResult.exSecrets.length > 0 ? (
-                  aiResult.exSecrets.map((secret, idx) => (
-                    <p key={idx}><b>{idx + 2}. Secreto de Ex:</b> {secret}</p>
+                {aiResult?.posibles_red_flags && aiResult.posibles_red_flags.length > 0 ? (
+                  aiResult.posibles_red_flags.map((flag, idx) => (
+                    <p key={idx}><b>⚠️ Señal #{idx + 1}:</b> {flag}</p>
                   ))
                 ) : (
                   <>
-                    <p>2. <b>Falta de Responsabilidad Afectiva:</b> Se observa una tendencia constante a evadir la culpa y proyectar sus inseguridades sobre ti.</p>
-                    <p>3. <b>Apego Evitativo Extremo:</b> Hay señales de distancia emocional estratégica.</p>
+                    <p>1. 🚩 <b>Disonancia Cognitiva:</b> Patrones de comunicación inconsistentes que sugieren falta de compromiso.</p>
+                    <p>2. 🚩 <b>Validación Externa:</b> Búsqueda constante de atención que podría diluir la exclusividad.</p>
                   </>
-                )}
-                
-                {aiResult?.deepAnalysis && (
-                  <div className="deep-analysis-revealed">
-                    <h3 className="analysis-title">🕵️ ANÁLISIS PROFUNDO:</h3>
-                    <p>{aiResult.deepAnalysis}</p>
-                  </div>
                 )}
               </div>
               
@@ -128,7 +128,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                   <div className="lock-icon-container">
                     <span className="lock-emoji">🔒</span>
                   </div>
-                  <p className="lock-text">Contenido Censurado</p>
+                  <p className="lock-text">Análisis Protegido</p>
                 </div>
               )}
             </div>
@@ -169,8 +169,8 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
       <ShareableTicket 
         name={name} 
         zodiac={zodiac} 
-        score={aiResult?.redFlagLevel || 88} 
-        redFlag={aiResult?.dominantRedFlag || "Manipulación de Realidad: El sujeto demuestra patrones claros de gaslighting encubierto."}
+        score={aiResult?.nivel_coqueteo || 0} 
+        redFlag={aiResult?.veredicto_viral || "Análisis de Dinámica Romántica"}
       />
 
       <style jsx>{`
@@ -294,6 +294,46 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         .score-red {
           color: #ff2d55;
           text-shadow: 0 0 15px rgba(255, 45, 85, 0.6);
+        }
+
+        .score-green {
+          color: #39ff14;
+          text-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+        }
+
+        .metrics-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          margin-bottom: 24px;
+        }
+
+        .metric-item {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .metric-label {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: rgba(255,255,255,0.7);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .metric-bar-bg {
+          width: 100%;
+          height: 8px;
+          background: rgba(255,255,255,0.05);
+          border-radius: 4px;
+          overflow: hidden;
+        }
+
+        .metric-bar-fill {
+          height: 100%;
+          border-radius: 4px;
+          transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .report-body {
