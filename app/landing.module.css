@@ -1,0 +1,301 @@
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px 40px;
+  position: relative;
+  gap: 32px;
+}
+
+/* Floating Emojis */
+.floatingEmojis {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.emoji {
+  position: absolute;
+  animation: float 4s ease-in-out infinite;
+  opacity: 0.15;
+  filter: blur(1px);
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 60px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: clamp(16px, 4vw, 32px);
+  backdrop-filter: blur(10px);
+}
+
+.badgeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  animation: pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--accent-red-glow);
+}
+
+.title {
+  font-size: clamp(2.4rem, 8vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: clamp(12px, 3vw, 24px);
+}
+
+.titleRed {
+  background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 30px var(--accent-red-glow));
+}
+
+.titleWhite {
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: clamp(16px, 4vw, 24px);
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.subtitle strong {
+  color: var(--text-primary);
+}
+
+/* Scan Your Ex Button - Modern Outline Style */
+.exButton {
+  display: block;
+  margin-top: 12px;
+  width: 100%;
+  max-width: 320px;
+  margin-inline: auto;
+  padding: 14px 28px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.exButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.exButton:active {
+  transform: translateY(0);
+}
+
+.disclaimer {
+  margin-top: 48px;
+  margin-bottom: 20px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  opacity: 0.5;
+  text-align: center;
+  max-width: 400px;
+}
+
+.liveCounter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  padding: 6px 14px;
+  background: rgba(48, 209, 88, 0.08);
+  border: 1px solid rgba(48, 209, 88, 0.2);
+  border-radius: 60px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(48, 209, 88, 1);
+  letter-spacing: 0.01em;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #30d158;
+  animation: pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(48, 209, 88, 0.5);
+}
+
+/* ======================== */
+/* DISCOVERY SECTION        */
+/* ======================== */
+.discoverSection {
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
+  width: 100%;
+  max-width: 420px;
+  animation: fadeInUp 0.8s ease-out 0.15s both;
+}
+
+.discoverTitle {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 18px;
+}
+
+.discoverGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.discoverItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.4s ease-out both;
+  transition: all 0.2s ease;
+}
+
+.discoverItem:hover {
+  border-color: rgba(255, 45, 85, 0.2);
+  background: var(--bg-card-hover);
+  transform: translateX(4px);
+}
+
+.discoverEmoji {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.discoverText {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ======================== */
+/* EXAMPLE CARDS            */
+/* ======================== */
+.examplesSection {
+  position: relative;
+  z-index: 1;
+  margin-top: 40px;
+  width: 100%;
+  max-width: 640px;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.examplesLabel {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.examplesGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exampleCard {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.exampleCard:hover {
+  border-color: rgba(255, 45, 85, 0.2);
+  background: var(--bg-card-hover);
+  transform: translateX(4px);
+}
+
+.exampleScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+  flex-shrink: 0;
+}
+
+.exampleScoreNum {
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.exampleRisk {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+  opacity: 0.8;
+}
+
+.exampleText {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .exampleCard {
+    gap: 14px;
+    padding: 16px 18px;
+  }
+  .exampleScoreNum {
+    font-size: 1.3rem;
+  }
+}

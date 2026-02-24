@@ -1,0 +1,38 @@
+.langToggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  gap: 2px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 3px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.langBtn {
+  padding: 6px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-family);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.05em;
+}
+
+.langBtn:hover {
+  color: var(--text-secondary);
+}
+
+.langBtn.active {
+  color: var(--text-primary);
+  background: rgba(255, 45, 85, 0.15);
+  box-shadow: 0 0 8px rgba(255, 45, 85, 0.2);
+}

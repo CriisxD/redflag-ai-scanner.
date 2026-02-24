@@ -1,0 +1,133 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useLang } from '@/lib/LangContext';
+import styles from './landing.module.css';
+
+import Quiz from '@/components/Quiz';
+
+function useLiveCount() {
+  const [count, setCount] = useState(null);
+  useEffect(() => {
+    const base = 12000 + Math.floor(Math.random() * 6000);
+    setCount(base);
+    const interval = setInterval(() => {
+      setCount(prev => prev + Math.floor(Math.random() * 3) + 1);
+    }, 4000 + Math.random() * 3000);
+    return () => clearInterval(interval);
+  }, []);
+  return count;
+}
+
+export default function LandingPage() {
+  const router = useRouter();
+  const { t } = useLang();
+  const liveCount = useLiveCount();
+  const [showQuiz, setShowQuiz] = useState(false);
+
+  const handleQuizComplete = (answers) => {
+    // Save answers in session storage to pass to scan page
+    sessionStorage.setItem('quizAnswers', JSON.stringify(answers));
+    router.push('/scan');
+  };
+
+  return (
+    <div className={styles.landing}>
+      {/* Floating emojis */}
+      <div className={styles.floatingEmojis}>
+        <span className={styles.emoji} style={{ top: '10%', left: '8%', animationDelay: '0s', fontSize: '2.5rem' }}>🚩</span>
+        <span className={styles.emoji} style={{ top: '20%', right: '12%', animationDelay: '1.5s', fontSize: '2rem' }}>💀</span>
+        <span className={styles.emoji} style={{ top: '55%', left: '5%', animationDelay: '3s', fontSize: '1.8rem' }}>🔥</span>
+        <span className={styles.emoji} style={{ top: '70%', right: '8%', animationDelay: '0.8s', fontSize: '2.2rem' }}>🚩</span>
+        <span className={styles.emoji} style={{ top: '85%', left: '15%', animationDelay: '2.2s', fontSize: '1.6rem' }}>💔</span>
+        <span className={styles.emoji} style={{ top: '40%', right: '5%', animationDelay: '4s', fontSize: '1.5rem' }}>👻</span>
+        <span className={styles.emoji} style={{ top: '30%', left: '20%', animationDelay: '2.5s', fontSize: '1.4rem' }}>💘</span>
+      </div>
+
+      <div className={styles.hero}>
+        {!showQuiz ? (
+          <>
+            <div className={styles.badge}>
+              <span className={styles.badgeDot} />
+              {t.badge}
+            </div>
+
+            <h1 className={styles.title}>
+              <span className={styles.titleRed}>{t.titleLine1}</span>
+              <br />
+              <span className={styles.titleWhite}>{t.titleLine2}</span>
+              <br />
+              <span className={styles.titleRed}>{t.titleLine3}</span>
+            </h1>
+
+            <p className={styles.subtitle}>
+              {t.subtitleLine1}
+              <br />
+              <strong>{t.subtitleLine2}</strong>
+            </p>
+
+            <button
+              className="btn-primary"
+              onClick={() => setShowQuiz(true)}
+              style={{ marginTop: '16px', fontSize: '1.1rem', padding: '18px 44px', width: '100%', maxWidth: '320px' }}
+            >
+              {t.scanCta}
+            </button>
+
+            {/* Scan Your Ex Button - Modern Outline Style */}
+            <button
+              className={styles.exButton}
+              onClick={() => router.push('/scan?mode=ex')}
+            >
+              {t.scanExCta}
+            </button>
+
+            {/* Live Counter moved here for urgency */}
+            {liveCount && (
+              <div className={styles.liveCounter}>
+                <span className={styles.liveDot} />
+                <span>{liveCount.toLocaleString()} {t.liveCounter}</span>
+              </div>
+            )}
+          </>
+        ) : (
+          <Quiz questions={t.quizQuestions} onComplete={handleQuizComplete} />
+        )}
+      </div>
+
+      {/* Discovery Section */}
+      <div className={styles.discoverSection}>
+        <h2 className={styles.discoverTitle}>{t.discoverTitle}</h2>
+        <div className={styles.discoverGrid}>
+          {t.discoverItems.map((item, i) => (
+            <div key={i} className={styles.discoverItem} style={{ animationDelay: `${i * 0.08}s` }}>
+              <span className={styles.discoverEmoji}>{item.emoji}</span>
+              <span className={styles.discoverText}>{item.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Example Cards - Translated */}
+      <div className={styles.examplesSection}>
+        <p className={styles.examplesLabel}>{t.recentScans}</p>
+        <div className={styles.examplesGrid}>
+          {t.exampleCards.map((card, i) => (
+            <div key={i} className={styles.exampleCard}>
+              <div className={styles.exampleScore} style={{ color: i === 0 ? '#ff2d55' : i === 1 ? '#ff9500' : '#ffcc00' }}>
+                <span className={styles.exampleScoreNum}>{card.score}</span>
+                <span className={styles.exampleRisk}>{card.risk}</span>
+              </div>
+              <p className={styles.exampleText}>{card.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <p className={styles.disclaimer}>
+        {t.disclaimer}
+      </p>
+    </div>
+  );
+}
