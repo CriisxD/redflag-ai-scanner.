@@ -14,7 +14,9 @@ const getOpenAIClient = () => {
 
 export async function POST(req) {
   try {
-    const { images, targetName, zodiacSign } = await req.json();
+    const body = await req.json();
+    const { images, targetName, context = {} } = body;
+    const { daysChatting = 'N/A', hasMet = 'N/A', userIntent = 'N/A' } = context;
 
     if (!images || !Array.isArray(images) || images.length === 0) {
       return NextResponse.json({ error: 'No images provided' }, { status: 400 });
@@ -24,152 +26,89 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Target name is required' }, { status: 400 });
     }
 
-    // 1. OpenAI Integration (Romantic Dynamics Analyzer v3)
-    const systemPrompt = `Actúa como un analizador inteligente de dinámicas románticas y conversaciones de citas. Tu objetivo es proporcionar un análisis profundo, creíble y con valor estratégico.
+    // 1. OpenAI Integration (Romantic Dynamics Analyzer v3.1)
+    const systemPrompt = `Actúa como un analizador inteligente de dinámicas románticas y conversaciones de citas (v3.1).
+    
+Tu objetivo es proporcionar un análisis profundo basado tanto en las imágenes como en el CONTEXTO proporcionado.
 
-Tu función es evaluar imágenes o chats y detectar con precisión: nivel de coqueteo, intención física, desbalance de interés y probabilidad de ghosting.
+DATOS DE CONTEXTO:
+- Tiempo hablando: ${daysChatting}
+- ¿Se han visto en persona?: ${hasMet}
+- Intención del usuario: ${userIntent}
+- Nombre del sujeto: ${targetName || 'Desconocido'}
 
-Estructura de Análisis:
-- Gratis (60%): Datos numéricos, qué está pasando ahora y una frase viral impactante.
-- Premium (40%): Intención real, predicción futura y estrategia de respuesta.
+Instrucciones:
+1. Analiza las imágenes para detectar nivel de coqueteo, intención física, desbalance de interés y probabilidad de ghosting.
+2. Usa el CONTEXTO para refinar el análisis (ej: si no se han visto pero hay mucha intención física, la probabilidad de ghosting suele ser mayor).
+3. Estructura de Análisis: Gratis (60%) y Premium (40% de alto valor estratégico).
+4. Genera un dato de psicología de conversión contextual.
 
-Reglas Estratégicas:
-- No insultes. Usa lenguaje probabilístico ("sugiere", "podría indicar").
-- Sé directo y ligeramente divertido, pero mantén un tono de "experto en citas".
-- Genera un dato de psicología de conversión contextual basado en el análisis (ej: "Las dinámicas con +70% de coqueteo unilateral tienden a enfriarse en 10 días").
-
-Responde exclusivamente con un JSON válido usando esta estructura exacta:
+Responde exclusivamente con un JSON válido:
 {
   "nivel_coqueteo": <0-100>,
   "intencion_fisica": <0-100>,
   "desbalance_interes": <0-100>,
   "probabilidad_ghosting": <0-100>,
-  "red_flag_principal": "<Título breve (max 5 palabras) sobre el hallazgo principal>",
-  "frase_viral": "<Frase corta y picante para compartir, max 10 palabras>",
+  "red_flag_principal": "<Título breve>",
+  "frase_viral": "<Frase corta y picante>",
   "nivel_riesgo_general": "Bajo | Moderado | Alto",
-  "dynamic_header": "🔍 Dinámica: [Nombre de la dinámica detectada en 2-3 palabras]",
-  "psicologia_conversion": "<Dato estadístico o psicológico contextual para incitar al pago>",
+  "dynamic_header": "🔍 Dinámica: [Nombre de la dinámica]",
+  "psicologia_conversion": "<Dato estadístico basado en el hallazgo>",
   "analisis_premium": {
-    "intencion_real": "<Análisis de lo que busca realmente la persona>",
-    "riesgo_futuro": "<Predicción detallada de la dinámica a 2-4 semanas>",
-    "recomendacion_estrategica": "<Consejo práctico sobre cómo actuar sin perder poder>"
+    "intencion_real": "<Lo que busca realmente>",
+    "riesgo_futuro": "<Predicción a 2-4 semanas>",
+    "recomendacion_estrategica": "<Consejo táctico de respuesta>"
   }
 }`;
 
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      {
-        role: 'user',
-        content: images.map(base64 => ({
-          type: 'image_url',
-          image_url: { url: `data:image/jpeg;base64,${base64}`, detail: 'low' }
-        }))
-      }
-    ];
-
     const openai = getOpenAIClient();
-    const aiResponse = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages,
-      response_format: { type: 'json_object' },
-      max_tokens: 1000,
-      temperature: 0.6, // Lower temperature for more stability
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini", // Cost-effective for beta
+      messages: [
+        { role: "system", content: systemPrompt },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: `Analiza esta conversación para ${targetName}. Contexto adicional: ${daysChatting} hablando, ${hasMet === 'Sí' ? 'ya se conocen' : 'aún no se han visto'}, busca ${userIntent}.` },
+            ...images.map(img => ({
+              type: "image_url",
+              image_url: { url: `data:image/jpeg;base64,${img}` }
+            }))
+          ],
+        },
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.6,
     });
 
-    const aiResult = JSON.parse(aiResponse.choices[0].message.content);
+    const aiResult = JSON.parse(completion.choices[0].message.content);
 
-    let scanId = 'test_' + Date.now();
-
-    // 2. Save to Supabase (Optional for testing)
-    try {
-      if (supabase) {
-        const { data: scanData, error: dbError } = await supabase
-          .from('scans')
-          .insert([
-            { 
-              target_name: targetName, 
-              ai_result: aiResult,
-              status: 'pending_payment'
-            }
-          ])
-          .select()
-          .single();
-
-        if (dbError) {
-          console.error('Supabase Error:', dbError);
-        } else if (scanData) {
-          scanId = scanData.id;
+    // 2. Save result to Supabase for checkout verification
+    const { data: scanData, error: dbError } = await supabase
+      .from('scans')
+      .insert([
+        { 
+          target_name: targetName,
+          ai_result: aiResult,
+          is_unlocked: false
         }
-      }
-    } catch (dbErr) {
-      console.error('Database connection failed:', dbErr);
-    }
+      ])
+      .select()
+      .single();
 
-    // 3. Generate Lemon Squeezy Payment (Optional for testing)
-    let checkoutUrl = '#';
-    try {
-      if (LEMON_SQUEEZY_API_KEY && STORE_ID && VARIANT_ID) {
-        const checkoutResponse = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json',
-            'Authorization': `Bearer ${LEMON_SQUEEZY_API_KEY}`
-          },
-          body: JSON.stringify({
-            data: {
-              type: 'checkouts',
-              attributes: {
-                checkout_data: {
-                  custom: {
-                    scan_id: scanId
-                  }
-                },
-                product_options: {
-                  redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/scan?status=success&scan_id=${scanId}`
-                }
-              },
-              relationships: {
-                store: {
-                  data: { type: 'stores', id: String(STORE_ID) }
-                },
-                variant: {
-                  data: { type: 'variants', id: String(VARIANT_ID) }
-                }
-              }
-            }
-          })
-        });
+    if (dbError) throw dbError;
 
-        if (checkoutResponse.ok) {
-          const checkoutData = await checkoutResponse.json();
-          checkoutUrl = checkoutData.data.attributes.url;
-        } else {
-          const errorData = await checkoutResponse.json();
-          console.error('Lemon Squeezy Error:', errorData);
-        }
-      }
-    } catch (payErr) {
-      console.error('Payment generation failed:', payErr);
-    }
+    // 3. Return result + checkout link
+    const checkoutUrl = `https://redflagscanner.lemonsqueezy.com/checkout/buy/${VARIANT_ID}?embed=1&checkout[custom][scan_id]=${scanData.id}`;
 
-    // 4. Respond to frontend
     return NextResponse.json({
-      ...aiResult,
-      scan_id: scanId,
-      checkout_url: checkoutUrl
+      scanId: scanData.id,
+      aiResult,
+      checkoutUrl
     });
 
-  } catch (err) {
-    console.error('[Scan Endpoint] Fatal Error:', {
-      message: err.message,
-      stack: err.stack,
-      cause: err.cause
-    });
-    return NextResponse.json({ 
-      error: 'Error en el servidor de IA', 
-      details: err.message,
-      timestamp: new Date().toISOString()
-    }, { status: 500 });
+  } catch (error) {
+    console.error('Scan API Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
