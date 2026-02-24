@@ -22,9 +22,8 @@ export async function POST(req) {
       return NextResponse.json({ error: 'No images provided' }, { status: 400 });
     }
 
-    if (!targetName) {
-      return NextResponse.json({ error: 'Target name is required' }, { status: 400 });
-    }
+    // targetName is now optional in the UI
+    const finalTargetName = targetName?.trim() || 'Sujeto Anónimo';
 
     // 1. OpenAI Integration (Romantic Dynamics Analyzer v3.1)
     const systemPrompt = `Actúa como un analizador inteligente de dinámicas románticas y conversaciones de citas (v3.1).
@@ -69,7 +68,7 @@ Responde exclusivamente con un JSON válido:
         {
           role: "user",
           content: [
-            { type: "text", text: `Analiza esta conversación para ${targetName}. Contexto adicional: ${daysChatting} hablando, ${hasMet === 'Sí' ? 'ya se conocen' : 'aún no se han visto'}, busca ${userIntent}.` },
+            { type: "text", text: `Analiza esta conversación para ${finalTargetName}. Contexto adicional: ${daysChatting} hablando, ${hasMet === 'Sí' ? 'ya se conocen' : 'aún no se han visto'}, busca ${userIntent}.` },
             ...images.map(img => ({
               type: "image_url",
               image_url: { url: `data:image/jpeg;base64,${img}` }
@@ -88,7 +87,7 @@ Responde exclusivamente con un JSON válido:
       .from('scans')
       .insert([
         { 
-          target_name: targetName,
+          target_name: finalTargetName,
           ai_result: aiResult,
           is_unlocked: false
         }
