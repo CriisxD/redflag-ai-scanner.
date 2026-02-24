@@ -7,7 +7,7 @@ const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID;
 const VARIANT_ID = process.env.LEMON_SQUEEZY_VARIANT_ID; // The $2.99 product variant
 
 const getOpenAIClient = () => {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) throw new Error('Missing OPENAI_API_KEY environment variable');
   return new OpenAI({ apiKey });
 };
@@ -146,7 +146,15 @@ Responde ÚNICAMENTE con un JSON válido usando esta estructura exacta:
     });
 
   } catch (err) {
-    console.error('[Scan Endpoint] Error:', err);
-    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
+    console.error('[Scan Endpoint] Fatal Error:', {
+      message: err.message,
+      stack: err.stack,
+      cause: err.cause
+    });
+    return NextResponse.json({ 
+      error: 'Error en el servidor de IA', 
+      details: err.message,
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
   }
 }
