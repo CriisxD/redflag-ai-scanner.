@@ -62,67 +62,80 @@ Responde ÚNICAMENTE con un JSON válido usando esta estructura exacta:
 
     const aiResult = JSON.parse(aiResponse.choices[0].message.content);
 
-    // 2. Save to Supabase
-    const { data: scanData, error: dbError } = await supabase
-      .from('scans')
-      .insert([
-        { 
-          target_name: targetName, 
-          ai_result: aiResult,
-          status: 'pending_payment'
-        }
-      ])
-      .select()
-      .single();
+    let scanId = 'test_' + Date.now();
 
-    if (dbError) {
-      console.error('Supabase Error:', dbError);
-      throw new Error('Database insertion failed');
+    // 2. Save to Supabase (Optional for testing)
+    try {
+      if (supabase) {
+        const { data: scanData, error: dbError } = await supabase
+          .from('scans')
+          .insert([
+            { 
+              target_name: targetName, 
+              ai_result: aiResult,
+              status: 'pending_payment'
+            }
+          ])
+          .select()
+          .single();
+
+        if (dbError) {
+          console.error('Supabase Error:', dbError);
+        } else if (scanData) {
+          scanId = scanData.id;
+        }
+      }
+    } catch (dbErr) {
+      console.error('Database connection failed:', dbErr);
     }
 
-    const scanId = scanData.id;
-
-    // 3. Generate Lemon Squeezy Payment
-    const checkoutResponse = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-        'Authorization': `Bearer ${LEMON_SQUEEZY_API_KEY}`
-      },
-      body: JSON.stringify({
-        data: {
-          type: 'checkouts',
-          attributes: {
-            checkout_data: {
-              custom: {
-                scan_id: scanId // CRITICAL for webhook reconciliation
-              }
-            },
-            product_options: {
-              redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/scan?status=success&scan_id=${scanId}`
-            }
+    // 3. Generate Lemon Squeezy Payment (Optional for testing)
+    let checkoutUrl = '#';
+    try {
+      if (LEMON_SQUEEZY_API_KEY && STORE_ID && VARIANT_ID) {
+        const checkoutResponse = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/vnd.api+json',
+            'Content-Type': 'application/vnd.api+json',
+            'Authorization': `Bearer ${LEMON_SQUEEZY_API_KEY}`
           },
-          relationships: {
-            store: {
-              data: { type: 'stores', id: String(STORE_ID) }
-            },
-            variant: {
-              data: { type: 'variants', id: String(VARIANT_ID) }
+          body: JSON.stringify({
+            data: {
+              type: 'checkouts',
+              attributes: {
+                checkout_data: {
+                  custom: {
+                    scan_id: scanId
+                  }
+                },
+                product_options: {
+                  redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/scan?status=success&scan_id=${scanId}`
+                }
+              },
+              relationships: {
+                store: {
+                  data: { type: 'stores', id: String(STORE_ID) }
+                },
+                variant: {
+                  data: { type: 'variants', id: String(VARIANT_ID) }
+                }
+              }
             }
-          }
+          })
+        });
+
+        if (checkoutResponse.ok) {
+          const checkoutData = await checkoutResponse.json();
+          checkoutUrl = checkoutData.data.attributes.url;
+        } else {
+          const errorData = await checkoutResponse.json();
+          console.error('Lemon Squeezy Error:', errorData);
         }
-      })
-    });
-
-    if (!checkoutResponse.ok) {
-      const errorData = await checkoutResponse.json();
-      console.error('Lemon Squeezy Error:', errorData);
-      throw new Error('Lemon Squeezy checkout generation failed');
+      }
+    } catch (payErr) {
+      console.error('Payment generation failed:', payErr);
     }
-
-    const checkoutData = await checkoutResponse.json();
-    const checkoutUrl = checkoutData.data.attributes.url;
 
     // 4. Respond to frontend
     return NextResponse.json({
