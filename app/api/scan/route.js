@@ -5,7 +5,12 @@ import OpenAI from 'openai';
 const LEMON_SQUEEZY_API_KEY = process.env.LEMON_SQUEEZY_API_KEY;
 const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID;
 const VARIANT_ID = process.env.LEMON_SQUEEZY_VARIANT_ID; // The $2.99 product variant
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const getOpenAIClient = () => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error('Missing OPENAI_API_KEY environment variable');
+  return new OpenAI({ apiKey });
+};
 
 export async function POST(req) {
   try {
@@ -47,6 +52,7 @@ Responde ÚNICAMENTE con un JSON válido usando esta estructura exacta:
       }
     ];
 
+    const openai = getOpenAIClient();
     const aiResponse = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages,
