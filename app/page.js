@@ -84,14 +84,6 @@ export default function LandingPage() {
 
   return (
     <div className="landing-container">
-      {/* Top Bar for Language */}
-      <div className="top-bar">
-        <div className="lang-switcher">
-          <button className={lang === 'es' ? 'active' : ''} onClick={() => switchLang('es')}>ES</button>
-          <button className={lang === 'en' ? 'active' : ''} onClick={() => switchLang('en')}>EN</button>
-        </div>
-      </div>
-
       <div className="hero-section">
         <div className="noise-overlay"></div>
         
@@ -177,43 +169,6 @@ export default function LandingPage() {
           user-select: none;
         }
 
-        .top-bar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          padding: 24px;
-          display: flex;
-          justify-content: flex-end;
-          z-index: 50;
-        }
-
-        .lang-switcher {
-          display: flex;
-          gap: 8px;
-          background: rgba(255,255,255,0.05);
-          padding: 4px;
-          border-radius: 20px;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .lang-switcher button {
-          background: transparent;
-          border: none;
-          color: rgba(255,255,255,0.5);
-          font-weight: 700;
-          font-size: 0.75rem;
-          padding: 6px 12px;
-          border-radius: 16px;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .lang-switcher button.active {
-          background: white;
-          color: black;
-        }
 
         .hero-section {
           flex: 1;
