@@ -7,7 +7,7 @@ import React from 'react';
  * A 9:16 high-impact ticket for social media sharing.
  * Designed to be captured by html2canvas.
  */
-export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
+export default function ShareableTicket({ name, zodiac, metrics = {}, redFlag, viralPhrase }) {
   return (
     <div id="shareable-ticket-capture" className="ticket-container">
       <div className="ticket-border">
@@ -18,11 +18,17 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
         </div>
 
         <div className="ticket-content">
-          <div className="vibe-tag">ANÁLISIS DE DINÁMICA</div>
+          <div className="vibe-tag">RATING DE DINÁMICA</div>
           
-          <div className="score-area">
-            <div className="score-value">{score}%</div>
-            <div className="score-label"> NIVEL DE CONEXIÓN</div>
+          <div className="metrics-summary">
+            <div className="mini-metric">
+              <span className="m-val">{metrics.coqueteo || 0}%</span>
+              <span className="m-lbl">COQUETEO</span>
+            </div>
+            <div className="mini-metric">
+              <span className="m-val">{metrics.ghosting || 0}%</span>
+              <span className="m-lbl">GHOSTING</span>
+            </div>
           </div>
 
           <div className="target-info">
@@ -31,15 +37,16 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           </div>
 
           <div className="evidence-box">
-            <h3 className="evidence-title">✨ Veredicto Viral:</h3>
+            <h3 className="evidence-title">✨ SEÑAL DETECTADA:</h3>
+            <p className="main-flag">{redFlag || 'No especificado'}</p>
             <p className="evidence-text">
-              {redFlag || "Analizando patrones de interacción romántica con Inteligencia Artificial."}
+              "{viralPhrase || 'Patrones de interacción romántica detectados.'}"
             </p>
           </div>
 
-          <div className="fomo-banner">
-            <span className="lock-icon">🔒</span>
-            <span className="fomo-text">+2 Señales de Interés Ocultas</span>
+          <div className="verification-badge">
+            <span className="badge-icon">🛡️</span>
+            <span className="badge-text">AI VERIFIED ANALYST</span>
           </div>
         </div>
 
@@ -52,7 +59,7 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
 
       <style jsx>{`
         .ticket-container {
-          width: 540px; /* 9:16 ratio for 1080/2 */
+          width: 540px;
           height: 960px;
           background: #000;
           padding: 30px;
@@ -61,7 +68,7 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           font-family: 'Inter', sans-serif;
           color: white;
           position: absolute;
-          left: -9999px; /* Hide from viewport */
+          left: -9999px;
           top: 0;
           overflow: hidden;
         }
@@ -74,7 +81,7 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           display: flex;
           flex-direction: column;
           position: relative;
-          background: radial-gradient(circle at top right, rgba(255, 45, 85, 0.1) 0%, transparent 50%),
+          background: radial-gradient(circle at top right, rgba(175, 82, 222, 0.1) 0%, transparent 50%),
                       radial-gradient(circle at bottom left, rgba(57, 255, 20, 0.1) 0%, transparent 50%);
         }
 
@@ -117,25 +124,32 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           text-transform: uppercase;
         }
 
-        .score-area {
-          margin-bottom: 50px;
+        .metrics-summary {
+          display: flex;
+          gap: 30px;
+          margin-bottom: 40px;
         }
 
-        .score-value {
+        .mini-metric {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .m-val {
           font-family: 'Inter Black', sans-serif;
-          font-size: 8rem;
-          font-weight: 950;
-          line-height: 1;
+          font-size: 3.5rem;
+          font-weight: 900;
           color: #39ff14;
-          text-shadow: 0 0 30px rgba(57, 255, 20, 0.6);
-          margin-bottom: 10px;
+          line-height: 1;
         }
 
-        .score-label {
-          font-size: 1.5rem;
-          font-weight: 900;
+        .m-lbl {
+          font-size: 0.8rem;
+          font-weight: 800;
+          color: rgba(255,255,255,0.6);
           letter-spacing: 0.1em;
-          color: white;
+          margin-top: 5px;
         }
 
         .target-info {
@@ -154,8 +168,8 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
 
         .evidence-box {
           width: 100%;
-          background: rgba(57, 255, 20, 0.05);
-          border: 1px solid rgba(57, 255, 20, 0.3);
+          background: rgba(175, 82, 222, 0.05);
+          border: 1px solid rgba(175, 82, 222, 0.3);
           border-radius: 20px;
           padding: 30px;
           text-align: left;
@@ -166,7 +180,15 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           font-size: 1.3rem;
           font-weight: 900;
           color: #af52de;
-          margin: 0 10px 16px 0;
+          margin: 0 0 16px 0;
+        }
+
+        .main-flag {
+          font-size: 1.2rem;
+          font-weight: 900;
+          color: white;
+          margin-bottom: 12px;
+          text-transform: uppercase;
         }
 
         .evidence-text {
@@ -176,24 +198,25 @@ export default function ShareableTicket({ name, zodiac, score = 88, redFlag }) {
           margin: 0;
         }
 
-        .fomo-banner {
+        .verification-badge {
           display: flex;
           align-items: center;
-          gap: 12px;
-          background: #111;
-          padding: 15px 30px;
-          border-radius: 15px;
-          border: 1px dashed rgba(255, 255, 255, 0.2);
+          gap: 10px;
+          background: rgba(175, 82, 222, 0.1);
+          padding: 12px 24px;
+          border-radius: 50px;
+          border: 1px solid rgba(175, 82, 222, 0.3);
         }
 
-        .lock-icon {
-          font-size: 1.5rem;
+        .badge-icon {
+          font-size: 1.2rem;
         }
 
-        .fomo-text {
-          font-size: 1rem;
+        .badge-text {
+          font-size: 0.8rem;
           font-weight: 800;
-          color: #ff9500;
+          letter-spacing: 0.1em;
+          color: #af52de;
         }
 
         .ticket-footer {

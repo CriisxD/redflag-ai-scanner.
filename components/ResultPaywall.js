@@ -65,13 +65,13 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
       {/* Main Content */}
       <div className="content-wrapper">
         
-        {/* Urgent Header */}
+        {/* Dynamic Analytical Header */}
         <div className="header-section">
           <h1 className="critical-title">
-            <span className="warning-icon">📈</span>
-            {aiResult?.veredicto_viral || 'ANÁLISIS DE DINÁMICA COMPLETADO'}
+            <span className="warning-icon">🔎</span>
+            {aiResult?.dynamic_header || 'ANÁLISIS DE DINÁMICA'}
           </h1>
-          <p className="subtitle text-muted">Inteligencia Artificial aplicada a tu conexión{name ? ` con ${name}` : ''}.</p>
+          <p className="subtitle text-muted">Evaluando patrones románticos{name ? ` con ${name}` : ''}.</p>
         </div>
 
         {/* Dynamic Scan Result */}
@@ -84,42 +84,52 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           </div>
 
           <div className="report-body">
-            {/* Metrics Section */}
+            {/* Metrics Section (FREE / DATA) */}
             <div className="metrics-grid">
-              <div className="metric-item">
-                <div className="metric-label">🔥 Coqueteo / Tensión</div>
-                <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${aiResult?.nivel_coqueteo || 0}%`, background: '#ff2d55' }} /></div>
-              </div>
-              <div className="metric-item">
-                <div className="metric-label">🌡️ Interés Físico</div>
-                <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${aiResult?.intencion_fisica || 0}%`, background: '#ff9500' }} /></div>
-              </div>
-              <div className="metric-item">
-                <div className="metric-label">⚖️ Desbalance de Interés</div>
-                <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${aiResult?.desbalance_interes || 0}%`, background: '#af52de' }} /></div>
-              </div>
-              <div className="metric-item">
-                <div className="metric-label">👻 Prob. de Ghosting</div>
-                <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${aiResult?.probabilidad_ghosting || 0}%`, background: '#5856d6' }} /></div>
-              </div>
+              {[
+                { label: '🔥 Coqueteo / Tensión', value: aiResult?.nivel_coqueteo || 0, color: '#ff2d55' },
+                { label: '🌡️ Intención Física', value: aiResult?.intencion_fisica || 0, color: '#ff9500' },
+                { label: '⚖️ Desbalance de Interés', value: aiResult?.desbalance_interes || 0, color: (aiResult?.desbalance_interes > 60 ? '#ff2d55' : aiResult?.desbalance_interes > 30 ? '#ff9500' : '#39ff14') },
+                { label: '👻 Prob. de Ghosting', value: aiResult?.probabilidad_ghosting || 0, color: (aiResult?.probabilidad_ghosting > 60 ? '#ff2d55' : aiResult?.probabilidad_ghosting > 30 ? '#ff9500' : '#39ff14') }
+              ].map((m, i) => (
+                <div className="metric-item" key={i}>
+                  <div className="metric-label">{m.label}</div>
+                  <div className="metric-bar-bg"><div className="metric-bar-fill" style={{ width: `${m.value}%`, background: m.color }} /></div>
+                </div>
+              ))}
+            </div>
+
+            {/* Hook: Red Flag + Viral Phrase (FREE / VIRAL) */}
+            <div className="free-hook-section">
+              <h3 className="red-flag-label">🚩 {aiResult?.red_flag_principal || 'Señal Detectada'}</h3>
+              <p className="viral-phrase">"{aiResult?.frase_viral || 'Análisis en curso...'}"</p>
+              <button 
+                className={`share-story-btn ${downloading ? 'loading' : ''}`}
+                onClick={handleDownload}
+                disabled={downloading}
+              >
+                {downloading ? 'Generando...' : 'Descargar para Stories 📸'}
+              </button>
             </div>
 
             <div className="divider-section">
-              <span className="divider-text">⚠️ 2 SEÑALES CRÍTICAS DETECTADAS</span>
+              <span className="divider-text">🔐 INSIGHT ESTRATÉGICO (PREMIUM)</span>
             </div>
             
             <div className={`blurred-section-wrapper ${isUnlocked ? 'unlocked' : ''}`}>
               <div className="blurred-content">
-                {aiResult?.posibles_red_flags && aiResult.posibles_red_flags.length > 0 ? (
-                  aiResult.posibles_red_flags.map((flag, idx) => (
-                    <p key={idx}><b>⚠️ Señal #{idx + 1}:</b> {flag}</p>
-                  ))
-                ) : (
-                  <>
-                    <p>1. 🚩 <b>Disonancia Cognitiva:</b> Patrones de comunicación inconsistentes que sugieren falta de compromiso.</p>
-                    <p>2. 🚩 <b>Validación Externa:</b> Búsqueda constante de atención que podría diluir la exclusividad.</p>
-                  </>
-                )}
+                <div className="premium-block">
+                  <h4 className="premium-title">🎯 Lo que realmente busca</h4>
+                  <p>{isUnlocked ? aiResult?.analisis_premium?.intencion_real : 'Analizando señales de prioridad emocional y validación externa...'}</p>
+                </div>
+                <div className="premium-block">
+                  <h4 className="premium-title">🔮 Qué pasará en 2-4 semanas</h4>
+                  <p>{isUnlocked ? aiResult?.analisis_premium?.riesgo_futuro : 'Prediciendo la curva de interés y posibles puntos de ruptura...'}</p>
+                </div>
+                <div className="premium-block">
+                  <h4 className="premium-title">💡 Cómo actuar sin perder poder</h4>
+                  <p>{isUnlocked ? aiResult?.analisis_premium?.recomendacion_estrategica : 'Generando recomendación táctica de respuesta...'}</p>
+                </div>
               </div>
               
               {/* Lock Overlay */}
@@ -135,8 +145,16 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           </div>
         </div>
 
-        {/* The Trigger (Checkout Button) */}
+        {/* The Trigger (Checkout Section) */}
         <div className="checkout-section">
+          {/* Contextual Psychology Trigger */}
+          <div className="psychology-trigger">
+            <span className="psychology-icon">🧠</span>
+            <p className="psychology-text">
+              {aiResult?.psicologia_conversion || 'Descubre la probabilidad real de que esta dinámica se convierta en algo estable.'}
+            </p>
+          </div>
+
           <button 
             className={`pay-button ${loading ? 'loading' : ''}`}
             onClick={handleCheckoutClick}
@@ -145,21 +163,15 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
             {loading ? (
               <span className="loading-spinner"></span>
             ) : isUnlocked ? (
-              <span className="pay-button-text">✨ REPORTE DESBLOQUEADO ✨</span>
+              <span className="pay-button-text">✨ INFORME DESBLOQUEADO ✨</span>
             ) : (
-              <span className="pay-button-text">DESBLOQUEAR MI VEREDICTO COMPLETO POR $2.99</span>
+              <span className="pay-button-text">OBTENER VENTAJA ESTRATÉGICA ($2.99)</span>
             )}
           </button>
           
           {/* Social Reinforcement */}
           <div className="trust-indicators">
-            <p className="secure-tx">🔒 Pago seguro vía Stripe. Acceso inmediato.</p>
-            <div className="testimonial">
-              <span className="testimonial-avatar">🫣</span>
-              <p className="testimonial-text">
-                <span className="testimonial-user">@sofia_m:</span> "Duele verlo, pero me salvó de un error. Vale cada centavo."
-              </p>
-            </div>
+            <p className="secure-tx">🔒 Acceso inmediato al análisis premium.</p>
           </div>
         </div>
 
@@ -169,8 +181,12 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
       <ShareableTicket 
         name={name} 
         zodiac={zodiac} 
-        score={aiResult?.nivel_coqueteo || 0} 
-        redFlag={aiResult?.veredicto_viral || "Análisis de Dinámica Romántica"}
+        metrics={{
+          coqueteo: aiResult?.nivel_coqueteo,
+          ghosting: aiResult?.probabilidad_ghosting
+        }}
+        redFlag={aiResult?.red_flag_principal}
+        viralPhrase={aiResult?.frase_viral}
       />
 
       <style jsx>{`
@@ -340,42 +356,77 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           padding: 24px;
         }
 
-        .free-evidence-section {
+        .free-hook-section {
           background: rgba(255, 255, 255, 0.03);
           border-radius: 12px;
-          padding: 20px;
+          padding: 24px;
           margin-bottom: 24px;
-          border: 1px solid rgba(57, 255, 20, 0.2);
+          border: 1px solid rgba(175, 82, 222, 0.2);
+          text-align: center;
         }
 
-        .red-flags-title {
+        .red-flag-label {
           font-size: 1.1rem;
-          font-weight: 700;
-          color: #ffffff;
-          margin-bottom: 12px;
+          font-weight: 800;
+          color: #af52de;
+          margin-bottom: 8px;
         }
 
-        .red-flags-title.visible {
-          color: #39ff14;
-          text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+        .viral-phrase {
+          font-size: 1.2rem;
+          font-family: 'Inter Black', sans-serif;
+          font-style: italic;
+          color: white;
+          margin-bottom: 20px;
+          line-height: 1.3;
         }
 
-        .visible-text {
-          font-size: 0.95rem;
-          line-height: 1.5;
-          color: rgba(255,255,255,0.9);
+        .premium-block {
           margin-bottom: 16px;
+        }
+
+        .premium-title {
+          font-size: 0.85rem;
+          font-weight: 800;
+          color: #ff9500;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: 4px;
+        }
+
+        .psychology-trigger {
+          background: rgba(255, 149, 0, 0.1);
+          border: 1px solid rgba(255, 149, 0, 0.2);
+          padding: 16px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          width: 100%;
+          margin-bottom: 8px;
+        }
+
+        .psychology-icon {
+          font-size: 1.5rem;
+        }
+
+        .psychology-text {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #ff9500;
+          line-height: 1.4;
+          margin: 0;
         }
 
         .share-story-btn {
           width: 100%;
           background: transparent;
-          border: 1px solid rgba(255,255,255,0.2);
+          border: 1px solid rgba(175, 82, 222, 0.4);
           border-radius: 10px;
-          padding: 10px;
-          color: rgba(255,255,255,0.7);
+          padding: 12px;
+          color: #af52de;
           font-family: 'Inter', sans-serif;
-          font-weight: 600;
+          font-weight: 700;
           font-size: 0.85rem;
           cursor: pointer;
           transition: all 0.2s;
