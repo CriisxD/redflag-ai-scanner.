@@ -7,6 +7,10 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
   const [downloading, setDownloading] = useState(false);
   const [name, setName] = useState('');
   const [zodiac, setZodiac] = useState('');
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  // TESTING MODE: Set to false for production
+  const TEST_MODE = true; 
 
   useEffect(() => {
     const savedName = sessionStorage.getItem('targetName');
@@ -16,6 +20,11 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
   }, []);
 
   const handleCheckoutClick = () => {
+    if (TEST_MODE) {
+      setIsUnlocked(true);
+      return;
+    }
+    
     setLoading(true);
     if (onCheckout) {
       onCheckout();
@@ -92,19 +101,36 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
               <span className="divider-text">⚠️ 2 RED FLAGS CRÍTICAS OCULTAS</span>
             </div>
             
-            <div className="blurred-section-wrapper">
+            <div className={`blurred-section-wrapper ${isUnlocked ? 'unlocked' : ''}`}>
               <div className="blurred-content">
-                <p>2. <b>Falta de Responsabilidad Afectiva:</b> Se observa una tendencia constante a evadir la culpa y proyectar sus inseguridades sobre ti, minimizando tus emociones y priorizando su ego.</p>
-                <p>3. <b>Apego Evitativo Extremo:</b> Hay señales de distancia emocional estratégica. El sujeto se retira cuando la intimidad aumenta, usándolo como mecanismo de castigo silencioso.</p>
+                {aiResult?.exSecrets && aiResult.exSecrets.length > 0 ? (
+                  aiResult.exSecrets.map((secret, idx) => (
+                    <p key={idx}><b>{idx + 2}. Secreto de Ex:</b> {secret}</p>
+                  ))
+                ) : (
+                  <>
+                    <p>2. <b>Falta de Responsabilidad Afectiva:</b> Se observa una tendencia constante a evadir la culpa y proyectar sus inseguridades sobre ti.</p>
+                    <p>3. <b>Apego Evitativo Extremo:</b> Hay señales de distancia emocional estratégica.</p>
+                  </>
+                )}
+                
+                {aiResult?.deepAnalysis && (
+                  <div className="deep-analysis-revealed">
+                    <h3 className="analysis-title">🕵️ ANÁLISIS PROFUNDO:</h3>
+                    <p>{aiResult.deepAnalysis}</p>
+                  </div>
+                )}
               </div>
               
               {/* Lock Overlay */}
-              <div className="lock-overlay">
-                <div className="lock-icon-container">
-                  <span className="lock-emoji">🔒</span>
+              {!isUnlocked && (
+                <div className="lock-overlay">
+                  <div className="lock-icon-container">
+                    <span className="lock-emoji">🔒</span>
+                  </div>
+                  <p className="lock-text">Contenido Censurado</p>
                 </div>
-                <p className="lock-text">Contenido Censurado</p>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -118,6 +144,8 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           >
             {loading ? (
               <span className="loading-spinner"></span>
+            ) : isUnlocked ? (
+              <span className="pay-button-text">✨ REPORTE DESBLOQUEADO ✨</span>
             ) : (
               <span className="pay-button-text">DESBLOQUEAR MI VEREDICTO COMPLETO POR $2.99</span>
             )}
@@ -365,9 +393,30 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           display: flex;
           flex-direction: column;
           gap: 16px;
-          filter: blur(6px) opacity(0.5);
+          transition: all 0.5s ease;
           user-select: none;
           pointer-events: none;
+          filter: blur(6px) opacity(0.5);
+        }
+
+        .unlocked .blurred-content {
+          filter: blur(0) opacity(1);
+          user-select: text;
+          pointer-events: all;
+        }
+
+        .deep-analysis-revealed {
+          margin-top: 20px;
+          padding-top: 20px;
+          border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .analysis-title {
+          font-size: 0.9rem;
+          color: #ff9500;
+          margin-bottom: 10px;
+          font-weight: 800;
+          letter-spacing: 0.05em;
         }
 
         .blurred-content p {
