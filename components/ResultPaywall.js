@@ -16,8 +16,8 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
     if (forcedUnlocked) setIsUnlocked(true);
   }, [forcedUnlocked]);
 
-  // TESTING MODE: Set to false for production
-  const TEST_MODE = true; 
+  // TESTING MODE: Set to true to auto-unlock without payment
+  const TEST_MODE = false; 
 
   const [targetName, setTargetName] = useState('Sujeto Anónimo');
 
