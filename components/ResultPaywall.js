@@ -319,9 +319,9 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
                 onClick={handleCheckoutClick}
                 disabled={loading}
               >
-                {loading ? "Sincronizando..." : "Desbloquear Lectura Completa"}
+                {loading ? "Procesando pago..." : "Revelar Análisis Completo — $2.99 USD"}
               </button>
-              <p className="paywall-sub">Dossier psicológico generado por IA. Acceso único.</p>
+              <p className="paywall-sub">Pago único · Acceso inmediato · Dossier generado por IA</p>
             </div>
           )}
         </div>
@@ -350,11 +350,7 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         />
       </div>
 
-      {showSocialProof && !isUnlocked && (
-        <div className="social-toast">
-          ✨ +4,200 dinámicas reveladas esta semana
-        </div>
-      )}
+
 
       <style jsx>{`
         .result-container {
