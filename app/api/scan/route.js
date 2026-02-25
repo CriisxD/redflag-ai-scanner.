@@ -39,6 +39,7 @@ NORMAS DE ANÁLISIS (v4.3 - Heuristic & Personalized):
 2. MODELO DE RIESGO: Analiza quién invierte más energía (quién inicia, extensión de mensajes) en la sección "poder_y_energia".
 3. RANGOS HEURÍSTICOS: En las proyecciones, NUNCA uses números exactos cerrados (ej. 35%). Utiliza rangos estimados basados en patrones (ej. "30-45%").
 4. MARCO TÁCTICO: El plan de acción debe incluir una plantilla literal, el posicionamiento mental (frame) y señales de avance o retirada.
+5. PREGUNTAS DINÁMICAS: En 'metricas_binarias', adapta las 3 preguntas a la naturaleza del vínculo (ej. si son ex novios usa "¿Quiere volver?", si apenas se conocen usa "¿Le atraes?").
 
 ESTRUCTURA DE RESPUESTA (JSON):
 {
@@ -49,9 +50,9 @@ ESTRUCTURA DE RESPUESTA (JSON):
   "veredicto_shock": "<DARDO DIRECTO, máx 6 palabras>",
   "dinamica_detectada": "<Nombre de la dinámica>",
   "metricas_binarias": {
-    "q1": { "pregunta": "¿Quiere volver?", "valor": <0-100> },
-    "q2": { "pregunta": "¿Te extraña?", "valor": <0-100> },
-    "q3": { "pregunta": "¿Busca algo serio?", "valor": <0-100> }
+    "q1": { "pregunta": "<Pregunta 1 adaptada al contexto>", "valor": <0-100> },
+    "q2": { "pregunta": "<Pregunta 2 adaptada al contexto>", "valor": <0-100> },
+    "q3": { "pregunta": "<Pregunta 3 adaptada al contexto>", "valor": <0-100> }
   },
   "punchline_viral": "<Frase twist emocional para compartir>",
   "reciprocidad": {
