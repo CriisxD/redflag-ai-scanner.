@@ -13,9 +13,15 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
   // TESTING MODE: Set to false for production
   const TEST_MODE = true; 
 
-  const targetName = typeof window !== 'undefined' ? sessionStorage.getItem('targetName') || 'Sujeto Anónimo' : 'Sujeto Anónimo';
+  const [targetName, setTargetName] = useState('Sujeto Anónimo');
 
   useEffect(() => {
+    // Fix hydration: Read from storage only after mount
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('targetName');
+      if (saved) setTargetName(saved);
+    }
+
     // Trigger bar animations shortly after load
     const timer = setTimeout(() => setShowProgressBars(true), 500);
     
@@ -57,9 +63,9 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
   const metrics = [
     { label: '🔥 Nivel de Coqueteo', value: aiResult?.nivel_coqueteo || 0 },
-    { label: '🌡️ Intención Física', value: aiResult?.intencion_fisica || 0 },
-    { label: '⚖️ Desbalance de Interés', value: aiResult?.desbalance_interes || 0 },
-    { label: '👻 Prob. de Ghosting', value: aiResult?.probabilidad_ghosting || 0 },
+    { label: 'Intención Física', value: aiResult?.intencion_fisica || 0 },
+    { label: 'Desbalance de Interés', value: aiResult?.desbalance_interes || 0 },
+    { label: 'Prob. de Ghosting', value: aiResult?.probabilidad_ghosting || 0 },
   ];
 
   const getBarColor = (val) => {
@@ -107,14 +113,16 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
           <div className="phrase-box">
             <span className="phrase-label">FRASE DETECTADA:</span>
-            <p className="phrase-text">"{aiResult?.frase_viral || 'Aquí alguien está invirtiendo más que el otro.'}"</p>
+            <p className="phrase-text">"{aiResult?.frase_viral || 'Análisis táctico en curso...'}"</p>
           </div>
         </div>
 
         {/* SECCIÓN 4: Tensión */}
         <div className="tension-block">
           <p className="tension-text">
-            ⚠️ Este patrón aparece en el 63% de conversaciones que terminan en ghosting.
+            ⚠️ {aiResult?.psicologia_conversion?.includes('%') 
+               ? aiResult.psicologia_conversion 
+               : `Este patrón de interacción correlaciona en un ${60 + Math.floor(Math.random() * 20)}% con cierres de comunicación abruptos.`}
           </p>
         </div>
 
