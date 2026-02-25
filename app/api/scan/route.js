@@ -74,7 +74,8 @@ export async function POST(req) {
           { 
             target_name: finalTargetName,
             ai_result: aiResult,
-            is_unlocked: false
+            paid: false,
+            status: 'free'
           }
         ])
         .select()
