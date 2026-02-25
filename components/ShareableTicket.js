@@ -7,13 +7,19 @@ import React from 'react';
  * A 9:16 high-impact ticket for social media sharing.
  * Designed to be captured by html2canvas.
  */
-export default function ShareableTicket({ name, metrics = {}, veredicto, dinamica, subContextual, fraseViral, lineaPatron }) {
+export default function ShareableTicket({ name, metrics = {}, veredicto, dinamica, subContextual, fraseViral, lineaPatron, reportId, verdictIcon }) {
   return (
     <div id="shareable-ticket-capture" className="ticket-container">
+      {/* HUD Elements */}
+      <div className="ticket-hud">
+        <div className="hud-id-tk">{reportId || 'RF-HUD-LOG'}</div>
+        <div className="hud-sec-tk">S E C R E T</div>
+      </div>
+
       <div className="ticket-border">
         {/* Header */}
         <div className="ticket-header">
-          <div className="badge-tag">SCAN v3.6 PRECISION</div>
+          <div className="badge-tag">SCAN v3.7 DRAMA</div>
           <h1 className="logo-text">RED FLAG SCANNER</h1>
           <div className="dating-intel-logo">DATING INTELLIGENCE</div>
         </div>
@@ -22,6 +28,7 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
           <p className="sub-header-ticket">{subContextual || 'Análisis personalizado'}</p>
           
           <div className="veredicto-section">
+            <div className="v-icon-tk">{verdictIcon || '🚩'}</div>
             <h2 className="veredicto-text">“{veredicto || 'Hay química... pero falta intención.'}”</h2>
           </div>
 
@@ -34,7 +41,7 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
               <div key={idx} className="m-row-ticket">
                 <div className="m-info-ticket">
                   <span className="m-label-ticket">{m.label}</span>
-                  <span className="m-val-ticket">{m.valor}%</span>
+                  <span className="m-val-ticket" style={{ color: m.color }}>{m.valor}%</span>
                 </div>
                 <div className="m-bar-ticket">
                   <div className="m-fill-ticket" style={{ width: `${m.valor}%`, backgroundColor: m.color }} />
@@ -59,7 +66,7 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
 
         {/* Footer */}
         <div className="ticket-footer-new">
-          <p className="scan-url">redflag-ai-scanner.vercel.app</p>
+          <p className="scan-url">redflagscanner.xyz</p>
         </div>
       </div>
 
@@ -91,6 +98,42 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
                       radial-gradient(circle at bottom left, rgba(57, 255, 20, 0.1) 0%, transparent 50%);
         }
 
+        .ticket-container {
+          position: relative;
+          width: 500px;
+          height: 888px;
+          background: #000;
+          overflow: hidden;
+        }
+
+        .ticket-hud {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          z-index: 1;
+          padding: 20px;
+          font-family: 'Courier New', monospace;
+          opacity: 0.3;
+        }
+
+        .hud-id-tk { font-size: 0.6rem; font-weight: 950; color: rgba(255,255,255,0.4); }
+        .hud-sec-tk { 
+          position: absolute; bottom: 15%; right: -50px; 
+          font-size: 5rem; font-weight: 950; color: rgba(255,255,255,0.02);
+          transform: rotate(-45deg); 
+        }
+
+        .ticket-border {
+          position: relative;
+          z-index: 5;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          padding: 60px 40px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         .ticket-header {
           display: flex;
           flex-direction: column;
@@ -111,12 +154,11 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
 
         .logo-text {
           font-family: 'Inter Black', sans-serif;
-          font-size: 2.2rem;
+          font-size: 2rem;
           font-weight: 950;
           letter-spacing: -0.05em;
           margin: 0;
           color: white;
-          text-shadow: 0 0 20px rgba(255, 45, 85, 0.3);
         }
 
         .dating-intel-logo {
@@ -133,33 +175,37 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
           flex-direction: column;
           align-items: center;
           text-align: center;
-          padding: 0 10px;
         }
 
         .sub-header-ticket {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           font-weight: 700;
-          color: rgba(255,255,255,0.4);
-          margin-bottom: 20px;
+          color: rgba(255,255,255,0.3);
+          margin-bottom: 25px;
         }
 
         .veredicto-section {
-          margin-bottom: 25px;
+          margin-bottom: 30px;
+        }
+
+        .v-icon-tk {
+          font-size: 4.5rem;
+          margin-bottom: 10px;
         }
 
         .veredicto-text {
           font-family: 'Inter Black', sans-serif;
-          font-size: 3rem;
+          font-size: 2.8rem;
           font-weight: 950;
           line-height: 1.05;
           color: white;
-          letter-spacing: -0.03em;
+          letter-spacing: -0.04em;
         }
 
         .dinamica-highlight {
-          font-size: 1.1rem;
+          font-size: 1rem;
           font-weight: 800;
-          color: rgba(255, 255, 255, 0.6);
+          color: rgba(255, 255, 255, 0.5);
           margin-bottom: 40px;
         }
 
@@ -172,9 +218,9 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
           display: flex;
           flex-direction: column;
           gap: 20px;
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 24px;
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 20px;
           padding: 25px;
           margin-bottom: 40px;
         }
@@ -192,17 +238,16 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
         }
 
         .m-label-ticket {
-          font-size: 0.75rem;
+          font-size: 0.7rem;
           font-weight: 900;
-          color: rgba(255,255,255,0.5);
+          color: rgba(255,255,255,0.4);
           text-transform: uppercase;
         }
 
         .m-val-ticket {
           font-family: 'Inter Black', sans-serif;
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           font-weight: 950;
-          color: white;
         }
 
         .m-bar-ticket {
@@ -220,9 +265,9 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
 
         .target-pill-v36 {
           background: rgba(255, 255, 255, 0.05);
-          padding: 8px 20px;
+          padding: 8px 18px;
           border-radius: 50px;
-          font-size: 1rem;
+          font-size: 0.95rem;
           font-weight: 800;
           color: rgba(255,255,255,0.7);
           margin-bottom: 40px;
@@ -230,10 +275,8 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
 
         .viral-block-ticket {
           width: 100%;
-          background: rgba(255, 45, 85, 0.04);
-          border: 2px dashed rgba(255, 45, 85, 0.2);
-          padding: 30px;
-          border-radius: 20px;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          padding-top: 25px;
           margin-bottom: 40px;
         }
 
@@ -241,10 +284,10 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
           font-family: 'Inter Black', sans-serif;
           font-size: 1.6rem;
           font-weight: 900;
-          line-height: 1.2;
+          line-height: 1.25;
           color: white;
           font-style: italic;
-          margin-bottom: 12px;
+          margin-bottom: 15px;
         }
 
         .v-pattern {
@@ -256,18 +299,15 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
         }
 
         .branding-seal {
-          display: flex;
-          align-items: center;
-          gap: 12px;
           margin-top: auto;
         }
 
         .seal-text {
-          font-size: 0.8rem;
+          font-size: 0.75rem;
           font-weight: 900;
           color: #39ff14;
           letter-spacing: 0.2em;
-          opacity: 0.6;
+          opacity: 0.5;
         }
 
         .ticket-footer-new {
@@ -279,7 +319,7 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
 
         .scan-url {
           font-family: 'Inter Black', sans-serif;
-          font-size: 1.4rem;
+          font-size: 1.3rem;
           color: rgba(255, 255, 255, 0.2);
           letter-spacing: -0.02em;
         }
