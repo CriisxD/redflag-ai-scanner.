@@ -62,10 +62,10 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
   };
 
   const metrics = [
-    { label: '🔥 Nivel de Coqueteo', value: aiResult?.nivel_coqueteo || 0 },
-    { label: 'Intención Física', value: aiResult?.intencion_fisica || 0 },
-    { label: 'Desbalance de Interés', value: aiResult?.desbalance_interes || 0 },
-    { label: 'Prob. de Ghosting', value: aiResult?.probabilidad_ghosting || 0 },
+    { label: '🔥 Coqueteo / Tensión', value: aiResult?.nivel_coqueteo || 0 },
+    { label: '🌡️ Intención Física', value: aiResult?.intencion_fisica || 0 },
+    { label: '⚖️ Desbalance de Interés', value: aiResult?.desbalance_interes || 0 },
+    { label: '👻 Prob. de Ghosting', value: aiResult?.probabilidad_ghosting || 0 },
   ];
 
   const getBarColor = (val) => {
