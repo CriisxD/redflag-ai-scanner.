@@ -34,7 +34,7 @@ export default function LandingPage() {
     if (files.length > 0) {
       setIsCompressing(true);
       try {
-        const options = { maxWidthOrHeight: 800, useWebWorker: true, maxSizeMB: 0.7 };
+        const options = { maxWidthOrHeight: 800, useWebWorker: true, maxSizeMB: 0.5 };
         const compressedFiles = await Promise.all(
           files.slice(0, 3).map(file => imageCompression(file, options))
         );
@@ -58,6 +58,7 @@ export default function LandingPage() {
     if (result && !result.error) {
       router.push('/scan');
     } else {
+      console.error('Scan Error Detailed:', result);
       setStep(STEPS.LANDING);
       setScanningFiles([]);
     }

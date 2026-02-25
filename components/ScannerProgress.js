@@ -90,7 +90,10 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
           })
         });
 
-        if (!response.ok) throw new Error('Failed to scan');
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.details || errData.error || 'Failed to scan');
+        }
         
         const data = await response.json();
         setScanResult(data);
