@@ -39,7 +39,7 @@ NORMAS DE ANÁLISIS (v4.3 - Heuristic & Personalized):
 2. MODELO DE RIESGO: Analiza quién invierte más energía (quién inicia, extensión de mensajes) en la sección "poder_y_energia".
 3. RANGOS HEURÍSTICOS: En las proyecciones, NUNCA uses números exactos cerrados (ej. 35%). Utiliza rangos estimados basados en patrones (ej. "30-45%").
 4. MARCO TÁCTICO: El plan de acción debe incluir una plantilla literal, el posicionamiento mental (frame) y señales de avance o retirada.
-5. PREGUNTAS DINÁMICAS: En 'metricas_binarias', adapta las 3 preguntas a la naturaleza del vínculo (ej. si son ex novios usa "¿Quiere volver?", si apenas se conocen usa "¿Le atraes?").
+5. PREGUNTAS DINÁMICAS: En 'metricas_binarias', las 3 preguntas SIEMPRE deben ser sobre el SUJETO ANALIZADO (${finalTargetName}), NUNCA sobre el usuario que sube el chat. Ejemplo CORRECTO: "¿Te valora?", "¿Se siente atraído/a?", "¿Quiere algo serio contigo?". Ejemplo INCORRECTO: "¿Te sientes valorada?", "¿Te atrae emocionalmente?". Adapta las preguntas al contexto del vínculo (ex novios, match nuevo, amigos, etc).
 
 ESTRUCTURA DE RESPUESTA (JSON):
 {
