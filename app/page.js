@@ -271,7 +271,7 @@ export default function LandingPage() {
           width: 100vw;
           height: 100vh;
           background-color: #050505;
-          overflow: hidden;
+          overflow-y: auto;
           display: flex;
           flex-direction: column;
           font-family: 'Inter', -apple-system, sans-serif;
@@ -285,7 +285,7 @@ export default function LandingPage() {
           top: 0;
           left: 0;
           width: 100%;
-          padding: 30px 40px;
+          padding: 50px 40px;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -319,6 +319,8 @@ export default function LandingPage() {
           justify-content: center;
           position: relative;
           z-index: 10;
+          padding-top: 120px;
+          padding-bottom: 60px;
         }
 
         .noise-overlay {
@@ -350,7 +352,7 @@ export default function LandingPage() {
         .hero-content {
           text-align: center;
           z-index: 10;
-          margin-bottom: 50px;
+          margin-bottom: 60px;
           padding: 0 20px;
           width: 100%;
           display: flex;
@@ -554,7 +556,8 @@ export default function LandingPage() {
         }
 
         .hero-footer {
-          margin-top: 40px;
+          margin-top: 80px;
+          margin-bottom: 40px;
           text-align: center;
           z-index: 10;
         }
