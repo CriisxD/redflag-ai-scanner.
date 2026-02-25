@@ -86,7 +86,7 @@ export default function LandingPage() {
           <div className="mini-progress-bar"><div className="fill" /></div>
         </div>
         <style jsx>{`
-          .micro-loading { background: #000; height: 100vh; display: flex; align-items: center; justify-content: center; }
+          .micro-loading { background: #050505; height: 100vh; display: flex; align-items: center; justify-content: center; }
           .loading-content { text-align: center; }
           .analysis-icon { font-size: 3rem; display: block; margin-bottom: 20px; animation: pulse 1s infinite; }
           .loading-title { font-family: 'Inter Black', sans-serif; color: white; font-size: 1.5rem; }
@@ -116,7 +116,7 @@ export default function LandingPage() {
         <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleFileChange} style={{ display: 'none' }} />
 
         <style jsx>{`
-          .upload-step { background: #000; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+          .upload-step { background: #050505; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
           .upload-box { width: 100%; max-width: 500px; border: 2px dashed rgba(175, 82, 222, 0.4); border-radius: 24px; padding: 60px 40px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(175, 82, 222, 0.02); }
           .upload-box:hover { border-color: #39ff14; background: rgba(57, 255, 20, 0.02); }
           .upload-icon { font-size: 4rem; display: block; margin-bottom: 24px; }
@@ -179,7 +179,7 @@ export default function LandingPage() {
         </div>
 
         <style jsx>{`
-          .survey-step { background: #000; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; overflow-y: auto; }
+          .survey-step { background: #050505; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; overflow-y: auto; }
           .survey-card { width: 100%; max-width: 480px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 40px; }
           .survey-title { font-family: 'Inter Black', sans-serif; font-size: 1.5rem; text-align: center; margin-bottom: 40px; color: #af52de; line-height: 1.3; }
           .question-item { margin-bottom: 30px; }

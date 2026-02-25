@@ -162,8 +162,18 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                  <h3>Intención Real</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.intencion_real : "Analizando evidencia textual sobre intenciones ocultas..."}</p>
-                 {!isUnlocked && <div className="blur-overlay" />}
+                  {isUnlocked ? (
+                    <div className="intelligence-node">
+                      <p className="main-conc">{aiResult?.analisis_premium?.intencion_real?.conclusion}</p>
+                      <div className="evidence-box">
+                        <span className="ev-label">Justificación:</span>
+                        <p className="ev-text">{aiResult?.analisis_premium?.intencion_real?.justificacion_evidencia}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p>Analizando evidencia textual sobre intenciones ocultas...</p>
+                  )}
+                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
@@ -174,8 +184,19 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                  <h3>Patrón de Apego</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.patron_psicologico : "Detectando dinámicas de persecución y distancia..."}</p>
-                 {!isUnlocked && <div className="blur-overlay" />}
+                  {isUnlocked ? (
+                    <div className="intelligence-node">
+                      <p className="main-conc">{aiResult?.analisis_premium?.patron_psicologico?.etiqueta}</p>
+                      <div className="indicators-list">
+                        {aiResult?.analisis_premium?.patron_psicologico?.indicadores_detectados?.map((ind, i) => (
+                          <span key={i} className="ind-tag">{ind}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p>Detectando dinámicas de persecución y distancia...</p>
+                  )}
+                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
@@ -211,8 +232,33 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                  <h3>Plan de Acción</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.estrategia_final : `Optimizando tu estrategia para: ${aiResult?.user_intent || "tu objetivo"}`}</p>
-                 {!isUnlocked && <div className="blur-overlay" />}
+                  {isUnlocked ? (
+                    <div className="tactical-node">
+                      <div className="msg-template">
+                        <span className="t-label">Mensaje Sugerido:</span>
+                        <div className="template-box">
+                          {aiResult?.analisis_premium?.estrategia_final?.mensaje_sugerido}
+                        </div>
+                      </div>
+                      <div className="frame-box">
+                        <span className="t-label">Marco Psicológico:</span>
+                        <p>{aiResult?.analisis_premium?.estrategia_final?.marco_conversational}</p>
+                      </div>
+                      <div className="signals-grid">
+                        <div className="sig-item pos">
+                          <span className="sig-label">Avance (Positivo):</span>
+                          <p>{aiResult?.analisis_premium?.estrategia_final?.que_observar?.positivo}</p>
+                        </div>
+                        <div className="sig-item neg">
+                          <span className="sig-label">Retirada (Negativo):</span>
+                          <p>{aiResult?.analisis_premium?.estrategia_final?.que_observar?.negativo}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <p>Optimizando tu estrategia para: {aiResult?.user_intent || "tu objetivo"}</p>
+                  )}
+                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
           </div>
@@ -401,6 +447,22 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         .tiktok-tag { 
           font-size: 0.65rem; font-weight: 950; color: #ff2d55; letter-spacing: 0.2em;
         }
+
+        /* Advanced Intelligence Styles v4.2 */
+        .intelligence-node, .tactical-node { display: flex; flex-direction: column; gap: 15px; }
+        .main-conc { font-weight: 800; color: white; margin-bottom: 5px; }
+        .evidence-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; border-left: 2px solid #39ff14; }
+        .ev-label, .t-label { font-size: 0.7rem; font-weight: 900; color: #af52de; display: block; margin-bottom: 4px; text-transform: uppercase; }
+        .ev-text { font-size: 0.9rem !important; font-style: italic; color: rgba(255,255,255,0.5) !important; }
+        .indicators-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .ind-tag { font-size: 0.75rem; font-weight: 800; color: #39ff14; background: rgba(57, 255, 20, 0.1); padding: 4px 10px; border-radius: 6px; }
+        .template-box { background: #1a1a1a; padding: 15px; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2); font-family: monospace; color: #39ff14; font-size: 0.95rem; line-height: 1.4; position: relative; }
+        .signals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .sig-item { padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .sig-label { font-size: 0.65rem; font-weight: 900; display: block; margin-bottom: 4px; }
+        .pos .sig-label { color: #39ff14; }
+        .neg .sig-label { color: #ff2d55; }
+        .sig-item p { font-size: 0.8rem !important; line-height: 1.3 !important; }
 
         .paywall-cta-v36 { text-align: center; }
         .unlock-btn-v36 { 

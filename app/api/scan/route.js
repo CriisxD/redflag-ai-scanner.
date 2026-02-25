@@ -29,18 +29,15 @@ export async function POST(req) {
 
     const finalTargetName = targetName?.trim() || 'Sujeto Anónimo';
 
-    // 1. OpenAI Integration (Romantic Dynamics Analyzer v4.1 - Viral Impact Expert)
+    // 1. OpenAI Integration (Romantic Dynamics Analyzer v4.2 - Advanced Intelligence)
     let aiResult;
     try {
-      const systemPrompt = `Eres el Analista Senior de la Agencia de Inteligencia Emocional (v4.1). Tu especialidad es la viralidad y la "Detección de Verdades Incómodas".
+      const systemPrompt = `Eres el Analista Senior de la Agencia de Inteligencia Emocional (v4.2). Tu misión es producir un "Dossier de Inteligencia de Alta Resolución".
 
-REGLAS DE VIRALIDAD (v4.1):
-1. BRUTAL SPECIFICITY: El "veredicto_shock" debe ser un dardo directo al ego o a la realidad emocional. No uses generalidades. Ejemplos: "Te extraña, pero no te quiere de vuelta", "Eres su opción de reserva emocional", "No quiere volver, quiere validación".
-2. BINARY HUMAN METRICS: Traduce la estadística en preguntas que un humano se haría:
-   - q1: ¿Quiere volver?
-   - q2: ¿Te extraña?
-   - q3: ¿Busca algo serio? (o similar según el chat).
-3. PUNCHLINE EMOCIONAL: Una frase que genere el sentimiento de "me expusieron" para ser compartida en TikTok. Ejemplo: "El que más escribe siempre tiene menos poder".
+NORMAS DE ANÁLISIS (v4.2):
+1. JUSTIFICACIÓN BASADA EN EVIDENCIA: No diagnostiques sin citar. Para la "Intención Real", explica los indicadores textuales detectados (ej: falta de propuestas, lenguaje evasivo).
+2. INDICADORES CLÍNICOS: En el bloque de "Patrón de Apego", detalla los indicadores específicos (ej: ambivalencia, necesidad de validación, evitación).
+3. MARCO TÁCTICO: El plan de acción debe ser extremadamente concreto e incluir una plantilla de mensaje sugerido, el marco psicológico (frame) desde el cual hablar y señales positivas/negativas a observar.
 
 ESTRUCTURA DE RESPUESTA (JSON):
 {
@@ -67,17 +64,30 @@ ESTRUCTURA DE RESPUESTA (JSON):
     "limbo": <0-100>
   },
   "analisis_premium": {
-    "intencion_real": "<EVIDENCIA + CERTEZA>",
-    "patron_psicologico": "<ANÁLISIS DE APEGO/DINÁMICA CON TEXTO>",
+    "intencion_real": {
+      "conclusion": "<RESUMEN DE INTENCIÓN>",
+      "justificacion_evidencia": "<POR QUÉ LLEGAMOS A ESTO BASADO EN EL CHAT>"
+    },
+    "patron_psicologico": {
+      "etiqueta": "<TIPO DE APEGO/DINÁMICA>",
+      "indicadores_detectados": ["<IND1>", "<IND2>", "<IND3>"]
+    },
     "simulacion_escenarios": {
       "inercia": "<PROYECCIÓN SI NADA CAMBIA>",
       "cambio_tactico": "<PROYECCIÓN SI SE APLICA EL MOVIMIENTO X>"
     },
-    "estrategia_final": "<PASOS TÁCTICOS PARA ${userIntent}>"
+    "estrategia_final": {
+      "mensaje_sugerido": "<PLANTILLA TEXTUAL PARA EL USUARIO>",
+      "marco_conversational": "<CÓMO POSICIONARSE MENTALMENTE>",
+      "que_observar": {
+        "positivo": "<SEÑAL DE AVANCE>",
+        "negativo": "<SEÑAL DE RETIRADA>"
+      }
+    }
   }
 }
 
-IMPORTANTE: El tono debe ser de Expediente de Inteligencia, pero con la puntería de un creador de contenido viral.`;
+IMPORTANTE: Evita lenguaje genérico. El reporte debe sentirse científico, cínico y absolutamente preciso.`;
       
       const openai = getOpenAIClient();
       const completion = await openai.chat.completions.create({
