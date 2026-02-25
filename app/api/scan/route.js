@@ -59,7 +59,7 @@ ESTRUCTURA DE RESPUESTA (JSON):
   "frase_viral": "<Una observación ácida y brillante sobre el chat, algo que compartirían>",
   "nivel_riesgo_general": "Bajo | Moderado | Alto",
   "dynamic_header": "🔍 Dinámica: [Nombre de la dinámica]",
-  "psicologia_conversion": "<Dato psicológico demoledor basado en el chat para incitar al pago>",
+  "psicologia_conversion": "<Dato estadístico demoledor ÚNICO basado en este chat específico (ej: 'Este patrón de respuesta rápida pero fría correlaciona en un 82% con...')>",
   "analisis_premium": {
     "intencion_real": "<Análisis de mínimo 4 líneas sobre lo que busca realmente esa persona>",
     "riesgo_futuro": "<Predicción detallada a 30 días basándote en la inercia del chat>",

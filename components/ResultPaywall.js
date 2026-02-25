@@ -120,9 +120,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         {/* SECCIÓN 4: Tensión */}
         <div className="tension-block">
           <p className="tension-text">
-            ⚠️ {aiResult?.psicologia_conversion?.includes('%') 
-               ? aiResult.psicologia_conversion 
-               : `Este patrón de interacción correlaciona en un ${60 + Math.floor(Math.random() * 20)}% con cierres de comunicación abruptos.`}
+            ⚠️ {aiResult?.psicologia_conversion || `Detectado patrón de comportamiento con alta correlación de desinterés progresivo.`}
           </p>
         </div>
 
