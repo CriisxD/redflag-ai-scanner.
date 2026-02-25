@@ -152,8 +152,12 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
         ) : (
           <div className="pre-hook-container">
             <span className="hook-icon">💡</span>
-            <h2 className="hook-text">Patrón de interés desigual identificado.</h2>
-            <p className="hook-subtext">Generando informe completo...</p>
+            <h2 className="hook-text">
+              {scanResult?.aiResult?.red_flag_principal 
+                ? `Identificado: ${scanResult.aiResult.red_flag_principal}` 
+                : "Patrón de interés desigual identificado."}
+            </h2>
+            <p className="hook-subtext">Generando informe de Dating Intelligence...</p>
           </div>
         )}
       </div>
