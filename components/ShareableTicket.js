@@ -12,17 +12,17 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
     <div id="shareable-ticket-capture" className="ticket-container">
       {/* HUD Elements */}
       <div className="ticket-hud">
-        <div className="hud-id-tk">{reportId || 'RF-HUD-LOG'}</div>
-        <div className="hud-balance-tk">{balancePoder || 'BALANCE: ANALYZING'}</div>
-        <div className="hud-sec-tk">S E C R E T</div>
+        <div className="hud-id-tk">{reportId || 'ID-RESERVADO'}</div>
+        <div className="hud-balance-tk">{balancePoder || 'ANÁLISIS DE PODER: DETECTADO'}</div>
+        <div className="hud-sec-tk">C O N F I D E N T I A L</div>
       </div>
 
       <div className="ticket-border">
         {/* Header */}
         <div className="ticket-header">
-          <div className="badge-tag">SCAN v3.7 DRAMA</div>
-          <h1 className="logo-text">RED FLAG SCANNER</h1>
-          <div className="dating-intel-logo">DATING INTELLIGENCE</div>
+          <div className="badge-tag">EXPEDIENTE REDFLAG</div>
+          <h1 className="logo-text">AGENCIA INTEL</h1>
+          <div className="dating-intel-logo">ROMANTIC INTELLIGENCE</div>
         </div>
 
         <div className="ticket-content">

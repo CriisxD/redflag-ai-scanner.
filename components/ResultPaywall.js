@@ -82,15 +82,15 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         }`}>
           {/* HUD Elements */}
           <div className="hud-overlay">
-            <div className="hud-id">{aiResult?.report_id || 'RF-HUD-LOG'}</div>
-            <div className="hud-status">STATUS: DECODED</div>
-            <div className="hud-secret-stamp">S E C R E T</div>
+            <div className="hud-id">{aiResult?.case_id || 'ID-RESERVADO'}</div>
+            <div className="hud-status" style={{ color: '#ff2d55' }}>NIVEL DE RIESGO: CRÍTICO</div>
+            <div className="hud-secret-stamp">C O N F I D E N T I A L</div>
           </div>
 
           <div className="shareable-zone-v36">
             <div className="header-v36">
-              <div className="badge-v36">SCAN v3.7 DRAMA</div>
-              <p className="subtitle-v36">{aiResult?.subtitulo_contextual || 'Patrón evaluado según nivel de avance actual'}</p>
+              <div className="badge-v36">EXPEDIENTE DE INTELIGENCIA</div>
+              <p className="subtitle-v36">{aiResult?.subtitulo_contextual || 'Análisis de campo: Dinámica detectada en tiempo real'}</p>
             </div>
 
             <div className="veredicto-shock-wrapper">
@@ -112,30 +112,30 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
               </div>
             </div>
 
-            <div className="metrics-v36">
+            <div className="metrics-v36 scorecard">
+              <div className="scorecard-title">SCORECARD DE RECIPROCIDAD</div>
               {[
-                { label: 'INTERÉS DETECTADO', data: aiResult?.metricas_viral?.interes_detectado },
-                { label: 'NIVEL DE INVERSIÓN', data: aiResult?.metricas_viral?.nivel_inversion },
-                { label: aiResult?.metricas_viral?.riesgo_objetivo?.label || 'RIESGO OBJETIVO', data: aiResult?.metricas_viral?.riesgo_objetivo, isRisk: true }
+                { label: 'TASA DE INICIATIVA', score: aiResult?.reciprocidad?.iniciativa?.score, eviden: aiResult?.reciprocidad?.iniciativa?.evidencia },
+                { label: 'EXPANSIÓN DE TEMAS', score: aiResult?.reciprocidad?.expansion?.score, eviden: aiResult?.reciprocidad?.expansion?.evidencia },
+                { label: 'VALIDACIÓN EMOCIONAL', score: aiResult?.reciprocidad?.validacion?.score, eviden: aiResult?.reciprocidad?.validacion?.evidencia }
               ].map((m, idx) => {
-                const color = getStatusColor(m.data?.valor || 0, m.isRisk);
+                const color = getStatusColor(m.score || 0);
                 return (
-                  <div key={idx} className="metric-row-v36">
+                  <div key={idx} className="metric-row-v36 v4">
                     <div className="m-info-v36">
                       <span className="m-label-v36">{m.label}</span>
-                      <span className="m-val-v36" style={{ color }}>{m.data?.valor || 0}%</span>
+                      <span className="m-val-v36" style={{ color }}>{m.score || 0}%</span>
                     </div>
                     <div className="m-bar-v36">
                       <div 
                         className="m-fill-v36" 
                         style={{ 
-                          width: showProgressBars ? `${m.data?.valor || 0}%` : '0%', 
+                          width: showProgressBars ? `${m.score || 0}%` : '0%', 
                           backgroundColor: color,
-                          boxShadow: `0 0 10px ${color}44`
                         }} 
                       />
                     </div>
-                    <p className="m-interpret-v36">{m.data?.interpretacion}</p>
+                    <p className="m-eviden-v36">"{m.eviden || 'Evaluando...'}"</p>
                   </div>
                 );
               })}
@@ -167,38 +167,51 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                </div>
              </div>
 
-             {/* Bloque 2: Desbalance Emocional */}
+             {/* Bloque 2: Patrón Psicológico */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
-                 <span className="i-icon-v36">⚖️</span>
-                 <h3>Desbalance Emocional</h3>
+                 <span className="i-icon-v36">🧠</span>
+                 <h3>Patrón de Apego</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.desbalance_emocional : "Calculando brecha de vulnerabilidad y exposición..."}</p>
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.patron_psicologico : "Detectando dinámicas de persecución y distancia..."}</p>
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
-             {/* Bloque 3: Escenario Probable */}
-             <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
+             {/* Bloque 3: Simulador de Escenarios */}
+             <div className={`insight-card-v36 scenario-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">🔮</span>
-                 <h3>Escenario Probable</h3>
+                 <h3>Proyección A vs B</h3>
                </div>
-               <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.escenario_probable : "Proyectando consecuencias conductuales a corto plazo..."}</p>
+               <div className="i-content-v36 scenarios">
+                 {isUnlocked ? (
+                   <>
+                     <div className="scenario-item path-a">
+                       <span className="s-label">Path A (Inercia):</span>
+                       <p>{aiResult?.analisis_premium?.simulacion_escenarios?.inercia}</p>
+                     </div>
+                     <div className="scenario-item path-b">
+                       <span className="s-label">Path B (Táctica):</span>
+                       <p>{aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico}</p>
+                     </div>
+                   </>
+                 ) : (
+                   <p>Calculando proyecciones conductuales basadas en tu próximo movimiento...</p>
+                 )}
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
-             {/* Bloque 4: Estrategia Personalizada */}
+             {/* Bloque 4: Estrategia Final */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">💡</span>
-                 <h3>Estrategia Táctica</h3>
+                 <h3>Plan de Acción</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.estrategia_personalizada : `Plan de acción personalizado para: ${aiResult?.userIntent || 'tu objetivo'}`}</p>
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.estrategia_final : `Optimizando tu estrategia para: ${userIntent}`}</p>
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
@@ -226,13 +239,13 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
         <ShareableTicket 
           name={targetName}
-          reportId={aiResult?.report_id}
+          reportId={aiResult?.case_id}
           verdictIcon={aiResult?.verdict_icon}
           balancePoder={aiResult?.balance_poder}
           metrics={{
-            interes: { label: 'INTERÉS', valor: aiResult?.metricas_viral?.interes_detectado?.valor, color: getStatusColor(aiResult?.metricas_viral?.interes_detectado?.valor || 0) },
-            inversion: { label: 'INVERSIÓN', valor: aiResult?.metricas_viral?.nivel_inversion?.valor, color: getStatusColor(aiResult?.metricas_viral?.nivel_inversion?.valor || 0) },
-            riesgo: { label: aiResult?.metricas_viral?.riesgo_objetivo?.label || 'RIESGO OBJETIVO', valor: aiResult?.metricas_viral?.riesgo_objetivo?.valor, color: getStatusColor(aiResult?.metricas_viral?.riesgo_objetivo?.valor || 0, true) }
+            ghosting: { label: 'GHOSTING Prob.', valor: aiResult?.pronostico?.ghosting, color: getStatusColor(aiResult?.pronostico?.ghosting || 0, true) },
+            compromiso: { label: 'COMPROMISO Prob.', valor: aiResult?.pronostico?.compromiso, color: getStatusColor(aiResult?.pronostico?.compromiso || 0) },
+            limbo: { label: 'LIMBO Prob.', valor: aiResult?.pronostico?.limbo, color: getStatusColor(aiResult?.pronostico?.limbo || 0, true) }
           }}
           veredicto={aiResult?.veredicto_shock}
           dinamica={aiResult?.dinamica_detectada}
@@ -358,13 +371,20 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
         .insights-grid-v36 { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
         .insight-card-v36 { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 22px; transition: all 0.3s; }
+        .scenario-card { border-left: 3px solid #af52de; }
         .i-header-v36 { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
         .i-icon-v36 { font-size: 1.4rem; }
         .i-header-v36 h3 { font-size: 1rem; font-weight: 900; color: #ff9500; text-transform: uppercase; }
         .i-content-v36 { position: relative; }
         .i-content-v36 p { font-size: 1.05rem; line-height: 1.5; color: rgba(255,255,255,0.7); }
+        .scenarios { display: flex; flex-direction: column; gap: 15px; }
+        .scenario-item { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; }
+        .s-label { font-size: 0.75rem; font-weight: 900; color: #af52de; display: block; margin-bottom: 4px; }
         .blur-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 30%, #050505 100%); pointer-events: none; }
         .locked .i-content-v36 p { filter: blur(6px); }
+        .metric-row-v36.v4 { margin-top: 10px; }
+        .m-eviden-v36 { font-size: 0.75rem; color: rgba(255,255,255,0.4); font-style: italic; margin-top: 5px; }
+        .scorecard-title { font-size: 0.8rem; font-weight: 950; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; }
 
         .paywall-cta-v36 { text-align: center; }
         .unlock-btn-v36 { 
