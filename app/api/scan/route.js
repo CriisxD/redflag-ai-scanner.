@@ -45,7 +45,7 @@ ESTRUCTURA DE RESPUESTA (JSON):
 {
   "case_id": "CNT-XXXX-${finalTargetName.toUpperCase().slice(0,3)}",
   "verdict_icon": "<💀|💎|⚓|🌀|🚩|🛡️|💊>",
-  "balance_poder": "<Label: Usuario Expuesto | Sujeto Distante | Simetría | Poder del Sujeto>",
+  "balance_poder": "<Label: Estás Expuesto | ${finalTargetName} Distante | Simetría | Poder de ${finalTargetName}>",
   "subtitulo_contextual": "<Frase elegante de expediente>",
   "veredicto_shock": "<DARDO DIRECTO, máx 6 palabras>",
   "dinamica_detectada": "<Nombre de la dinámica>",
@@ -76,8 +76,8 @@ ESTRUCTURA DE RESPUESTA (JSON):
       "indicadores_detectados": ["<IND1: Ej. Reacción desproporcionada>", "<IND2: Evitación>"]
     },
     "poder_y_energia": {
-      "mas_invertido": "<Usuario | Sujeto | Simétrico>",
-      "analisis_energia": "<Análisis de quién inicia más y quién busca validación>",
+      "mas_invertido": "<Tú | ${finalTargetName} | Simétrico>",
+      "analisis_energia": "<Análisis usando 'tú' y '${finalTargetName}' sobre quién inicia más y busca validación>",
       "riesgo_emocional": "<Cualitativo ej: Alto riesgo de ciclo nostálgico>"
     },
     "simulacion_escenarios": {

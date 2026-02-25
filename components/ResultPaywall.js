@@ -232,7 +232,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                       </div>
                     </div>
                   ) : (
-                    <p>Midiendo desbalances en la iniciación y volumen de texto...</p>
+                    <p>Midiendo desbalances en la iniciación y volumen de texto de {targetName}...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
