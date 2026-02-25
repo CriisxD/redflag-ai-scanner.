@@ -326,11 +326,7 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           )}
         </div>
 
-        <div className="final-actions-v36">
-           <button onClick={handleDownload} className="download-btn-v36 tiktok-style" disabled={downloading}>
-             {downloading ? 'Capturando...' : 'Guardar Dossier de Vínculo 📸'}
-           </button>
-        </div>
+
 
         <ShareableTicket 
           name={targetName}
