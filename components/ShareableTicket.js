@@ -7,12 +7,13 @@ import React from 'react';
  * A 9:16 high-impact ticket for social media sharing.
  * Designed to be captured by html2canvas.
  */
-export default function ShareableTicket({ name, metrics = {}, veredicto, dinamica, subContextual, fraseViral, lineaPatron, reportId, verdictIcon }) {
+export default function ShareableTicket({ name, metrics = {}, veredicto, dinamica, subContextual, fraseViral, lineaPatron, reportId, verdictIcon, balancePoder }) {
   return (
     <div id="shareable-ticket-capture" className="ticket-container">
       {/* HUD Elements */}
       <div className="ticket-hud">
         <div className="hud-id-tk">{reportId || 'RF-HUD-LOG'}</div>
+        <div className="hud-balance-tk">{balancePoder || 'BALANCE: ANALYZING'}</div>
         <div className="hud-sec-tk">S E C R E T</div>
       </div>
 
@@ -117,6 +118,7 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
         }
 
         .hud-id-tk { font-size: 0.6rem; font-weight: 950; color: rgba(255,255,255,0.4); }
+        .hud-balance-tk { position: absolute; top: 18px; right: 22px; font-size: 0.55rem; color: #ffcc00; font-weight: 900; letter-spacing: 0.05em; }
         .hud-sec-tk { 
           position: absolute; bottom: 15%; right: -50px; 
           font-size: 5rem; font-weight: 950; color: rgba(255,255,255,0.02);

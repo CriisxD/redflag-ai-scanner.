@@ -102,9 +102,14 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
               </h2>
             </div>
 
-            <div className="dinamica-center-v36">
-              <span className="dinamica-label">Dinámica Detectada:</span>
-              <span className="dinamica-badge">{aiResult?.dinamica_detectada || 'Analizando...'}</span>
+            <div className={`dinamica-center-v36 ${aiResult?.balance_poder ? 'has-power-info' : ''}`}>
+              <div className="power-balance-badge">
+                ⚖️ {aiResult?.balance_poder || 'Calculando Balance...'}
+              </div>
+              <div className="dinamica-row">
+                <span className="dinamica-label">Dinámica:</span>
+                <span className="dinamica-badge">{aiResult?.dinamica_detectada || 'Analizando...'}</span>
+              </div>
             </div>
 
             <div className="metrics-v36">
@@ -208,6 +213,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           name={targetName}
           reportId={aiResult?.report_id}
           verdictIcon={aiResult?.verdict_icon}
+          balancePoder={aiResult?.balance_poder}
           metrics={{
             interes: { label: 'INTERÉS', valor: aiResult?.metricas_viral?.interes_detectado?.valor, color: getStatusColor(aiResult?.metricas_viral?.interes_detectado?.valor || 0) },
             inversion: { label: 'INVERSIÓN', valor: aiResult?.metricas_viral?.nivel_inversion?.valor, color: getStatusColor(aiResult?.metricas_viral?.nivel_inversion?.valor || 0) },
@@ -307,7 +313,14 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           color: white; line-height: 1.05; letter-spacing: -0.05em;
         }
 
-        .dinamica-center-v36 { margin-bottom: 40px; }
+        .dinamica-center-v36 { margin-bottom: 40px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .power-balance-badge {
+          font-size: 0.75rem; font-weight: 900; color: #ffcc00;
+          background: rgba(255, 204, 0, 0.1); border: 1px solid rgba(255, 204, 0, 0.3);
+          padding: 6px 16px; border-radius: 50px; text-transform: uppercase;
+          letter-spacing: 0.1em; animation: fadeIn 1s both;
+        }
+        .dinamica-row { display: flex; align-items: center; }
         .dinamica-label { font-size: 0.85rem; font-weight: 800; color: rgba(255,255,255,0.5); margin-right: 8px; }
         .dinamica-badge { font-size: 0.95rem; font-weight: 900; color: #39ff14; }
 
