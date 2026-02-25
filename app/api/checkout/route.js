@@ -8,45 +8,29 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing scanId' }, { status: 400 });
     }
 
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    // LemonSqueezy Checkout URL
+    // The variant ID comes from your LemonSqueezy product
+    const VARIANT_ID = process.env.LEMON_SQUEEZY_VARIANT_ID || 'eae71b99-bc07-42a4-a237-c2ed88657720';
+    const STORE_SLUG = process.env.LEMON_SQUEEZY_STORE_SLUG || 'redflag-ai-scanner';
 
-    // Demo mode: no Stripe key → just mark as paid and return
-    if (!stripeKey) {
-      console.log('[Checkout] No Stripe key, using demo mode — auto-unlocking');
-      const { markPaid } = require('@/lib/db');
-      markPaid(scanId, 'demo-session');
-      return NextResponse.json({ demo: true, url: null });
-    }
+    const origin = req.headers.get('origin') || 'https://redflagscanner.xyz';
 
-    // Real Stripe checkout
-    const stripe = require('stripe')(stripeKey);
+    // Build LemonSqueezy checkout URL with custom data
+    const checkoutUrl = new URL(`https://${STORE_SLUG}.lemonsqueezy.com/checkout/buy/${VARIANT_ID}`);
+    
+    // Pass scan_id as custom data so the webhook can identify which scan to unlock
+    checkoutUrl.searchParams.set('checkout[custom][scan_id]', scanId);
+    
+    // Redirect back to the scan results page after payment
+    checkoutUrl.searchParams.set('checkout[custom][redirect_url]', `${origin}/scan?payment=success&scan_id=${scanId}`);
+    
+    // Embed mode for cleaner UX (optional)
+    // checkoutUrl.searchParams.set('embed', '1');
 
-    const origin = req.headers.get('origin') || 'http://localhost:3000';
+    console.log(`[Checkout] Generated LemonSqueezy URL for scan: ${scanId}`);
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: '🚩 RedFlag AI — Full Analysis',
-              description: 'Complete red flag analysis with sarcastic commentary and shareable image',
-            },
-            unit_amount: 399, // $3.99
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${origin}/result/${scanId}?paid=true`,
-      cancel_url: `${origin}/result/${scanId}`,
-      metadata: {
-        scanId,
-      },
-    });
-
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ url: checkoutUrl.toString() });
+    
   } catch (err) {
     console.error('[Checkout] Error:', err);
     return NextResponse.json({ error: 'Checkout failed' }, { status: 500 });

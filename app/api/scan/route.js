@@ -161,7 +161,8 @@ IMPORTANTE: Evita lenguaje genérico. El reporte debe sentirse científico, cín
     }
 
     // 3. Return result + checkout link
-    const checkoutUrl = `https://redflagscanner.lemonsqueezy.com/checkout/buy/${VARIANT_ID}?embed=1&checkout[custom][scan_id]=${scanData.id}`;
+    const STORE_SLUG = process.env.LEMON_SQUEEZY_STORE_SLUG || 'redflag-ai-scanner';
+    const checkoutUrl = `https://${STORE_SLUG}.lemonsqueezy.com/checkout/buy/${VARIANT_ID}?checkout[custom][scan_id]=${scanData.id}`;
 
     // Attach user intent for the frontend
     aiResult.user_intent = userIntent;
