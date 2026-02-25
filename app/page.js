@@ -319,8 +319,8 @@ export default function LandingPage() {
           justify-content: center;
           position: relative;
           z-index: 10;
-          padding-top: 120px;
-          padding-bottom: 60px;
+          padding-top: 80px;
+          padding-bottom: 40px;
         }
 
         .noise-overlay {
@@ -556,8 +556,8 @@ export default function LandingPage() {
         }
 
         .hero-footer {
-          margin-top: 80px;
-          margin-bottom: 40px;
+          margin-top: 60px;
+          margin-bottom: 20px;
           text-align: center;
           z-index: 10;
         }
@@ -568,7 +568,7 @@ export default function LandingPage() {
           gap: 20px;
           max-width: 900px;
           width: 100%;
-          margin: 40px auto;
+          margin: 60px auto;
           z-index: 10;
           padding: 0 20px;
         }
