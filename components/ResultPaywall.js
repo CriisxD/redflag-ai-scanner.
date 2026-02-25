@@ -58,13 +58,13 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
   const getStatusColor = (val, isRisk = false) => {
     if (isRisk) {
-      if (val < 30) return '#39ff14';
-      if (val < 60) return '#ffcc00';
-      return '#ff2d55';
+      if (val < 30) return '#E0B0FF'; // Lilac (Safe)
+      if (val < 60) return '#FFB347'; // Amber (Warn)
+      return '#FF6F61'; // Coral (Risk)
     }
-    if (val < 30) return '#ff2d55';
-    if (val < 60) return '#ffcc00';
-    return '#39ff14';
+    if (val < 30) return '#FF6F61';
+    if (val < 60) return '#FFB347';
+    return '#E0B0FF';
   };
 
   const riskValue = aiResult?.metricas_viral?.riesgo_objetivo?.valor || 0;
@@ -80,22 +80,22 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           riskValue < 30 ? 'state-safe' : 
           'state-normal'
         }`}>
-          {/* HUD Elements */}
+          {/* HUD Elements -> Now Astrological / Editorial Watermarks */}
           <div className="hud-overlay">
             <div className="hud-id">{aiResult?.case_id || 'ID-RESERVADO'}</div>
-            <div className="hud-status" style={{ color: '#ff2d55' }}>NIVEL DE RIESGO: CRÍTICO</div>
-            <div className="hud-secret-stamp">C O N F I D E N T I A L</div>
+            <div className="hud-status" style={{ color: '#E0B0FF' }}>LECTURA ENERGÉTICA</div>
+            <div className="hud-watermark">P A T T E R N S</div>
           </div>
 
           <div className="shareable-zone-v36">
             <div className="header-v36">
-              <div className="badge-v36">EXPEDIENTE DE INTELIGENCIA</div>
-              <p className="subtitle-v36">{aiResult?.subtitulo_contextual || 'Análisis de campo: Dinámica detectada en tiempo real'}</p>
+              <div className="badge-v36">ANÁLISIS DE VÍNCULO</div>
+              <p className="subtitle-v36">{aiResult?.subtitulo_contextual || 'Lectura de campo: Dinámica detectada'}</p>
             </div>
 
             <div className="veredicto-shock-wrapper">
               <div className="verdict-icon-massive">
-                {aiResult?.verdict_icon || '🚩'}
+                {aiResult?.verdict_icon || '🧿'}
               </div>
               <h2 className="veredicto-shock-v36">
                 “{aiResult?.veredicto_shock || 'Hay química... pero falta intención.'}”
@@ -107,7 +107,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                 ⚖️ {aiResult?.balance_poder || 'Calculando Balance...'}
               </div>
               <div className="dinamica-row">
-                <span className="dinamica-label">Dinámica:</span>
+                <span className="dinamica-label">Dinámica Central:</span>
                 <span className="dinamica-badge">{aiResult?.dinamica_detectada || 'Analizando...'}</span>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                         className="m-fill-v36" 
                         style={{ 
                           width: showProgressBars ? `${m.valor || 0}%` : '0%', 
-                          backgroundColor: color,
+                          background: `linear-gradient(90deg, ${color}33, ${color})`,
                           boxShadow: `0 0 10px ${color}33`
                         }} 
                       />
@@ -142,7 +142,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
             <div className="viral-punchline-v41">
               <p className="punchline-text">"{aiResult?.punchline_viral || 'El que más escribe siempre es el que menos poder tiene.'}"</p>
-              <div className="tiktok-tag">TIKTOK EDITION | VERIFIED INTEL</div>
+              <div className="tiktok-tag">SOUL KINETICS | DEEP DIVE</div>
             </div>
 
           </div>
@@ -151,7 +151,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         {/* SECCIÓN 2: PAYWALL & STRATEGY */}
         <div className="strategy-sequence-v36">
           <div className="divider-strategy">
-            <span>🛡️ ESTRATEGIA EXCLUSIVA</span>
+            <span>✨ LECTURA PROFUNDA</span>
           </div>
 
           <div className="insights-grid-v36">
@@ -159,7 +159,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">🎯</span>
-                 <h3>Intención Real</h3>
+                 <h3>Móvil Inconsciente</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
@@ -168,20 +168,20 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                       
                       {aiResult?.analisis_premium?.intencion_real?.citas_textuales?.length > 0 && (
                         <div className="quotes-container">
-                          <span className="ev-label">Evidencia Interceptada:</span>
+                          <span className="ev-label">Eco del Chat (Evidencia):</span>
                           {aiResult.analisis_premium.intencion_real.citas_textuales.map((cita, i) => (
-                            <div key={i} className="quote-item">"{cita}"</div>
+                            <div key={i} className="quote-item">“{cita}”</div>
                           ))}
                         </div>
                       )}
 
                       <div className="evidence-box">
-                        <span className="ev-label">Análisis Clínico:</span>
+                        <span className="ev-label">Lectura de Señales:</span>
                         <p className="ev-text">{aiResult?.analisis_premium?.intencion_real?.justificacion_evidencia}</p>
                       </div>
                     </div>
                   ) : (
-                    <p>Extrayendo y analizando citas textuales del chat...</p>
+                    <p>Mapeando patrones ocultos en el lenguaje utilizado...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -191,7 +191,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">🧠</span>
-                 <h3>Patrón Conductual</h3>
+                 <h3>Arquetipo de Apego</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
@@ -204,7 +204,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                       </div>
                     </div>
                   ) : (
-                    <p>Mapeando indicadores clínicos y sesgos de apego...</p>
+                    <p>Identificando bloqueos emocionales y sesgos de apego...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -214,17 +214,17 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">⚖️</span>
-                 <h3>Dinámica de Inversión</h3>
+                 <h3>Asimetría de Energía</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
                     <div className="power-node">
                       <div className="power-ruler">
-                        <span className="t-label">Sujeto Más Invertido:</span>
+                        <span className="t-label">Mayor Inversión Emocional:</span>
                         <p className="power-winner">{aiResult?.analisis_premium?.poder_y_energia?.mas_invertido}</p>
                       </div>
                       <div className="evidence-box">
-                        <span className="ev-label">Análisis de Energía:</span>
+                        <span className="ev-label">Flujo de Interacción:</span>
                         <p className="ev-text">{aiResult?.analisis_premium?.poder_y_energia?.analisis_energia}</p>
                       </div>
                       <div className="risk-alert">
@@ -232,7 +232,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                       </div>
                     </div>
                   ) : (
-                    <p>Calculando retención de poder y asimetría de inversión...</p>
+                    <p>Midiendo desbalances en la iniciación y volumen de texto...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -242,28 +242,28 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
              <div className={`insight-card-v36 scenario-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">🔮</span>
-                 <h3>Simulación Conductual</h3>
+                 <h3>Proyección de Vínculo</h3>
                </div>
                <div className="i-content-v36 scenarios">
                  {isUnlocked ? (
                    <>
                      <div className="scenario-item path-a">
-                       <span className="s-label">Path A (Inercia Actual):</span>
+                       <span className="s-label">Línea de Inercia Actual:</span>
                        <p>{aiResult?.analisis_premium?.simulacion_escenarios?.inercia?.descripcion}</p>
                        <div className="heuristic-prob">
-                         <span className="prob-text">Rango Probable: {aiResult?.analisis_premium?.simulacion_escenarios?.inercia?.probabilidad_estimada}</span>
+                         <span className="prob-text">Probabilidad Estimada: {aiResult?.analisis_premium?.simulacion_escenarios?.inercia?.probabilidad_estimada}</span>
                        </div>
                      </div>
                      <div className="scenario-item path-b">
-                       <span className="s-label">Path B (Táctica Sugerida):</span>
+                       <span className="s-label">Aplicando Nuevo Enfoque:</span>
                        <p>{aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico?.descripcion}</p>
                        <div className="heuristic-prob highlight">
-                         <span className="prob-text">Rango Probable: {aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico?.probabilidad_estimada}</span>
+                         <span className="prob-text">Probabilidad Estimada: {aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico?.probabilidad_estimada}</span>
                        </div>
                      </div>
                    </>
                  ) : (
-                   <p>Corriendo modelos predictivos heurísticos sobre futuros escenarios...</p>
+                   <p>Modelando futuros probables basados en comportamientos previos...</p>
                  )}
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -273,34 +273,34 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">💡</span>
-                 <h3>Plan de Acción Táctico</h3>
+                 <h3>Plan de Arquitectura Relacional</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
                     <div className="tactical-node">
                       <div className="msg-template">
-                        <span className="t-label">Plantilla Sugerida:</span>
+                        <span className="t-label">Transmisión Sugerida:</span>
                         <div className="template-box">
                           {aiResult?.analisis_premium?.estrategia_final?.mensaje_sugerido}
                         </div>
                       </div>
                       <div className="frame-box">
-                        <span className="t-label">Marco Psicológico (Frame):</span>
+                        <span className="t-label">Estado Mental (Frame):</span>
                         <p>{aiResult?.analisis_premium?.estrategia_final?.marco_conversational}</p>
                       </div>
                       <div className="signals-grid">
                         <div className="sig-item pos">
-                          <span className="sig-label">Avance (Positivo):</span>
+                          <span className="sig-label">Ecos de Avance:</span>
                           <p>{aiResult?.analisis_premium?.estrategia_final?.que_observar?.positivo}</p>
                         </div>
                         <div className="sig-item neg">
-                          <span className="sig-label">Retirada (Negativo):</span>
+                          <span className="sig-label">Ecos de Retirada:</span>
                           <p>{aiResult?.analisis_premium?.estrategia_final?.que_observar?.negativo}</p>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <p>Optimizando tu estrategia con tácticas de nivel agencia...</p>
+                    <p>Diseñando tácticas de respuesta asimétrica...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -314,16 +314,16 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                 onClick={handleCheckoutClick}
                 disabled={loading}
               >
-                {loading ? "Codificando..." : "Desbloquear Plan Estratégico"}
+                {loading ? "Sincronizando..." : "Desbloquear Lectura Completa"}
               </button>
-              <p className="paywall-sub">Análisis profundo impulsado por IA. Única compra.</p>
+              <p className="paywall-sub">Dossier psicológico generado por IA. Acceso único.</p>
             </div>
           )}
         </div>
 
         <div className="final-actions-v36">
            <button onClick={handleDownload} className="download-btn-v36 tiktok-style" disabled={downloading}>
-             {downloading ? 'Codificando...' : 'Generar TikTok Edition 📸'}
+             {downloading ? 'Capturando...' : 'Guardar Dossier de Vínculo 📸'}
            </button>
         </div>
 
@@ -333,9 +333,9 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           verdictIcon={aiResult?.verdict_icon}
           balancePoder={aiResult?.balance_poder}
           metrics={{
-            ghosting: { label: 'GHOSTING Prob.', valor: aiResult?.pronostico?.ghosting, color: getStatusColor(aiResult?.pronostico?.ghosting || 0, true) },
-            compromiso: { label: 'COMPROMISO Prob.', valor: aiResult?.pronostico?.compromiso, color: getStatusColor(aiResult?.pronostico?.compromiso || 0) },
-            limbo: { label: 'LIMBO Prob.', valor: aiResult?.pronostico?.limbo, color: getStatusColor(aiResult?.pronostico?.limbo || 0, true) }
+            ghosting: { label: 'RIESGO DISTANCIA', valor: aiResult?.pronostico?.ghosting, color: getStatusColor(aiResult?.pronostico?.ghosting || 0, true) },
+            compromiso: { label: 'PROB. COMPROMISO', valor: aiResult?.pronostico?.compromiso, color: getStatusColor(aiResult?.pronostico?.compromiso || 0) },
+            limbo: { label: 'RIESGO LIMBO', valor: aiResult?.pronostico?.limbo, color: getStatusColor(aiResult?.pronostico?.limbo || 0, true) }
           }}
           veredicto={aiResult?.veredicto_shock}
           dinamica={aiResult?.dinamica_detectada}
@@ -347,7 +347,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
       {showSocialProof && !isUnlocked && (
         <div className="social-toast">
-          🚀 +4,200 análisis críticos realizados esta semana
+          ✨ +4,200 dinámicas reveladas esta semana
         </div>
       )}
 
@@ -359,35 +359,37 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         }
         .ambient-glow {
           position: absolute; top: -10%; left: -10%; width: 70vw; height: 70vw;
-          background: radial-gradient(circle, rgba(175, 82, 222, 0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(224, 176, 255, 0.08) 0%, transparent 70%);
           pointer-events: none; z-index: 0;
         }
         .content-max { position: relative; z-index: 10; width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
         
         .report-container-v36 {
-          background: #000;
+          background: rgba(10, 6, 18, 0.6);
           border-radius: 40px;
           padding-bottom: 20px;
           width: 100%;
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid rgba(224, 176, 255, 0.15);
           position: relative;
           overflow: hidden;
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
           transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .state-toxic {
-          box-shadow: 0 0 60px rgba(255, 45, 85, 0.25);
-          border-color: rgba(255, 45, 85, 0.4);
+          box-shadow: 0 0 80px rgba(255, 111, 97, 0.15);
+          border-color: rgba(255, 111, 97, 0.3);
         }
         .state-toxic::after {
           content: ""; position: absolute; inset: 0;
-          background: radial-gradient(circle at top right, rgba(255, 45, 85, 0.1), transparent 50%);
-          animation: alarmPulse 2s infinite; pointer-events: none;
+          background: radial-gradient(circle at top right, rgba(255, 111, 97, 0.1), transparent 50%);
+          animation: alarmPulse 4s infinite; pointer-events: none;
         }
 
         .state-safe {
-          box-shadow: 0 0 60px rgba(57, 255, 20, 0.15);
-          border-color: rgba(57, 255, 20, 0.3);
+          box-shadow: 0 0 60px rgba(224, 176, 255, 0.15);
+          border-color: rgba(224, 176, 255, 0.3);
         }
 
         @keyframes alarmPulse {
@@ -398,152 +400,158 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         .hud-overlay {
           position: absolute; top: 0; left: 0; width: 100%; height: 100%;
           pointer-events: none; z-index: 2;
-          font-family: 'Courier New', monospace; padding: 20px; opacity: 0.4;
+          font-family: 'Inter', sans-serif; padding: 20px; opacity: 0.5;
         }
-        .hud-id { position: absolute; top: 18px; left: 22px; font-size: 0.6rem; font-weight: 900; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); }
-        .hud-status { position: absolute; top: 18px; right: 22px; font-size: 0.55rem; color: #39ff14; font-weight: 900; }
-        .hud-secret-stamp { 
-          position: absolute; bottom: 20%; right: -50px; 
-          font-size: 6rem; font-weight: 950; color: rgba(255,255,255,0.02);
-          transform: rotate(-45deg); pointer-events: none;
+        .hud-id { position: absolute; top: 18px; left: 22px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.15em; color: rgba(255,255,255,0.3); }
+        .hud-status { position: absolute; top: 18px; right: 22px; font-size: 0.6rem; color: #E0B0FF; font-weight: 800; letter-spacing: 0.1em; }
+        .hud-watermark { 
+          position: absolute; bottom: 15%; right: -30px; 
+          font-family: 'Playfair Display', serif;
+          font-size: 6rem; font-weight: 700; color: rgba(224, 176, 255, 0.03);
+          transform: rotate(-30deg); pointer-events: none; white-space: nowrap;
         }
 
         .shareable-zone-v36 { padding: 60px 25px 40px; position: relative; z-index: 5; }
 
         .header-v36 { text-align: center; margin-bottom: 25px; }
         .badge-v36 { 
-          display: inline-block; font-size: 0.7rem; font-weight: 950; color: #af52de;
-          background: rgba(175, 82, 222, 0.1); border: 1px solid rgba(175, 82, 222, 0.3);
-          padding: 6px 14px; border-radius: 50px; margin-bottom: 12px; letter-spacing: 0.2em;
+          display: inline-block; font-size: 0.75rem; font-weight: 800; color: #1A0B2E;
+          background: linear-gradient(135deg, #E0B0FF, #F2D8FF); 
+          padding: 8px 18px; border-radius: 50px; margin-bottom: 12px; letter-spacing: 0.15em;
+          box-shadow: 0 4px 15px rgba(224, 176, 255, 0.2);
         }
-        .subtitle-v36 { font-size: 0.85rem; color: rgba(255,255,255,0.4); font-weight: 700; }
+        .subtitle-v36 { font-size: 0.9rem; color: rgba(255,255,255,0.5); font-weight: 500; font-style: italic; font-family: 'Playfair Display', serif; }
 
         .veredicto-shock-wrapper { margin-bottom: 35px; text-align: center; }
         .verdict-icon-massive { 
-          font-size: 5rem; margin-bottom: 10px; line-height: 1;
-          filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
-          animation: floatIcon 4s ease-in-out infinite;
+          font-size: 4.5rem; margin-bottom: 15px; line-height: 1;
+          filter: drop-shadow(0 0 25px rgba(224, 176, 255, 0.3));
+          animation: floatIcon 6s ease-in-out infinite;
         }
-        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
         .veredicto-shock-v36 { 
-          font-family: 'Inter Black', sans-serif; font-size: 3rem; font-weight: 950;
-          color: white; line-height: 1.05; letter-spacing: -0.05em;
+          font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700;
+          color: #FFF3E0; line-height: 1.1; letter-spacing: -0.02em;
         }
 
         .dinamica-center-v36 { margin-bottom: 40px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
         .power-balance-badge {
-          font-size: 0.75rem; font-weight: 900; color: #ffcc00;
-          background: rgba(255, 204, 0, 0.1); border: 1px solid rgba(255, 204, 0, 0.3);
+          font-size: 0.75rem; font-weight: 800; color: #FFB347;
+          background: rgba(255, 179, 71, 0.1); border: 1px solid rgba(255, 179, 71, 0.3);
           padding: 6px 16px; border-radius: 50px; text-transform: uppercase;
-          letter-spacing: 0.1em; animation: fadeIn 1s both;
+          letter-spacing: 0.1em; animation: fadeIn 1.5s both; backdrop-filter: blur(5px);
         }
         .dinamica-row { display: flex; align-items: center; }
-        .dinamica-label { font-size: 0.85rem; font-weight: 800; color: rgba(255,255,255,0.5); margin-right: 8px; }
-        .dinamica-badge { font-size: 0.95rem; font-weight: 900; color: #39ff14; }
+        .dinamica-label { font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.5); margin-right: 8px; }
+        .dinamica-badge { font-size: 0.95rem; font-weight: 800; color: #E0B0FF; }
 
         .metrics-v36 { display: flex; flex-direction: column; gap: 24px; margin-bottom: 40px; }
         .metric-row-v36 { display: flex; flex-direction: column; gap: 8px; text-align: left; }
         .m-info-v36 { display: flex; justify-content: space-between; align-items: flex-end; }
-        .m-label-v36 { font-size: 0.75rem; font-weight: 900; color: rgba(255,255,255,0.4); text-transform: uppercase; }
-        .m-val-v36 { font-family: 'Inter Black', sans-serif; font-size: 1.25rem; font-weight: 950; }
-        .m-bar-v36 { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        .m-label-v36 { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 0.05em; }
+        .m-val-v36 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; }
+        .m-bar-v36 { width: 100%; height: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
         .m-fill-v36 { height: 100%; border-radius: 10px; transition: width 2s cubic-bezier(0.19, 1, 0.22, 1); }
-        .m-interpret-v36 { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.4); font-style: italic; }
-
-        .viral-quote-v36 { padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
-        .viral-quote-v36 p { font-family: 'Inter Black', sans-serif; font-size: 1.5rem; font-style: italic; line-height: 1.25; margin-bottom: 15px; }
-        .stat-line-v36 { font-size: 0.75rem; font-weight: 900; color: #ff9500; text-transform: uppercase; letter-spacing: 0.1em; }
-
-        .strategy-sequence-v36 { margin-top: 10px; }
-        .divider-strategy { display: flex; justify-content: center; margin-bottom: 30px; }
-        .divider-strategy span { font-size: 0.75rem; font-weight: 950; color: #af52de; border: 1px solid rgba(175, 82, 222, 0.3); padding: 8px 18px; border-radius: 100px; }
-
-        .insights-grid-v36 { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
-        .insight-card-v36 { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 22px; transition: all 0.3s; }
-        .scenario-card { border-left: 3px solid #af52de; }
-        .i-header-v36 { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-        .i-icon-v36 { font-size: 1.4rem; }
-        .i-header-v36 h3 { font-size: 1rem; font-weight: 900; color: #ff9500; text-transform: uppercase; }
-        .i-content-v36 { position: relative; }
-        .i-content-v36 p { font-size: 1.05rem; line-height: 1.5; color: rgba(255,255,255,0.7); }
-        .scenarios { display: flex; flex-direction: column; gap: 15px; }
-        .scenario-item { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; }
-        .s-label { font-size: 0.75rem; font-weight: 900; color: #af52de; display: block; margin-bottom: 4px; }
-        .blur-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 30%, #050505 100%); pointer-events: none; }
-        .locked .i-content-v36 p { filter: blur(6px); }
-        .metric-row-v36.v4 { margin-top: 10px; }
-        .m-eviden-v36 { font-size: 0.75rem; color: rgba(255,255,255,0.4); font-style: italic; margin-top: 5px; }
-        .scorecard-title { font-size: 0.8rem; font-weight: 950; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; }
-
-        .binary-questions { margin-top: 20px; gap: 18px; }
-        .m-label-v36.binary { font-size: 0.9rem; color: white; font-weight: 800; letter-spacing: 0; text-transform: none; }
-        .m-val-v36.binary { font-size: 1.4rem; }
-        .m-bar-v36.binary { height: 14px; background: rgba(255,255,255,0.1); }
         
         .viral-punchline-v41 { 
-          margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; text-align: center;
+          margin-top: 40px; border-top: 1px solid rgba(224, 176, 255, 0.15); padding-top: 30px; text-align: center;
         }
         .punchline-text { 
-          font-family: 'Inter Black', sans-serif; font-size: 1.6rem; font-weight: 950; font-style: italic; 
-          line-height: 1.2; color: white; margin-bottom: 15px;
+          font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; font-style: italic; 
+          line-height: 1.3; color: #FFF3E0; margin-bottom: 15px;
         }
         .tiktok-tag { 
-          font-size: 0.65rem; font-weight: 950; color: #ff2d55; letter-spacing: 0.2em;
+          font-size: 0.65rem; font-weight: 800; color: #E0B0FF; letter-spacing: 0.2em; text-transform: uppercase;
         }
 
-        /* Advanced Intelligence Styles v4.2 */
+        /* Editorial Insights Redesign */
+        .strategy-sequence-v36 { margin-top: 10px; }
+        .divider-strategy { display: flex; justify-content: center; margin-bottom: 30px; }
+        .divider-strategy span { font-size: 0.75rem; font-weight: 800; color: #E0B0FF; border: 1px solid rgba(224, 176, 255, 0.3); padding: 8px 18px; border-radius: 100px; letter-spacing: 0.1em; background: rgba(224, 176, 255, 0.05); }
+
+        .insights-grid-v36 { display: flex; flex-direction: column; gap: 18px; margin-bottom: 40px; }
+        .insight-card-v36 { 
+          background: rgba(26, 15, 46, 0.4); 
+          border: 1px solid rgba(224, 176, 255, 0.15); 
+          border-radius: 20px; padding: 25px; transition: all 0.3s;
+          backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .scenario-card { border-left: 3px solid #E0B0FF; }
+        .i-header-v36 { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+        .i-icon-v36 { font-size: 1.4rem; }
+        .i-header-v36 h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #E0B0FF; letter-spacing: 0.05em; }
+        .i-content-v36 { position: relative; }
+        .i-content-v36 p { font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.8); font-weight: 400; }
+        .scenarios { display: flex; flex-direction: column; gap: 15px; }
+        .scenario-item { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.03); }
+        .s-label { font-size: 0.8rem; font-weight: 700; color: #E0B0FF; display: block; margin-bottom: 6px; }
+        .blur-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 30%, #0A0612 100%); pointer-events: none; border-radius: 0 0 20px 20px; }
+        .locked .i-content-v36 p { filter: blur(6px); }
+
+        /* v5.0 Editorial Personalization Styles */
         .intelligence-node, .tactical-node { display: flex; flex-direction: column; gap: 15px; }
-        .main-conc { font-weight: 800; color: white; margin-bottom: 5px; }
-        .evidence-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; border-left: 2px solid #39ff14; }
-        .ev-label, .t-label { font-size: 0.7rem; font-weight: 900; color: #af52de; display: block; margin-bottom: 4px; text-transform: uppercase; }
-        .ev-text { font-size: 0.9rem !important; font-style: italic; color: rgba(255,255,255,0.5) !important; }
-        .indicators-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-        .ind-tag { font-size: 0.75rem; font-weight: 800; color: #39ff14; background: rgba(57, 255, 20, 0.1); padding: 4px 10px; border-radius: 6px; }
-        .template-box { background: #1a1a1a; padding: 15px; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2); font-family: monospace; color: #39ff14; font-size: 0.95rem; line-height: 1.4; position: relative; }
-        .signals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .sig-item { padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
-        .sig-label { font-size: 0.65rem; font-weight: 900; display: block; margin-bottom: 4px; }
-        .pos .sig-label { color: #39ff14; }
-        .neg .sig-label { color: #ff2d55; }
-        .sig-item p { font-size: 0.8rem !important; line-height: 1.3 !important; }
-
-        /* v4.3 Hyper Personalization Styles */
-        .quotes-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-        .quote-item { background: rgba(175, 82, 222, 0.1); border-left: 3px solid #af52de; padding: 10px 14px; border-radius: 0 10px 10px 0; font-family: 'Courier New', monospace; font-size: 0.85rem; color: #fff; font-style: italic; }
-        .power-node { display: flex; flex-direction: column; gap: 15px; }
-        .power-ruler { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255, 204, 0, 0.3); text-align: center; }
-        .power-winner { font-family: 'Inter Black', sans-serif; font-size: 1.4rem; color: #ffcc00; margin-top: 5px; text-transform: uppercase; }
-        .risk-alert { background: rgba(255, 45, 85, 0.15); border: 1px solid rgba(255, 45, 85, 0.4); padding: 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 800; color: #ff2d55; text-align: center; }
-        .heuristic-prob { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); }
-        .prob-text { font-family: 'Courier New', monospace; font-size: 0.8rem; font-weight: 950; color: rgba(255,255,255,0.6); }
-        .highlight .prob-text { color: #39ff14; }
-
-        .paywall-cta-v36 { text-align: center; }
-        .unlock-btn-v36 { 
-          width: 100%; padding: 24px; border-radius: 22px; 
-          background: linear-gradient(135deg, #af52de 0%, #ff2d55 100%); 
-          border: none; color: white; font-family: 'Inter Black', sans-serif;
-          font-size: 1.3rem; font-weight: 950; text-transform: uppercase;
-          cursor: pointer; box-shadow: 0 15px 45px rgba(255, 45, 85, 0.3);
-          transition: transform 0.2s;
+        .main-conc { font-weight: 700; color: #FFF3E0; margin-bottom: 5px; font-size: 1.05rem; }
+        .evidence-box { background: rgba(0,0,0,0.2); padding: 14px; border-radius: 12px; border-left: 2px solid #FFB347; }
+        .ev-label, .t-label { font-size: 0.75rem; font-weight: 800; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .ev-text { font-size: 0.95rem !important; color: rgba(255,255,255,0.7) !important; }
+        
+        .quotes-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+        .quote-item { 
+          background: rgba(224, 176, 255, 0.08); border-left: 3px solid #E0B0FF; 
+          padding: 12px 16px; border-radius: 0 12px 12px 0; 
+          font-family: 'Playfair Display', serif; font-size: 1.05rem; 
+          color: #FFF3E0; font-style: italic; font-weight: 600;
         }
+
+        .indicators-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .ind-tag { font-size: 0.75rem; font-weight: 700; color: #1A0B2E; background: #E0B0FF; padding: 5px 12px; border-radius: 8px; }
+        
+        .power-node { display: flex; flex-direction: column; gap: 15px; }
+        .power-ruler { background: linear-gradient(135deg, rgba(255, 179, 71, 0.1) 0%, rgba(224, 176, 255, 0.05) 100%); padding: 16px; border-radius: 14px; border: 1px solid rgba(255, 179, 71, 0.2); text-align: center; }
+        .power-winner { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #FFB347; margin-top: 5px; font-weight: 700; }
+        .risk-alert { background: rgba(255, 111, 97, 0.1); border: 1px solid rgba(255, 111, 97, 0.3); padding: 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #FF6F61; text-align: center; }
+        
+        .heuristic-prob { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .prob-text { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.5); }
+        .highlight .prob-text { color: #E0B0FF; }
+
+        .template-box { background: rgba(0,0,0,0.3); padding: 18px; border-radius: 14px; border: 1px solid rgba(224, 176, 255, 0.3); font-family: 'Inter', sans-serif; color: #E0B0FF; font-size: 1rem; font-weight: 500; line-height: 1.5; position: relative; }
+        
+        .signals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+        .sig-item { padding: 14px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
+        .sig-label { font-size: 0.7rem; font-weight: 800; display: block; margin-bottom: 6px; letter-spacing: 0.05em; text-transform: uppercase; }
+        .pos .sig-label { color: #E0B0FF; }
+        .neg .sig-label { color: #FF6F61; }
+        .sig-item p { font-size: 0.85rem !important; line-height: 1.4 !important; color: rgba(255,255,255,0.7) !important; }
+
+        .paywall-cta-v36 { text-align: center; margin-top: 20px; }
+        .unlock-btn-v36 { 
+          width: 100%; padding: 22px; border-radius: 60px; 
+          background: linear-gradient(135deg, #E0B0FF 0%, #FFB347 100%); 
+          border: none; color: #1A0B2E; font-family: 'Inter', sans-serif;
+          font-size: 1.2rem; font-weight: 800; letter-spacing: 0.05em;
+          cursor: pointer; box-shadow: 0 10px 30px rgba(224, 176, 255, 0.25);
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .unlock-btn-v36:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(224, 176, 255, 0.35); }
         .unlock-btn-v36:active { transform: scale(0.98); }
-        .paywall-sub { font-size: 0.8rem; color: rgba(255,255,255,0.3); font-weight: 700; margin-top: 15px; }
+        .paywall-sub { font-size: 0.85rem; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 15px; }
 
         .final-actions-v36 { text-align: center; margin-top: 20px; }
-        .download-btn-v36 { background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 18px; border-radius: 15px; color: rgba(255,255,255,0.5); font-weight: 800; cursor: pointer; width: 100%; }
+        .download-btn-v36 { background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 18px; border-radius: 60px; color: rgba(255,255,255,0.5); font-weight: 600; cursor: pointer; width: 100%; }
         .download-btn-v36.tiktok-style {
-          background: #fff; color: #000; border: none; font-family: 'Inter Black', sans-serif;
-          font-size: 1.1rem; box-shadow: 0 10px 30px rgba(255,255,255,0.1); transition: all 0.3s;
+          background: rgba(26, 15, 46, 0.8); color: #E0B0FF; border: 1px solid rgba(224, 176, 255, 0.3); font-family: 'Inter', sans-serif;
+          font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s;
         }
-        .download-btn-v36.tiktok-style:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255,255,255,0.2); }
+        .download-btn-v36.tiktok-style:hover { background: rgba(224, 176, 255, 0.1); transform: translateY(-3px); }
 
         .social-toast {
           position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-          background: rgba(0,0,0,0.95); border: 1px solid rgba(255,255,255,0.15);
-          padding: 14px 24px; border-radius: 50px; font-size: 0.9rem; font-weight: 800;
-          color: white; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+          background: rgba(26, 15, 46, 0.95); border: 1px solid rgba(224, 176, 255, 0.2);
+          padding: 14px 26px; border-radius: 50px; font-size: 0.9rem; font-weight: 600;
+          color: #FFF3E0; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+          backdrop-filter: blur(10px);
           animation: slideUp 0.6s cubic-bezier(0.2, 1, 0.3, 1); z-index: 100;
         }
         @keyframes slideUp { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
