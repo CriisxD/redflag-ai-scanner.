@@ -606,15 +606,129 @@ export default function LandingPage() {
         }
 
         @media (max-width: 768px) {
-          .features-grid {
-            grid-template-columns: 1fr;
-            margin: 20px auto;
-          }
           .landing-container {
             height: auto;
             min-height: 100vh;
             overflow-y: auto;
-            padding-bottom: 40px;
+            padding-bottom: 30px;
+          }
+          .top-nav {
+            padding: 16px 16px;
+          }
+          .logo-text {
+            font-size: 0.7rem;
+          }
+          .hero-section {
+            padding-top: 70px;
+            padding-bottom: 10px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            justify-content: center;
+          }
+          .hero-content {
+            margin-bottom: 30px;
+            padding: 0 16px;
+          }
+          .hero-title {
+            font-size: clamp(2.2rem, 11vw, 3.5rem);
+            margin-bottom: 16px;
+          }
+          .title-red {
+            gap: 6px;
+          }
+          .hero-subtitle {
+            font-size: 0.9rem;
+            max-width: 320px;
+            line-height: 1.4;
+          }
+          .hero-action {
+            margin-top: 0;
+          }
+          .glow-ring {
+            width: 200px;
+            height: 200px;
+          }
+          .scan-btn {
+            width: 160px;
+            height: 160px;
+            border-width: 3px;
+          }
+          .btn-icon {
+            font-size: 1.6rem;
+          }
+          .btn-primary-text {
+            font-size: 1rem;
+          }
+          .btn-secondary-text {
+            font-size: 0.55rem;
+            margin-top: 6px;
+            max-width: 110px;
+          }
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin: 20px auto;
+            padding: 0 16px;
+            max-width: 100%;
+          }
+          .feature-card {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-align: left;
+          }
+          .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0;
+            flex-shrink: 0;
+          }
+          .feature-title {
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+          }
+          .feature-desc {
+            font-size: 0.72rem;
+          }
+          .hero-footer {
+            margin-top: 20px;
+            margin-bottom: 30px;
+          }
+          /* Upload step mobile */
+          .upload-step {
+            padding: 16px !important;
+          }
+          .upload-box {
+            padding: 40px 20px !important;
+          }
+          .upload-title {
+            font-size: 1.3rem !important;
+          }
+          .back-btn {
+            top: 20px !important;
+            left: 20px !important;
+          }
+          /* Survey step mobile */
+          .survey-step {
+            padding: 20px 16px !important;
+          }
+          .survey-card {
+            padding: 24px 20px !important;
+          }
+          .survey-title {
+            font-size: 1.2rem !important;
+            margin-bottom: 24px !important;
+          }
+          .question-item label {
+            font-size: 0.85rem !important;
+          }
+          .opt-btn {
+            padding: 10px !important;
+            font-size: 0.8rem !important;
+          }
+          .generate-btn {
+            padding: 16px !important;
+            font-size: 0.95rem !important;
           }
         }
 

@@ -4,6 +4,12 @@ import ClientLayout from './ClientLayout';
 export const metadata = {
   title: 'RedFlag AI Scanner — Expose the Red Flags 🚩',
   description: 'Upload your profile photo and get a sarcastic red flag analysis with a toxicity score. AI-powered personality roast.',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    viewportFit: 'cover',
+  },
 };
 
 export default function RootLayout({ children }) {

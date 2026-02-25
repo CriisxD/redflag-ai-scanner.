@@ -552,14 +552,52 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .download-btn-v36.tiktok-style:hover { background: rgba(224, 176, 255, 0.1); transform: translateY(-3px); }
 
         .social-toast {
-          position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+          position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
           background: rgba(26, 15, 46, 0.95); border: 1px solid rgba(224, 176, 255, 0.2);
-          padding: 14px 26px; border-radius: 50px; font-size: 0.9rem; font-weight: 600;
+          padding: 12px 20px; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
           color: #FFF3E0; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
           backdrop-filter: blur(10px);
           animation: slideUp 0.6s cubic-bezier(0.2, 1, 0.3, 1); z-index: 100;
+          max-width: calc(100vw - 32px); text-align: center;
         }
         @keyframes slideUp { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 480px) {
+          .result-container { padding: 12px 10px; }
+          .content-max { gap: 24px; }
+          .report-container-v36 { border-radius: 28px; }
+          .shareable-zone-v36 { padding: 40px 16px 24px; }
+          .badge-v36 { font-size: 0.65rem; padding: 6px 14px; }
+          .subtitle-v36 { font-size: 0.8rem; }
+          .verdict-icon-massive { font-size: 3.5rem; }
+          .veredicto-shock-v36 { font-size: 2rem; }
+          .power-balance-badge { font-size: 0.65rem; padding: 5px 12px; }
+          .dinamica-label { font-size: 0.75rem; }
+          .dinamica-badge { font-size: 0.85rem; }
+          .m-label-v36 { font-size: 0.75rem; }
+          .m-val-v36 { font-size: 1.1rem; }
+          .m-bar-v36 { height: 10px; }
+          .punchline-text { font-size: 1.2rem; }
+          .tiktok-tag { font-size: 0.55rem; }
+          .insight-card-v36 { padding: 18px 16px; border-radius: 16px; }
+          .i-header-v36 h3 { font-size: 0.95rem; }
+          .i-content-v36 p { font-size: 0.9rem; }
+          .main-conc { font-size: 0.95rem; }
+          .quote-item { font-size: 0.9rem; padding: 10px 12px; }
+          .evidence-box { padding: 12px; }
+          .ev-text { font-size: 0.85rem !important; }
+          .power-winner { font-size: 1.2rem; }
+          .signals-grid { grid-template-columns: 1fr; gap: 10px; }
+          .sig-item p { font-size: 0.8rem !important; }
+          .template-box { padding: 14px; font-size: 0.9rem; }
+          .unlock-btn-v36 { padding: 18px; font-size: 1.05rem; }
+          .paywall-sub { font-size: 0.75rem; }
+          .download-btn-v36 { padding: 14px; }
+          .download-btn-v36.tiktok-style { font-size: 0.9rem; }
+          .hud-watermark { font-size: 4rem; }
+          .social-toast { font-size: 0.75rem; padding: 10px 16px; bottom: 16px; }
+        }
       `}</style>
     </div>
   );
