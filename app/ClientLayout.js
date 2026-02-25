@@ -27,7 +27,6 @@ function LangToggle() {
 export default function ClientLayout({ children }) {
   return (
     <LangProvider>
-      <LangToggle />
       {children}
     </LangProvider>
   );
