@@ -36,8 +36,7 @@ export async function POST(req) {
       const { error } = await supabase
         .from('scans')
         .update({ 
-          paid: true,
-          status: 'paid' 
+          payment_status: 'paid' 
         })
         .eq('id', scanId);
 
