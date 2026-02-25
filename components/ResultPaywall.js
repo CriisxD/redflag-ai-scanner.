@@ -62,10 +62,26 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
   };
 
   const metrics = [
-    { label: '🔥 Coqueteo / Tensión', value: aiResult?.nivel_coqueteo || 0 },
-    { label: '🌡️ Intención Física', value: aiResult?.intencion_fisica || 0 },
-    { label: '⚖️ Desbalance de Interés', value: aiResult?.desbalance_interes || 0 },
-    { label: '👻 Prob. de Ghosting', value: aiResult?.probabilidad_ghosting || 0 },
+    { 
+      label: '🔥 Coqueteo / Tensión', 
+      value: aiResult?.nivel_coqueteo || 0,
+      narrative: aiResult?.interpretacion_metricas?.coqueteo
+    },
+    { 
+      label: '🌡️ Intención Física', 
+      value: aiResult?.intencion_fisica || 0,
+      narrative: aiResult?.interpretacion_metricas?.intencion_fisica
+    },
+    { 
+      label: '⚖️ Desbalance de Interés', 
+      value: aiResult?.desbalance_interes || 0,
+      narrative: aiResult?.interpretacion_metricas?.desbalance
+    },
+    { 
+      label: '👻 Prob. de Ghosting', 
+      value: aiResult?.probabilidad_ghosting || 0,
+      narrative: aiResult?.interpretacion_metricas?.ghosting
+    },
   ];
 
   const getBarColor = (val) => {
@@ -106,6 +122,9 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                       }} 
                     />
                   </div>
+                  {m.narrative && (
+                    <p className="metric-narrative">→ {m.narrative}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -226,6 +245,11 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         .metric-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
         .bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; }
         .bar-fill { height: 100%; border-radius: 5px; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .metric-narrative { 
+          font-size: 0.75rem; color: rgba(255,255,255,0.4); 
+          font-weight: 600; font-style: italic; margin-top: 8px;
+          line-height: 1.3;
+        }
         
         .phrase-box { text-align: center; background: rgba(57, 255, 20, 0.05); border: 1px solid rgba(57, 255, 20, 0.2); padding: 20px; border-radius: 15px; margin-top: 15px; }
         .phrase-label { font-size: 0.65rem; font-weight: 800; color: #39ff14; letter-spacing: 0.1em; display: block; margin-bottom: 8px; }
