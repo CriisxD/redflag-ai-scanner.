@@ -155,35 +155,50 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           </div>
 
           <div className="insights-grid-v36">
+             {/* Bloque 1: Intención Real */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">🎯</span>
                  <h3>Intención Real</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.intencion_real : "Se observa una dinámica donde el interés..."}</p>
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.intencion_real : "Analizando evidencia textual sobre intenciones ocultas..."}</p>
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
+             {/* Bloque 2: Desbalance Emocional */}
+             <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
+               <div className="i-header-v36">
+                 <span className="i-icon-v36">⚖️</span>
+                 <h3>Desbalance Emocional</h3>
+               </div>
+               <div className="i-content-v36">
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.desbalance_emocional : "Calculando brecha de vulnerabilidad y exposición..."}</p>
+                 {!isUnlocked && <div className="blur-overlay" />}
+               </div>
+             </div>
+
+             {/* Bloque 3: Escenario Probable */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">🔮</span>
                  <h3>Escenario Probable</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.escenario_probable : "Si la interacción continúa con la misma inercia..."}</p>
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.escenario_probable : "Proyectando consecuencias conductuales a corto plazo..."}</p>
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
+             {/* Bloque 4: Estrategia Personalizada */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">💡</span>
-                 <h3>Recomendación</h3>
+                 <h3>Estrategia Táctica</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.recomendacion_tactica : "Para lograr tu objetivo, la estrategia debe ser..."}</p>
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.estrategia_personalizada : `Plan de acción personalizado para: ${aiResult?.userIntent || 'tu objetivo'}`}</p>
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
