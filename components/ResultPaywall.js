@@ -165,13 +165,23 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                   {isUnlocked ? (
                     <div className="intelligence-node">
                       <p className="main-conc">{aiResult?.analisis_premium?.intencion_real?.conclusion}</p>
+                      
+                      {aiResult?.analisis_premium?.intencion_real?.citas_textuales?.length > 0 && (
+                        <div className="quotes-container">
+                          <span className="ev-label">Evidencia Interceptada:</span>
+                          {aiResult.analisis_premium.intencion_real.citas_textuales.map((cita, i) => (
+                            <div key={i} className="quote-item">"{cita}"</div>
+                          ))}
+                        </div>
+                      )}
+
                       <div className="evidence-box">
-                        <span className="ev-label">Justificación:</span>
+                        <span className="ev-label">Análisis Clínico:</span>
                         <p className="ev-text">{aiResult?.analisis_premium?.intencion_real?.justificacion_evidencia}</p>
                       </div>
                     </div>
                   ) : (
-                    <p>Analizando evidencia textual sobre intenciones ocultas...</p>
+                    <p>Extrayendo y analizando citas textuales del chat...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -181,7 +191,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">🧠</span>
-                 <h3>Patrón de Apego</h3>
+                 <h3>Patrón Conductual</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
@@ -194,54 +204,88 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                       </div>
                     </div>
                   ) : (
-                    <p>Detectando dinámicas de persecución y distancia...</p>
+                    <p>Mapeando indicadores clínicos y sesgos de apego...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
-             {/* Bloque 3: Simulador de Escenarios */}
+             {/* Bloque 3: Balance de Poder y Energía (NUEVO V4.3) */}
+             <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
+               <div className="i-header-v36">
+                 <span className="i-icon-v36">⚖️</span>
+                 <h3>Dinámica de Inversión</h3>
+               </div>
+               <div className="i-content-v36">
+                  {isUnlocked ? (
+                    <div className="power-node">
+                      <div className="power-ruler">
+                        <span className="t-label">Sujeto Más Invertido:</span>
+                        <p className="power-winner">{aiResult?.analisis_premium?.poder_y_energia?.mas_invertido}</p>
+                      </div>
+                      <div className="evidence-box">
+                        <span className="ev-label">Análisis de Energía:</span>
+                        <p className="ev-text">{aiResult?.analisis_premium?.poder_y_energia?.analisis_energia}</p>
+                      </div>
+                      <div className="risk-alert">
+                        <span>⚠️ {aiResult?.analisis_premium?.poder_y_energia?.riesgo_emocional}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p>Calculando retención de poder y asimetría de inversión...</p>
+                  )}
+                  {!isUnlocked && <div className="blur-overlay" />}
+               </div>
+             </div>
+
+             {/* Bloque 4: Simulación Heurística */}
              <div className={`insight-card-v36 scenario-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">🔮</span>
-                 <h3>Proyección A vs B</h3>
+                 <h3>Simulación Conductual</h3>
                </div>
                <div className="i-content-v36 scenarios">
                  {isUnlocked ? (
                    <>
                      <div className="scenario-item path-a">
-                       <span className="s-label">Path A (Inercia):</span>
-                       <p>{aiResult?.analisis_premium?.simulacion_escenarios?.inercia}</p>
+                       <span className="s-label">Path A (Inercia Actual):</span>
+                       <p>{aiResult?.analisis_premium?.simulacion_escenarios?.inercia?.descripcion}</p>
+                       <div className="heuristic-prob">
+                         <span className="prob-text">Rango Probable: {aiResult?.analisis_premium?.simulacion_escenarios?.inercia?.probabilidad_estimada}</span>
+                       </div>
                      </div>
                      <div className="scenario-item path-b">
-                       <span className="s-label">Path B (Táctica):</span>
-                       <p>{aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico}</p>
+                       <span className="s-label">Path B (Táctica Sugerida):</span>
+                       <p>{aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico?.descripcion}</p>
+                       <div className="heuristic-prob highlight">
+                         <span className="prob-text">Rango Probable: {aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico?.probabilidad_estimada}</span>
+                       </div>
                      </div>
                    </>
                  ) : (
-                   <p>Calculando proyecciones conductuales basadas en tu próximo movimiento...</p>
+                   <p>Corriendo modelos predictivos heurísticos sobre futuros escenarios...</p>
                  )}
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
-             {/* Bloque 4: Estrategia Final */}
+             {/* Bloque 5: Estrategia Final */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">💡</span>
-                 <h3>Plan de Acción</h3>
+                 <h3>Plan de Acción Táctico</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
                     <div className="tactical-node">
                       <div className="msg-template">
-                        <span className="t-label">Mensaje Sugerido:</span>
+                        <span className="t-label">Plantilla Sugerida:</span>
                         <div className="template-box">
                           {aiResult?.analisis_premium?.estrategia_final?.mensaje_sugerido}
                         </div>
                       </div>
                       <div className="frame-box">
-                        <span className="t-label">Marco Psicológico:</span>
+                        <span className="t-label">Marco Psicológico (Frame):</span>
                         <p>{aiResult?.analisis_premium?.estrategia_final?.marco_conversational}</p>
                       </div>
                       <div className="signals-grid">
@@ -256,7 +300,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                       </div>
                     </div>
                   ) : (
-                    <p>Optimizando tu estrategia para: {aiResult?.user_intent || "tu objetivo"}</p>
+                    <p>Optimizando tu estrategia con tácticas de nivel agencia...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -463,6 +507,17 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         .pos .sig-label { color: #39ff14; }
         .neg .sig-label { color: #ff2d55; }
         .sig-item p { font-size: 0.8rem !important; line-height: 1.3 !important; }
+
+        /* v4.3 Hyper Personalization Styles */
+        .quotes-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+        .quote-item { background: rgba(175, 82, 222, 0.1); border-left: 3px solid #af52de; padding: 10px 14px; border-radius: 0 10px 10px 0; font-family: 'Courier New', monospace; font-size: 0.85rem; color: #fff; font-style: italic; }
+        .power-node { display: flex; flex-direction: column; gap: 15px; }
+        .power-ruler { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255, 204, 0, 0.3); text-align: center; }
+        .power-winner { font-family: 'Inter Black', sans-serif; font-size: 1.4rem; color: #ffcc00; margin-top: 5px; text-transform: uppercase; }
+        .risk-alert { background: rgba(255, 45, 85, 0.15); border: 1px solid rgba(255, 45, 85, 0.4); padding: 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 800; color: #ff2d55; text-align: center; }
+        .heuristic-prob { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); }
+        .prob-text { font-family: 'Courier New', monospace; font-size: 0.8rem; font-weight: 950; color: rgba(255,255,255,0.6); }
+        .highlight .prob-text { color: #39ff14; }
 
         .paywall-cta-v36 { text-align: center; }
         .unlock-btn-v36 { 
