@@ -219,13 +219,15 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         <ShareableTicket 
           name={targetName}
           metrics={{
-            coqueteo: aiResult?.metricas_con_nivel?.coqueteo?.valor,
-            ghosting: aiResult?.metricas_con_nivel?.probabilidad_ghosting?.valor,
+            interes: { label: 'INTERÉS', valor: aiResult?.metricas_viral?.interes_detectado?.valor, color: getStatusColor(aiResult?.metricas_viral?.interes_detectado?.valor) },
+            inversion: { label: 'INVERSIÓN', valor: aiResult?.metricas_viral?.nivel_inversion?.valor, color: getStatusColor(aiResult?.metricas_viral?.nivel_inversion?.valor) },
+            riesgo: { label: 'RIESGO OBJETIVO', valor: aiResult?.metricas_viral?.riesgo_objetivo?.valor, color: getStatusColor(aiResult?.metricas_viral?.riesgo_objetivo?.valor, true) }
           }}
           veredicto={aiResult?.veredicto_shock}
           dinamica={aiResult?.dinamica_detectada}
-          riskLevel={aiResult?.nivel_riesgo_ghosting}
-          fraseBrutal={aiResult?.frase_brutal || aiResult?.frase_viral}
+          subContextual={aiResult?.subtitulo_contextual}
+          fraseViral={aiResult?.frase_viral}
+          lineaPatron={aiResult?.linea_patron}
         />
       </div>
 
