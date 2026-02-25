@@ -268,14 +268,16 @@ export default function LandingPage() {
       <style jsx>{`
         .landing-container {
           position: relative;
-          width: 100vw;
+          width: 100%;
           min-height: 100vh;
+          min-height: 100dvh;
           background-color: #050505;
           display: flex;
           flex-direction: column;
           font-family: 'Inter', -apple-system, sans-serif;
           color: white;
           user-select: none;
+          overflow: hidden;
         }
 
 
@@ -312,23 +314,24 @@ export default function LandingPage() {
 
         .hero-section {
           width: 100%;
+          min-height: 100vh;
+          min-height: 100dvh;
           display: flex;
           flex-direction: column;
           align-items: center;
+          justify-content: center;
           position: relative;
           z-index: 10;
-          padding-top: 100px;
-          padding-bottom: 20px;
+          padding: 80px 0 30px;
         }
 
         .noise-overlay {
           position: absolute;
-          inset: -50%;
-          width: 200%;
-          height: 200%;
+          inset: 0;
+          width: 100%;
+          height: 100%;
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opactiy='0.05'/%3E%3C/svg%3E");
           opacity: 0.04;
-          animation: noise 2s steps(2) infinite;
           pointer-events: none;
           z-index: 1;
         }
@@ -609,7 +612,8 @@ export default function LandingPage() {
           .landing-container {
             height: auto;
             min-height: 100vh;
-            overflow-y: auto;
+            min-height: 100dvh;
+            overflow: hidden;
             padding-bottom: 30px;
           }
           .top-nav {
@@ -619,11 +623,9 @@ export default function LandingPage() {
             font-size: 0.7rem;
           }
           .hero-section {
-            padding-top: 70px;
-            padding-bottom: 10px;
-            min-height: 100vh;
-            min-height: 100dvh;
-            justify-content: center;
+            padding: 70px 0 10px;
+            min-height: auto;
+            justify-content: flex-start;
           }
           .hero-content {
             margin-bottom: 30px;
