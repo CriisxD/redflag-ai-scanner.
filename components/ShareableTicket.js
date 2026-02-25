@@ -7,52 +7,53 @@ import React from 'react';
  * A 9:16 high-impact ticket for social media sharing.
  * Designed to be captured by html2canvas.
  */
-export default function ShareableTicket({ name, metrics = {}, redFlag, viralPhrase }) {
+export default function ShareableTicket({ name, metrics = {}, veredicto, dinamica, riskLevel, fraseBrutal }) {
   return (
     <div id="shareable-ticket-capture" className="ticket-container">
       <div className="ticket-border">
         {/* Header */}
         <div className="ticket-header">
-          <span className="logo-emoji">🚩</span>
-          <h1 className="logo-text">DATING INTELLIGENCE</h1>
+          <div className="badge-tag">REPORT v3.5</div>
+          <h1 className="logo-text">RED FLAG SCANNER</h1>
+          <div className="dating-intel-logo">DATING INTELLIGENCE</div>
         </div>
 
         <div className="ticket-content">
-          <div className="vibe-tag">RATING DE DINÁMICA</div>
+          <div className="veredicto-section">
+            <h2 className="veredicto-text">“{veredicto || 'Hay química... pero falta intención.'}”</h2>
+          </div>
+
+          <div className="dinamica-highlight">
+            🎯 Dinámica: <span>{dinamica || 'Analizando...'}</span>
+          </div>
           
-          <div className="metrics-summary">
-            <div className="mini-metric">
-              <span className="m-val">{metrics.coqueteo || 0}%</span>
-              <span className="m-lbl">COQUETEO</span>
+          <div className="metrics-summary-new">
+            <div className="mini-status">
+              <span className="s-lbl">RIESGO GHOSTING</span>
+              <span className={`s-val ${riskLevel?.toLowerCase()}`}>{riskLevel || '...'}</span>
             </div>
-            <div className="mini-metric">
-              <span className="m-val">{metrics.ghosting || 0}%</span>
-              <span className="m-lbl">GHOSTING</span>
+            <div className="mini-metric-circular">
+              <span className="mc-val">{metrics.coqueteo || 0}%</span>
+              <span className="mc-lbl">COQUETEO</span>
             </div>
           </div>
 
-          <div className="target-info">
-            <span className="info-tag">Sujeto: {name || 'Anónimo'}</span>
+          <div className="target-pill">
+            SUJETO: {name || 'Anónimo'}
           </div>
 
-          <div className="evidence-box">
-            <h3 className="evidence-title">✨ SEÑAL DETECTADA:</h3>
-            <p className="main-flag">{redFlag || 'PATRÓN CLARO ID.'}</p>
-            <p className="evidence-text">
-              "{viralPhrase || 'Patrones de interacción romántica detectados.'}"
-            </p>
+          <div className="brutal-box">
+            <p className="brutal-phrase">“{fraseBrutal || 'Te quiere cerca, no comprometido.'}”</p>
           </div>
 
-          <div className="verification-badge">
-            <span className="badge-icon">🛡️</span>
-            <span className="badge-text">RED FLAG AI SCANNER</span>
+          <div className="branding-seal">
+            <span className="seal-text">VERIFICADO POR REDFLAG AI</span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="ticket-footer">
-          <p className="footer-callout">Analizado por:</p>
-          <div className="domain-text">RedFlag AI Scanner</div>
+        <div className="ticket-footer-new">
+          <p className="scan-url">redflag-ai-scanner.vercel.app</p>
         </div>
       </div>
 
@@ -86,22 +87,38 @@ export default function ShareableTicket({ name, metrics = {}, redFlag, viralPhra
 
         .ticket-header {
           display: flex;
+          flex-direction: column;
           align-items: center;
-          gap: 12px;
-          margin-bottom: 60px;
+          gap: 10px;
+          margin-bottom: 50px;
         }
 
-        .logo-emoji {
-          font-size: 2.5rem;
+        .badge-tag {
+          font-size: 0.7rem;
+          font-weight: 900;
+          color: #af52de;
+          border: 1px solid rgba(175, 82, 222, 0.4);
+          padding: 4px 12px;
+          border-radius: 50px;
+          letter-spacing: 0.1em;
         }
 
         .logo-text {
           font-family: 'Inter Black', sans-serif;
-          font-size: 1.8rem;
-          font-weight: 900;
+          font-size: 2.2rem;
+          font-weight: 950;
           letter-spacing: -0.05em;
           margin: 0;
           color: white;
+          text-shadow: 0 0 20px rgba(255, 45, 85, 0.3);
+        }
+
+        .dating-intel-logo {
+          font-size: 0.8rem;
+          font-weight: 800;
+          color: rgba(255, 255, 255, 0.5);
+          letter-spacing: 0.4em;
+          text-transform: uppercase;
         }
 
         .ticket-content {
@@ -110,135 +127,145 @@ export default function ShareableTicket({ name, metrics = {}, redFlag, viralPhra
           flex-direction: column;
           align-items: center;
           text-align: center;
+          padding: 0 20px;
         }
 
-        .vibe-tag {
-          font-size: 0.9rem;
+        .veredicto-section {
+          margin-bottom: 30px;
+        }
+
+        .veredicto-text {
+          font-family: 'Inter Black', sans-serif;
+          font-size: 2.8rem;
+          font-weight: 950;
+          line-height: 1.1;
+          color: white;
+          letter-spacing: -0.02em;
+        }
+
+        .dinamica-highlight {
+          font-size: 1.2rem;
           font-weight: 800;
-          letter-spacing: 0.2em;
-          color: #ff2d55;
-          border: 1px solid rgba(255, 45, 85, 0.5);
-          padding: 6px 16px;
-          border-radius: 20px;
-          margin-bottom: 40px;
+          color: rgba(255, 255, 255, 0.6);
+          margin-bottom: 50px;
+        }
+
+        .dinamica-highlight span {
+          color: #39ff14;
+        }
+
+        .metrics-summary-new {
+          display: flex;
+          width: 100%;
+          justify-content: space-around;
+          align-items: center;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 30px;
+          padding: 30px;
+          margin-bottom: 50px;
+        }
+
+        .mini-status {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .s-lbl {
+          font-size: 0.8rem;
+          font-weight: 900;
+          color: rgba(255,255,255,0.3);
+          letter-spacing: 0.1em;
+        }
+
+        .s-val {
+          font-family: 'Inter Black', sans-serif;
+          font-size: 2.22rem;
+          font-weight: 900;
           text-transform: uppercase;
         }
 
-        .metrics-summary {
-          display: flex;
-          gap: 30px;
-          margin-bottom: 40px;
-        }
+        .s-val.bajo { color: #39ff14; text-shadow: 0 0 15px rgba(57, 255, 20, 0.4); }
+        .s-val.moderado { color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.4); }
+        .s-val.alto { color: #ff2d55; text-shadow: 0 0 15px rgba(255, 45, 85, 0.4); }
 
-        .mini-metric {
+        .mini-metric-circular {
           display: flex;
           flex-direction: column;
           align-items: center;
         }
 
-        .m-val {
+        .mc-val {
           font-family: 'Inter Black', sans-serif;
           font-size: 3.5rem;
-          font-weight: 900;
-          color: #39ff14;
-          line-height: 1;
-          text-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
-        }
-
-        .m-lbl {
-          font-size: 0.8rem;
-          font-weight: 800;
-          color: rgba(255,255,255,0.6);
-          letter-spacing: 0.1em;
-          margin-top: 5px;
-        }
-
-        .target-info {
-          display: flex;
-          gap: 10px;
-          margin-bottom: 60px;
-        }
-
-        .info-tag {
-          background: rgba(255, 255, 255, 0.1);
-          padding: 8px 16px;
-          border-radius: 12px;
-          font-size: 1rem;
-          font-weight: 700;
-        }
-
-        .evidence-box {
-          width: 100%;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
-          padding: 30px;
-          text-align: left;
-          margin-bottom: 40px;
-        }
-
-        .evidence-title {
-          font-size: 1.3rem;
-          font-weight: 900;
-          color: #ff2d55;
-          margin: 0 0 16px 0;
-        }
-
-        .main-flag {
-          font-size: 1.2rem;
-          font-weight: 900;
+          font-weight: 950;
           color: white;
-          margin-bottom: 12px;
-          text-transform: uppercase;
+          line-height: 1;
         }
 
-        .evidence-text {
-          font-size: 1.15rem;
-          line-height: 1.6;
-          color: rgba(255, 255, 255, 0.9);
-          margin: 0;
-        }
-
-        .verification-badge {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          background: rgba(57, 255, 20, 0.1);
-          padding: 12px 24px;
-          border-radius: 50px;
-          border: 1px solid rgba(57, 255, 20, 0.3);
-        }
-
-        .badge-icon {
-          font-size: 1.2rem;
-        }
-
-        .badge-text {
+        .mc-lbl {
           font-size: 0.8rem;
-          font-weight: 800;
+          font-weight: 900;
+          color: rgba(255, 255, 255, 0.4);
           letter-spacing: 0.1em;
-          color: #39ff14;
         }
 
-        .ticket-footer {
-          margin-top: auto;
-          text-align: center;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          padding-top: 40px;
+        .target-pill {
+          background: rgba(255, 255, 255, 0.05);
+          padding: 10px 24px;
+          border-radius: 50px;
+          font-size: 1.1rem;
+          font-weight: 800;
+          color: rgba(255,255,255,0.7);
+          margin-bottom: 50px;
         }
 
-        .footer-callout {
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: rgba(255, 255, 255, 0.5);
-          margin: 0 0 8px 0;
+        .brutal-box {
+          width: 100%;
+          background: rgba(255, 45, 85, 0.04);
+          border: 2px dashed rgba(255, 45, 85, 0.2);
+          padding: 40px;
+          border-radius: 24px;
+          margin-bottom: 50px;
+          position: relative;
         }
 
-        .domain-text {
+        .brutal-phrase {
           font-family: 'Inter Black', sans-serif;
           font-size: 1.8rem;
           font-weight: 900;
-          color: #ff2d55;
+          line-height: 1.25;
+          color: white;
+          font-style: italic;
+        }
+
+        .branding-seal {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-top: auto;
+        }
+
+        .seal-text {
+          font-size: 0.8rem;
+          font-weight: 900;
+          color: #39ff14;
+          letter-spacing: 0.2em;
+          opacity: 0.6;
+        }
+
+        .ticket-footer-new {
+          margin-top: 60px;
+          text-align: center;
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
+          padding-top: 30px;
+        }
+
+        .scan-url {
+          font-family: 'Inter Black', sans-serif;
+          font-size: 1.5rem;
+          color: rgba(255, 255, 255, 0.2);
           letter-spacing: -0.02em;
         }
       `}</style>

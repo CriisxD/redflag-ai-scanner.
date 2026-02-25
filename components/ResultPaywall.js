@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
+import ShareableTicket from './ShareableTicket';
 
 export default function ResultPaywall({ onCheckout, aiResult }) {
   const [loading, setLoading] = useState(false);
@@ -63,31 +64,30 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
   const metrics = [
     { 
-      label: '🔥 Coqueteo / Tensión', 
-      value: aiResult?.nivel_coqueteo || 0,
+      label: '🔥 Coqueteo', 
+      value: aiResult?.metricas_con_nivel?.coqueteo?.valor || 0,
+      nivel: aiResult?.metricas_con_nivel?.coqueteo?.nivel || '...',
       narrative: aiResult?.interpretacion_metricas?.coqueteo
     },
     { 
       label: '🌡️ Intención Física', 
-      value: aiResult?.intencion_fisica || 0,
+      value: aiResult?.metricas_con_nivel?.intencion_fisica?.valor || 0,
+      nivel: aiResult?.metricas_con_nivel?.intencion_fisica?.nivel || '...',
       narrative: aiResult?.interpretacion_metricas?.intencion_fisica
     },
     { 
-      label: '⚖️ Desbalance de Interés', 
-      value: aiResult?.desbalance_interes || 0,
+      label: '⚖️ Desbalance', 
+      value: aiResult?.metricas_con_nivel?.desbalance?.valor || 0,
+      nivel: aiResult?.metricas_con_nivel?.desbalance?.nivel || '...',
       narrative: aiResult?.interpretacion_metricas?.desbalance
-    },
-    { 
-      label: '👻 Prob. de Ghosting', 
-      value: aiResult?.probabilidad_ghosting || 0,
-      narrative: aiResult?.interpretacion_metricas?.ghosting
-    },
+    }
   ];
 
-  const getBarColor = (val) => {
-    if (val < 35) return '#39ff14';
-    if (val < 65) return '#ffcc00';
-    return '#ff2d55';
+  const getStatusColor = (nivel) => {
+    if (nivel === 'Bajo') return '#39ff14';
+    if (nivel === 'Medio') return '#ffcc00';
+    if (nivel === 'Alto') return '#ff2d55';
+    return '#666';
   };
 
   return (
@@ -95,51 +95,65 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
       <div className="ambient-glow" />
       
       <div className="content-max">
-        {/* SECCIÓN 1: Header */}
+        {/* SECCIÓN 1: Header Viral */}
         <header className="result-header">
-          <h1 className="main-title">🔎 Análisis Completado</h1>
-          <p className="main-subtitle">Se detectaron patrones claros en esta conversación con {targetName}.</p>
+           <div className="badge-dating">DATING INTELLIGENCE REPORT v3.5</div>
+           <h1 className="veredicto-shock">
+             “{aiResult?.veredicto_shock || 'Hay química... pero falta intención.'}”
+           </h1>
+           <div className="dinamica-badge">
+             🎯 Dinámica: <span>{aiResult?.dinamica_detectada || 'Buscando patrón...'}</span>
+           </div>
         </header>
 
-        {/* SECCIÓN 2 & 3: Métricas y Frase (Capture Zone) */}
+        {/* SECCIÓN 2: Capture Zone (The Report Card) */}
         <div id="metrics-capture-zone" className="capture-wrapper">
-          <div className="glass-card metrics-card">
-            <h2 className="card-label">Métricas de Interacción</h2>
-            <div className="metrics-list">
+          <div className="glass-card main-report">
+            <div className="report-header">
+              <div className="target-info">
+                <span className="label">ANÁLISIS DE:</span>
+                <span className="value">{targetName}</span>
+              </div>
+              <div className="risk-indicator">
+                <span className="label">RIESGO GHOSTING:</span>
+                <span className="status-dot" style={{ backgroundColor: getStatusColor(aiResult?.nivel_riesgo_ghosting) }} />
+                <span className="value" style={{ color: getStatusColor(aiResult?.nivel_riesgo_ghosting) }}>
+                  {aiResult?.nivel_riesgo_ghosting || 'PENDIENTE'}
+                </span>
+              </div>
+            </div>
+
+            <div className="metrics-grid-new">
               {metrics.map((m, idx) => (
-                <div key={idx} className="metric-row">
-                  <div className="metric-info">
-                    <span>{m.label}</span>
-                    <span className="metric-value" style={{ color: getBarColor(m.value) }}>{m.value}%</span>
+                <div key={idx} className="metric-col">
+                  <div className="metric-circle-wrap">
+                    <svg viewBox="0 0 36 36" className="circular-chart">
+                      <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      <path 
+                        className="circle" 
+                        stroke={getStatusColor(m.nivel)}
+                        strokeDasharray={showProgressBars ? `${m.value}, 100` : "0, 100"}
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+                      />
+                      <text x="18" y="20.35" className="percentage">{m.value}%</text>
+                    </svg>
                   </div>
-                  <div className="bar-bg">
-                    <div 
-                      className="bar-fill" 
-                      style={{ 
-                        width: showProgressBars ? `${m.value}%` : '0%', 
-                        backgroundColor: getBarColor(m.value),
-                        boxShadow: `0 0 10px ${getBarColor(m.value)}66`
-                      }} 
-                    />
-                  </div>
-                  {m.narrative && (
-                    <p className="metric-narrative">→ {m.narrative}</p>
-                  )}
+                  <span className="metric-label-new">{m.label.split(' ')[1]}</span>
+                  <span className="metric-status" style={{ color: getStatusColor(m.nivel) }}>{m.nivel}</span>
                 </div>
               ))}
             </div>
-          </div>
 
-          <div className="phrase-box">
-            <span className="phrase-label">FRASE DETECTADA:</span>
-            <p className="phrase-text">"{aiResult?.frase_viral || 'Análisis táctico en curso...'}"</p>
+            <div className="phrase-brutal-box">
+               <p className="phrase-brutal-text">“{aiResult?.frase_brutal || aiResult?.frase_viral || 'Te quiere cerca, no comprometido.'}”</p>
+            </div>
           </div>
         </div>
 
-        {/* SECCIÓN 4: Tensión */}
+        {/* SECCIÓN 4: Tensión Logic */}
         <div className="tension-block">
           <p className="tension-text">
-            ⚠️ {aiResult?.psicologia_conversion || `Detectado patrón de comportamiento con alta correlación de desinterés progresivo.`}
+            ⚠️ {aiResult?.psicologia_conversion || `Este patrón de interacción correlaciona en un 78% con cierres de comunicación abruptos.`}
           </p>
         </div>
 
@@ -211,6 +225,19 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
              Compartir Resultados (Métricas) 📸
            </button>
         </div>
+
+        {/* Componente invisible para captura */}
+        <ShareableTicket 
+          name={targetName}
+          metrics={{
+            coqueteo: aiResult?.metricas_con_nivel?.coqueteo?.valor,
+            ghosting: aiResult?.metricas_con_nivel?.probabilidad_ghosting?.valor,
+          }}
+          veredicto={aiResult?.veredicto_shock}
+          dinamica={aiResult?.dinamica_detectada}
+          riskLevel={aiResult?.nivel_riesgo_ghosting}
+          fraseBrutal={aiResult?.frase_brutal || aiResult?.frase_viral}
+        />
       </div>
 
       {/* Social Proof Popup */}
@@ -233,27 +260,34 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         }
         .content-max { position: relative; z-index: 10; width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
         
-        .result-header { text-align: center; }
-        .main-title { font-family: 'Inter Black', sans-serif; font-size: 2.2rem; font-weight: 900; color: #fff; margin-bottom: 10px; }
-        .main-subtitle { font-size: 1rem; color: rgba(255,255,255,0.5); font-weight: 600; line-height: 1.4; }
+        .result-header { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .badge-dating { font-size: 0.65rem; font-weight: 900; color: #af52de; letter-spacing: 0.15em; border: 1px solid rgba(175, 82, 222, 0.3); padding: 5px 12px; border-radius: 50px; }
+        .veredicto-shock { font-family: 'Inter Black', sans-serif; font-size: 2.4rem; font-weight: 950; color: #fff; line-height: 1.1; max-width: 90%; margin: 0 auto; letter-spacing: -0.02em; }
+        .dinamica-badge { font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.6); }
+        .dinamica-badge span { color: #39ff14; }
 
-        .capture-wrapper { background: #050505; border-radius: 20px; padding: 5px; }
-        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 24px; backdrop-filter: blur(10px); }
-        .card-label { font-size: 0.75rem; font-weight: 800; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; }
+        .capture-wrapper { background: #050505; border-radius: 24px; padding: 10px; }
+        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(10px); }
         
-        .metrics-list { display: flex; flex-direction: column; gap: 18px; }
-        .metric-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
-        .bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 5px; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .metric-narrative { 
-          font-size: 0.75rem; color: rgba(255,255,255,0.4); 
-          font-weight: 600; font-style: italic; margin-top: 8px;
-          line-height: 1.3;
-        }
-        
-        .phrase-box { text-align: center; background: rgba(57, 255, 20, 0.05); border: 1px solid rgba(57, 255, 20, 0.2); padding: 20px; border-radius: 15px; margin-top: 15px; }
-        .phrase-label { font-size: 0.65rem; font-weight: 800; color: #39ff14; letter-spacing: 0.1em; display: block; margin-bottom: 8px; }
-        .phrase-text { font-family: 'Inter Black', sans-serif; font-size: 1.1rem; color: #fff; font-style: italic; }
+        .main-report { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+        .report-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .report-header .label { display: block; font-size: 0.6rem; font-weight: 900; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; margin-bottom: 4px; }
+        .report-header .value { font-weight: 800; font-size: 0.9rem; }
+        .risk-indicator { text-align: right; }
+        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; box-shadow: 0 0 8px currentColor; }
+
+        .metrics-grid-new { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .metric-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .metric-circle-wrap { width: 100%; max-width: 80px; position: relative; }
+        .circular-chart { display: block; margin: 0 auto; max-width: 100%; max-height: 250px; }
+        .circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 3; }
+        .circle { fill: none; stroke-width: 3; stroke-linecap: round; transition: stroke-dasharray 1.5s ease-in-out; }
+        .percentage { fill: #fff; font-family: 'Inter Black', sans-serif; font-size: 0.5rem; text-anchor: middle; font-weight: 900; }
+        .metric-label-new { font-size: 0.7rem; font-weight: 800; color: rgba(255,255,255,0.5); text-transform: uppercase; text-align: center; }
+        .metric-status { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .phrase-brutal-box { background: rgba(255, 45, 85, 0.05); border: 1px dashed rgba(255, 45, 85, 0.3); padding: 20px; border-radius: 15px; text-align: center; position: relative; }
+        .phrase-brutal-text { font-family: 'Inter Black', sans-serif; font-size: 1.25rem; color: #fff; font-style: italic; line-height: 1.3; }
 
         .tension-block { text-align: center; padding: 0 10px; }
         .tension-text { font-size: 0.85rem; font-weight: 700; color: #ffcc00; opacity: 0.9; }
