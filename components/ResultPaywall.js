@@ -64,30 +64,32 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
   const metrics = [
     { 
-      label: '🔥 Coqueteo', 
-      value: aiResult?.metricas_con_nivel?.coqueteo?.valor || 0,
-      nivel: aiResult?.metricas_con_nivel?.coqueteo?.nivel || '...',
-      narrative: aiResult?.interpretacion_metricas?.coqueteo
+      label: '🔥 Interés Detectado', 
+      value: aiResult?.metricas_viral?.interes_detectado?.valor || 0,
+      narrative: aiResult?.metricas_viral?.interes_detectado?.interpretacion
     },
     { 
-      label: '🌡️ Intención Física', 
-      value: aiResult?.metricas_con_nivel?.intencion_fisica?.valor || 0,
-      nivel: aiResult?.metricas_con_nivel?.intencion_fisica?.nivel || '...',
-      narrative: aiResult?.interpretacion_metricas?.intencion_fisica
+      label: '💬 Nivel de Inversión', 
+      value: aiResult?.metricas_viral?.nivel_inversion?.valor || 0,
+      narrative: aiResult?.metricas_viral?.nivel_inversion?.interpretacion
     },
     { 
-      label: '⚖️ Desbalance', 
-      value: aiResult?.metricas_con_nivel?.desbalance?.valor || 0,
-      nivel: aiResult?.metricas_con_nivel?.desbalance?.nivel || '...',
-      narrative: aiResult?.interpretacion_metricas?.desbalance
+      label: aiResult?.metricas_viral?.riesgo_objetivo?.label || '⚠️ Riesgo para tu objetivo', 
+      value: aiResult?.metricas_viral?.riesgo_objetivo?.valor || 0,
+      nivel: aiResult?.metricas_viral?.riesgo_objetivo?.nivel || '...',
+      narrative: aiResult?.metricas_viral?.riesgo_objetivo?.interpretacion
     }
   ];
 
-  const getStatusColor = (nivel) => {
-    if (nivel === 'Bajo') return '#39ff14';
-    if (nivel === 'Medio') return '#ffcc00';
-    if (nivel === 'Alto') return '#ff2d55';
-    return '#666';
+  const getStatusColor = (val, isRisk = false) => {
+    if (isRisk) {
+      if (val < 30) return '#39ff14';
+      if (val < 60) return '#ffcc00';
+      return '#ff2d55';
+    }
+    if (val < 30) return '#ff2d55';
+    if (val < 60) return '#ffcc00';
+    return '#39ff14';
   };
 
   return (
@@ -95,57 +97,51 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
       <div className="ambient-glow" />
       
       <div className="content-max">
-        {/* SECCIÓN 1: Header Viral */}
-        <header className="result-header">
-           <div className="badge-dating">DATING INTELLIGENCE REPORT v3.5</div>
-           <h1 className="veredicto-shock">
-             “{aiResult?.veredicto_shock || 'Hay química... pero falta intención.'}”
-           </h1>
-           <div className="dinamica-badge">
-             🎯 Dinámica: <span>{aiResult?.dinamica_detectada || 'Buscando patrón...'}</span>
-           </div>
-        </header>
-
-        {/* SECCIÓN 2: Capture Zone (The Report Card) */}
+        {/* SECCIÓN 1: ZONA COMPARTIBLE (Capture Zone) */}
         <div id="metrics-capture-zone" className="capture-wrapper">
-          <div className="glass-card main-report">
-            <div className="report-header">
-              <div className="target-info">
-                <span className="label">ANÁLISIS DE:</span>
-                <span className="value">{targetName}</span>
-              </div>
-              <div className="risk-indicator">
-                <span className="label">RIESGO GHOSTING:</span>
-                <span className="status-dot" style={{ backgroundColor: getStatusColor(aiResult?.nivel_riesgo_ghosting) }} />
-                <span className="value" style={{ color: getStatusColor(aiResult?.nivel_riesgo_ghosting) }}>
-                  {aiResult?.nivel_riesgo_ghosting || 'PENDIENTE'}
-                </span>
-              </div>
-            </div>
+          <header className="result-header-viral">
+             <div className="label-top">🔎 ANÁLISIS COMPLETADO</div>
+             <p className="sub-contextual">{aiResult?.subtitulo_contextual || 'Análisis ajustado a tu intención declarada.'}</p>
+             
+             <h1 className="veredicto-shock-v36">
+               “{aiResult?.veredicto_shock || 'Hay química... pero falta intención.'}”
+             </h1>
 
-            <div className="metrics-grid-new">
-              {metrics.map((m, idx) => (
-                <div key={idx} className="metric-col">
-                  <div className="metric-circle-wrap">
-                    <svg viewBox="0 0 36 36" className="circular-chart">
-                      <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                      <path 
-                        className="circle" 
-                        stroke={getStatusColor(m.nivel)}
-                        strokeDasharray={showProgressBars ? `${m.value}, 100` : "0, 100"}
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+             <div className="dinamica-highlight">
+               <span>Dinámica Detectada:</span> {aiResult?.dinamica_detectada || 'Pendiente'}
+             </div>
+          </header>
+
+          <div className="glass-card main-report-v36">
+            <div className="metrics-v36">
+              {metrics.map((m, idx) => {
+                const isRisk = m.label.includes('Riesgo');
+                const color = getStatusColor(m.value, isRisk);
+                return (
+                  <div key={idx} className="metric-item-v36">
+                    <div className="m-header">
+                      <span className="m-label">{m.label}</span>
+                      <span className="m-percent" style={{ color }}>{m.value}%</span>
+                    </div>
+                    <div className="m-bar-bg">
+                      <div 
+                        className="m-bar-fill" 
+                        style={{ 
+                          width: showProgressBars ? `${m.value}%` : '0%', 
+                          backgroundColor: color,
+                          boxShadow: `0 0 10px ${color}44`
+                        }} 
                       />
-                      <text x="18" y="20.35" className="percentage">{m.value}%</text>
-                    </svg>
+                    </div>
+                    <p className="m-interpret">{m.narrative}</p>
                   </div>
-                  <span className="metric-label-new">{m.label.split(' ')[1]}</span>
-                  <span className="metric-status" style={{ color: getStatusColor(m.nivel) }}>{m.nivel}</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            <div className="phrase-brutal-box">
-               <p className="phrase-brutal-text">“{aiResult?.frase_brutal || aiResult?.frase_viral || 'Te quiere cerca, no comprometido.'}”</p>
+            <div className="viral-quote-block">
+               <p>“{aiResult?.frase_viral || 'Te quiere cerca, no comprometida.'}”</p>
+               <span className="stat-line-pattern">{aiResult?.linea_patron || 'Patrón común en dinámicas sin avance claro.'}</span>
             </div>
           </div>
         </div>
@@ -157,72 +153,65 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
           </p>
         </div>
 
-        {/* SECCIÓN 5: Bloque Premium */}
-        <div className="premium-sequence">
-          <div className="divider">
-            <span>🔐 INSIGHTS ESTRATÉGICOS</span>
+        {/* ZONA 2: PAYWALL (Bottom 40%) */}
+        <div className="premium-sequence-v36">
+          <div className="divider-new">
+            <span>🛡️ ESTRATEGIA EXCLUSIVA</span>
           </div>
 
-          <div className="insights-grid">
-            <div className={`insight-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
-              <h3>🎯 Intención Real</h3>
-              <div className="insight-content">
-                <p>
-                  {isUnlocked 
-                    ? aiResult?.analisis_premium?.intencion_real 
-                    : "Existe un interés claro, pero no necesariamente alineado con tus expectativas actuales basándose en..."}
-                </p>
-                {!isUnlocked && <div className="text-blur" />}
-              </div>
-            </div>
+          <div className="insights-v36">
+             <div className={`insight-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
+               <div className="i-meta">
+                 <span className="i-icon">🎯</span>
+                 <h3>Intención Real</h3>
+               </div>
+               <div className="i-body">
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.intencion_real : "Se observa una dinámica donde el interés..."}</p>
+                 {!isUnlocked && <div className="text-blur" />}
+               </div>
+             </div>
 
-            <div className={`insight-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
-              <h3>🔮 Riesgo Futuro</h3>
-              <div className="insight-content">
-                <p>
-                  {isUnlocked 
-                    ? aiResult?.analisis_premium?.riesgo_futuro 
-                    : "La curva de atención sugiere un enfriamiento drástico en los próximos 10-14 días si no se aplica..."}
-                </p>
-                {!isUnlocked && <div className="text-blur" />}
-              </div>
-            </div>
+             <div className={`insight-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
+               <div className="i-meta">
+                 <span className="i-icon">🔮</span>
+                 <h3>Escenario Probable</h3>
+               </div>
+               <div className="i-body">
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.escenario_probable : "Si la interacción continúa con la misma inercia..."}</p>
+                 {!isUnlocked && <div className="text-blur" />}
+               </div>
+             </div>
 
-            <div className={`insight-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
-              <h3>💡 Recomendación</h3>
-              <div className="insight-content">
-                <p>
-                  {isUnlocked 
-                    ? aiResult?.analisis_premium?.recomendacion_estrategica 
-                    : "Para recuperar el balance de poder, la siguiente respuesta debería enfocarse en generar duda estratégica mediante..."}
-                </p>
-                {!isUnlocked && <div className="text-blur" />}
-              </div>
-            </div>
+             <div className={`insight-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
+               <div className="i-meta">
+                 <span className="i-icon">💡</span>
+                 <h3>Recomendación</h3>
+               </div>
+               <div className="i-body">
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.recomendacion_tactica : "Para lograr tu objetivo declarado, la estrategia debe ser..."}</p>
+                 {!isUnlocked && <div className="text-blur" />}
+               </div>
+             </div>
           </div>
         </div>
 
         {/* SECCIÓN 6: CTA */}
         {!isUnlocked && (
-          <div className="cta-container">
-            <div className="conversion-psych">
-              <span className="psych-icon">🧠</span>
-              <p>{aiResult?.psicologia_conversion || "Este análisis táctico te permite tomar el control de la dinámica antes del ghosting."}</p>
-            </div>
+          <div className="cta-container-v36">
             <button 
-              className={`unlock-btn ${loading ? 'loading' : ''}`}
+              className={`unlock-btn-v36 ${loading ? 'loading' : ''}`}
               onClick={handleCheckoutClick}
               disabled={loading}
             >
-              {loading ? "Procesando..." : "Desbloquear análisis completo"}
+              {loading ? "Procesando..." : "Desbloquear Plan Estratégico"}
             </button>
-            <p className="pago-unico">Pago único. Sin suscripción.</p>
+            <p className="cta-sub">Pago único. Sin suscripción.</p>
           </div>
         )}
 
-        <div className="share-actions">
-           <button onClick={handleDownload} className="share-btn">
-             Compartir Resultados (Métricas) 📸
+        <div className="share-actions-v36">
+           <button onClick={handleDownload} className="share-btn-v36">
+             Generar Screenshot Viral 📸
            </button>
         </div>
 
@@ -250,77 +239,66 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
       <style jsx>{`
         .result-container {
           min-height: 100vh; width: 100vw; background: #050505; color: white;
-          padding: 40px 20px; font-family: 'Inter', -apple-system, sans-serif;
+          padding: 20px 10px; font-family: 'Inter', sans-serif;
           position: relative; overflow-x: hidden;
         }
         .ambient-glow {
-          position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw;
-          background: radial-gradient(circle, rgba(255, 45, 85, 0.15) 0%, transparent 70%);
+          position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw;
+          background: radial-gradient(circle, rgba(175, 82, 222, 0.1) 0%, transparent 70%);
           pointer-events: none; z-index: 0;
         }
-        .content-max { position: relative; z-index: 10; width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
+        .content-max { position: relative; z-index: 10; width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
         
-        .result-header { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .badge-dating { font-size: 0.65rem; font-weight: 900; color: #af52de; letter-spacing: 0.15em; border: 1px solid rgba(175, 82, 222, 0.3); padding: 5px 12px; border-radius: 50px; }
-        .veredicto-shock { font-family: 'Inter Black', sans-serif; font-size: 2.4rem; font-weight: 950; color: #fff; line-height: 1.1; max-width: 90%; margin: 0 auto; letter-spacing: -0.02em; }
-        .dinamica-badge { font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.6); }
-        .dinamica-badge span { color: #39ff14; }
-
-        .capture-wrapper { background: #050505; border-radius: 24px; padding: 10px; }
-        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(10px); }
+        .capture-wrapper { background: #000; border-radius: 28px; padding: 25px 20px; display: flex; flex-direction: column; gap: 30px; }
         
-        .main-report { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
-        .report-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .report-header .label { display: block; font-size: 0.6rem; font-weight: 900; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; margin-bottom: 4px; }
-        .report-header .value { font-weight: 800; font-size: 0.9rem; }
-        .risk-indicator { text-align: right; }
-        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; box-shadow: 0 0 8px currentColor; }
+        .result-header-viral { text-align: center; }
+        .label-top { font-size: 0.65rem; font-weight: 950; color: #af52de; letter-spacing: 0.2em; margin-bottom: 8px; }
+        .sub-contextual { font-size: 0.85rem; color: rgba(255,255,255,0.4); font-weight: 700; margin-bottom: 25px; }
+        .veredicto-shock-v36 { font-family: 'Inter Black', sans-serif; font-size: 2.8rem; font-weight: 950; color: #fff; line-height: 1.05; margin-bottom: 20px; letter-spacing: -0.03em; }
+        .dinamica-highlight { font-size: 1rem; font-weight: 800; color: #fff; }
+        .dinamica-highlight span { color: #39ff14; }
 
-        .metrics-grid-new { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .metric-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .metric-circle-wrap { width: 100%; max-width: 80px; position: relative; }
-        .circular-chart { display: block; margin: 0 auto; max-width: 100%; max-height: 250px; }
-        .circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 3; }
-        .circle { fill: none; stroke-width: 3; stroke-linecap: round; transition: stroke-dasharray 1.5s ease-in-out; }
-        .percentage { fill: #fff; font-family: 'Inter Black', sans-serif; font-size: 0.5rem; text-anchor: middle; font-weight: 900; }
-        .metric-label-new { font-size: 0.7rem; font-weight: 800; color: rgba(255,255,255,0.5); text-transform: uppercase; text-align: center; }
-        .metric-status { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 30px; backdrop-filter: blur(20px); }
+        .metrics-v36 { display: flex; flex-direction: column; gap: 24px; }
+        .metric-item-v36 { display: flex; flex-direction: column; gap: 8px; }
+        .m-header { display: flex; justify-content: space-between; align-items: flex-end; }
+        .m-label { font-size: 0.75rem; font-weight: 900; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+        .m-percent { font-family: 'Inter Black', sans-serif; font-size: 1.2rem; font-weight: 950; }
+        .m-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.04); border-radius: 10px; overflow: hidden; }
+        .m-bar-fill { height: 100%; border-radius: 10px; transition: width 1.8s cubic-bezier(0.19, 1, 0.22, 1); }
+        .m-interpret { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.45); font-style: italic; margin-top: 4px; }
 
-        .phrase-brutal-box { background: rgba(255, 45, 85, 0.05); border: 1px dashed rgba(255, 45, 85, 0.3); padding: 20px; border-radius: 15px; text-align: center; position: relative; }
-        .phrase-brutal-text { font-family: 'Inter Black', sans-serif; font-size: 1.25rem; color: #fff; font-style: italic; line-height: 1.3; }
+        .viral-quote-block { text-align: center; margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
+        .viral-quote-block p { font-family: 'Inter Black', sans-serif; font-size: 1.3rem; font-style: italic; color: #fff; line-height: 1.3; }
+        .stat-line-pattern { font-size: 0.75rem; font-weight: 800; color: #ffcc00; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.05em; }
 
-        .tension-block { text-align: center; padding: 0 10px; }
-        .tension-text { font-size: 0.85rem; font-weight: 700; color: #ffcc00; opacity: 0.9; }
+        .divider-new { display: flex; align-items: center; justify-content: center; margin-bottom: 25px; }
+        .divider-new span { font-size: 0.7rem; font-weight: 950; color: #af52de; border: 1px solid rgba(175, 82, 222, 0.3); padding: 5px 15px; border-radius: 100px; }
 
-        .divider { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-        .divider span { font-size: 0.7rem; font-weight: 900; color: #af52de; background: #050505; padding: 4px 12px; border: 1px solid rgba(175, 82, 222, 0.3); border-radius: 20px; }
-        
-        .insights-grid { display: flex; flex-direction: column; gap: 15px; }
-        .insight-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 18px; position: relative; overflow: hidden; }
-        .insight-card h3 { font-size: 0.9rem; font-weight: 800; color: #ff9500; margin-bottom: 8px; text-transform: uppercase; }
-        .insight-content { position: relative; }
-        .insight-content p { font-size: 0.95rem; line-height: 1.5; color: rgba(255,255,255,0.8); }
-        .text-blur { position: absolute; inset: 0; background: linear-gradient(transparent 30%, #0c0c0c 100%); pointer-events: none; }
-        .locked .insight-content p { filter: blur(3px); }
+        .insights-v36 { display: flex; flex-direction: column; gap: 15px; }
+        .insight-v36 { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 20px; }
+        .i-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .i-icon { font-size: 1.4rem; }
+        .i-meta h3 { font-size: 0.95rem; font-weight: 900; color: #ff9500; text-transform: uppercase; }
+        .i-body { position: relative; }
+        .i-body p { font-size: 1rem; line-height: 1.5; color: rgba(255,255,255,0.7); }
+        .text-blur { position: absolute; inset: 0; background: linear-gradient(transparent 30%, #050505 100%); pointer-events: none; }
+        .locked .i-body p { filter: blur(5px); }
 
-        .cta-container { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
-        .conversion-psych { background: rgba(255, 149, 0, 0.1); border: 1px solid rgba(255, 149, 0, 0.2); padding: 15px; border-radius: 12px; display: flex; gap: 12px; align-items: center; }
-        .psych-icon { font-size: 1.4rem; }
-        .conversion-psych p { font-size: 0.85rem; font-weight: 600; color: #ff9500; line-height: 1.3; }
-
-        .unlock-btn { 
-          width: 100%; padding: 22px; border-radius: 16px; 
-          background: linear-gradient(135deg, #ff2d55 0%, #ff9500 100%); 
+        .cta-container-v36 { text-align: center; margin-top: 10px; }
+        .unlock-btn-v36 { 
+          width: 100%; padding: 22px; border-radius: 18px; 
+          background: linear-gradient(135deg, #af52de 0%, #ff2d55 100%); 
           border: none; color: white; font-family: 'Inter Black', sans-serif;
-          font-size: 1.1rem; font-weight: 900; text-transform: uppercase;
-          cursor: pointer; box-shadow: 0 10px 30px rgba(255, 45, 85, 0.3);
-          transition: transform 0.2s;
+          font-size: 1.2rem; font-weight: 950; text-transform: uppercase;
+          cursor: pointer; box-shadow: 0 10px 40px rgba(175, 82, 222, 0.3);
+          transition: transform 0.2s, background 0.2s;
         }
-        .unlock-btn:hover { transform: scale(1.02); }
-        .pago-unico { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-align: center; font-weight: 600; }
+        .unlock-btn-v36:hover { transform: scale(1.02); }
+        .cta-sub { font-size: 0.75rem; color: rgba(255,255,255,0.3); font-weight: 700; margin-top: 15px; }
 
-        .share-actions { text-align: center; }
-        .share-btn { background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 12px 20px; border-radius: 10px; color: rgba(255,255,255,0.6); font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+        .share-btn-v36 { width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; color: rgba(255,255,255,0.5); font-weight: 800; cursor: pointer; }
+        .share-actions-v36 { text-align: center; }
 
         .social-proof-toast {
           position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
