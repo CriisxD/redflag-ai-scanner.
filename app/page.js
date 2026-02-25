@@ -207,9 +207,6 @@ export default function LandingPage() {
             <span className="logo-emoji">🚩</span>
             <span className="logo-text">RedFlag AI Scanner</span>
           </div>
-          <div className="lang-switch">
-             <span className="lang-opt active">ES</span> | <span className="lang-opt">EN</span>
-          </div>
         </div>
 
         <div className="hero-content">
@@ -311,14 +308,7 @@ export default function LandingPage() {
         }
 
         .lang-opt {
-          font-size: 0.7rem;
-          font-weight: 800;
-          color: rgba(255,255,255,0.3);
-          cursor: pointer;
-        }
-
-        .lang-opt.active {
-          color: white;
+          display: none;
         }
 
         .hero-section {
