@@ -26,7 +26,7 @@ function PaywallPageInner() {
   return (
     <ResultPaywall 
       onCheckout={handleStripeCheckout} 
-      aiResult={scanResult}
+      aiResult={scanResult?.aiResult || scanResult}
     />
   );
 }
