@@ -22,7 +22,7 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
         <div className="ticket-header">
           <div className="badge-tag">EXPEDIENTE REDFLAG</div>
           <h1 className="logo-text">AGENCIA INTEL</h1>
-          <div className="dating-intel-logo">ROMANTIC INTELLIGENCE</div>
+          <div className="dating-intel-logo">TIKTOK EDITION | VERIFIED</div>
         </div>
 
         <div className="ticket-content">
@@ -56,8 +56,8 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
           </div>
 
           <div className="viral-block-ticket">
-            <p className="v-phrase">“{fraseViral || 'Te quiere cerca, no comprometido.'}”</p>
-            <span className="v-pattern">{lineaPatron || 'Patrón común en dinámicas sin avance.'}</span>
+            <p className="v-phrase">“{fraseViral || 'El que más escribe siempre tiene menos poder.'}”</p>
+            <span className="v-pattern">REDFLAG ANALYTICS | TIKTOK EXCLUSIVE</span>
           </div>
 
           <div className="branding-seal">
@@ -248,9 +248,11 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
 
         .m-val-ticket {
           font-family: 'Inter Black', sans-serif;
-          font-size: 1.1rem;
+          font-size: 1.4rem;
           font-weight: 950;
         }
+        .m-row-ticket { margin-bottom: 5px; }
+        .m-label-ticket { font-size: 0.85rem; color: white; text-transform: none; font-weight: 800; }
 
         .m-bar-ticket {
           width: 100%;
@@ -284,12 +286,12 @@ export default function ShareableTicket({ name, metrics = {}, veredicto, dinamic
 
         .v-phrase {
           font-family: 'Inter Black', sans-serif;
-          font-size: 1.6rem;
+          font-size: 1.8rem;
           font-weight: 900;
-          line-height: 1.25;
+          line-height: 1.1;
           color: white;
           font-style: italic;
-          margin-bottom: 15px;
+          margin-bottom: 20px;
         }
 
         .v-pattern {

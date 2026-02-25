@@ -112,39 +112,39 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
               </div>
             </div>
 
-            <div className="metrics-v36 scorecard">
-              <div className="scorecard-title">SCORECARD DE RECIPROCIDAD</div>
+            <div className="metrics-v36 binary-questions">
               {[
-                { label: 'TASA DE INICIATIVA', score: aiResult?.reciprocidad?.iniciativa?.score, eviden: aiResult?.reciprocidad?.iniciativa?.evidencia },
-                { label: 'EXPANSIÓN DE TEMAS', score: aiResult?.reciprocidad?.expansion?.score, eviden: aiResult?.reciprocidad?.expansion?.evidencia },
-                { label: 'VALIDACIÓN EMOCIONAL', score: aiResult?.reciprocidad?.validacion?.score, eviden: aiResult?.reciprocidad?.validacion?.evidencia }
+                { label: aiResult?.metricas_binarias?.q1?.pregunta || '¿Quiere volver?', valor: aiResult?.metricas_binarias?.q1?.valor },
+                { label: aiResult?.metricas_binarias?.q2?.pregunta || '¿Te extraña?', valor: aiResult?.metricas_binarias?.q2?.valor },
+                { label: aiResult?.metricas_binarias?.q3?.pregunta || '¿Busca algo serio?', valor: aiResult?.metricas_binarias?.q3?.valor }
               ].map((m, idx) => {
-                const color = getStatusColor(m.score || 0);
+                const color = getStatusColor(m.valor || 0);
                 return (
-                  <div key={idx} className="metric-row-v36 v4">
+                  <div key={idx} className="metric-row-v36 binary">
                     <div className="m-info-v36">
-                      <span className="m-label-v36">{m.label}</span>
-                      <span className="m-val-v36" style={{ color }}>{m.score || 0}%</span>
+                      <span className="m-label-v36 binary">{m.label}</span>
+                      <span className="m-val-v36 binary" style={{ color }}>{m.valor || 0}%</span>
                     </div>
-                    <div className="m-bar-v36">
+                    <div className="m-bar-v36 binary">
                       <div 
                         className="m-fill-v36" 
                         style={{ 
-                          width: showProgressBars ? `${m.score || 0}%` : '0%', 
+                          width: showProgressBars ? `${m.valor || 0}%` : '0%', 
                           backgroundColor: color,
+                          boxShadow: `0 0 10px ${color}33`
                         }} 
                       />
                     </div>
-                    <p className="m-eviden-v36">"{m.eviden || 'Evaluando...'}"</p>
                   </div>
                 );
               })}
             </div>
 
-            <div className="viral-quote-v36">
-              <p>“{aiResult?.frase_viral || 'Te quiere cerca, no comprometido.'}”</p>
-              <span className="stat-line-v36">{aiResult?.linea_patron || 'Típico en interacciones de validación.'}</span>
+            <div className="viral-punchline-v41">
+              <p className="punchline-text">"{aiResult?.punchline_viral || 'El que más escribe siempre es el que menos poder tiene.'}"</p>
+              <div className="tiktok-tag">TIKTOK EDITION | VERIFIED INTEL</div>
             </div>
+
           </div>
         </div>
 
@@ -232,8 +232,8 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         </div>
 
         <div className="final-actions-v36">
-           <button onClick={handleDownload} className="download-btn-v36" disabled={downloading}>
-             {downloading ? 'Capturando...' : 'Generar Screenshot Viral 📸'}
+           <button onClick={handleDownload} className="download-btn-v36 tiktok-style" disabled={downloading}>
+             {downloading ? 'Codificando...' : 'Generar TikTok Edition 📸'}
            </button>
         </div>
 
@@ -386,6 +386,22 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
         .m-eviden-v36 { font-size: 0.75rem; color: rgba(255,255,255,0.4); font-style: italic; margin-top: 5px; }
         .scorecard-title { font-size: 0.8rem; font-weight: 950; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px; }
 
+        .binary-questions { margin-top: 20px; gap: 18px; }
+        .m-label-v36.binary { font-size: 0.9rem; color: white; font-weight: 800; letter-spacing: 0; text-transform: none; }
+        .m-val-v36.binary { font-size: 1.4rem; }
+        .m-bar-v36.binary { height: 14px; background: rgba(255,255,255,0.1); }
+        
+        .viral-punchline-v41 { 
+          margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; text-align: center;
+        }
+        .punchline-text { 
+          font-family: 'Inter Black', sans-serif; font-size: 1.6rem; font-weight: 950; font-style: italic; 
+          line-height: 1.2; color: white; margin-bottom: 15px;
+        }
+        .tiktok-tag { 
+          font-size: 0.65rem; font-weight: 950; color: #ff2d55; letter-spacing: 0.2em;
+        }
+
         .paywall-cta-v36 { text-align: center; }
         .unlock-btn-v36 { 
           width: 100%; padding: 24px; border-radius: 22px; 
@@ -400,6 +416,11 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
 
         .final-actions-v36 { text-align: center; margin-top: 20px; }
         .download-btn-v36 { background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 18px; border-radius: 15px; color: rgba(255,255,255,0.5); font-weight: 800; cursor: pointer; width: 100%; }
+        .download-btn-v36.tiktok-style {
+          background: #fff; color: #000; border: none; font-family: 'Inter Black', sans-serif;
+          font-size: 1.1rem; box-shadow: 0 10px 30px rgba(255,255,255,0.1); transition: all 0.3s;
+        }
+        .download-btn-v36.tiktok-style:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255,255,255,0.2); }
 
         .social-toast {
           position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
