@@ -211,7 +211,7 @@ export default function ResultPaywall({ onCheckout, aiResult }) {
                  <h3>Plan de Acción</h3>
                </div>
                <div className="i-content-v36">
-                 <p>{isUnlocked ? aiResult?.analisis_premium?.estrategia_final : `Optimizando tu estrategia para: ${userIntent}`}</p>
+                 <p>{isUnlocked ? aiResult?.analisis_premium?.estrategia_final : `Optimizando tu estrategia para: ${aiResult?.user_intent || "tu objetivo"}`}</p>
                  {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>

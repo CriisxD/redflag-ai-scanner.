@@ -139,6 +139,9 @@ IMPORTANTE: El tono debe ser de Expediente de Inteligencia, pero con la punterí
     // 3. Return result + checkout link
     const checkoutUrl = `https://redflagscanner.lemonsqueezy.com/checkout/buy/${VARIANT_ID}?embed=1&checkout[custom][scan_id]=${scanData.id}`;
 
+    // Attach user intent for the frontend
+    aiResult.user_intent = userIntent;
+
     return NextResponse.json({
       scanId: scanData.id,
       aiResult,
