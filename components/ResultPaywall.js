@@ -4,12 +4,17 @@ import { useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import ShareableTicket from './ShareableTicket';
 
-export default function ResultPaywall({ onCheckout, aiResult }) {
+export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = false }) {
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(forcedUnlocked);
   const [showProgressBars, setShowProgressBars] = useState(false);
   const [showSocialProof, setShowSocialProof] = useState(false);
+
+  // Sync forcedUnlocked if it changes (e.g. from an API fetch)
+  useEffect(() => {
+    if (forcedUnlocked) setIsUnlocked(true);
+  }, [forcedUnlocked]);
 
   // TESTING MODE: Set to false for production
   const TEST_MODE = true; 
