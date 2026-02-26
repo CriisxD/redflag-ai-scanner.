@@ -92,6 +92,14 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
 
         if (!response.ok) {
           const errData = await response.json().catch(() => ({}));
+          
+          // Handle rate limit (429)
+          if (response.status === 429 || errData.error === 'limit_reached') {
+            setScanResult({ error: 'limit_reached', ...errData });
+            sessionStorage.setItem('lastScanResult', JSON.stringify({ error: 'limit_reached', ...errData }));
+            return;
+          }
+
           throw new Error(errData.details || errData.error || 'Failed to scan');
         }
         
