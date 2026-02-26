@@ -11,6 +11,7 @@ const getOpenAIClient = () => {
   if (!apiKey) throw new Error('Missing OPENAI_API_KEY environment variable');
   return new OpenAI({ apiKey });
 };
+const DAILY_SCAN_LIMIT = 10;
 
 export async function POST(req) {
   try {
@@ -18,12 +19,39 @@ export async function POST(req) {
     const { images, targetName, context = {} } = body;
     const { daysChatting = 'N/A', hasMet = 'N/A', userIntent = 'N/A' } = context;
 
+    // Extract client IP
+    const forwarded = req.headers.get('x-forwarded-for');
+    const clientIp = forwarded ? forwarded.split(',')[0].trim() : req.headers.get('x-real-ip') || 'unknown';
+
     console.log('--- SCAN REQUEST RECEIVED ---');
     console.log('Target:', targetName);
     console.log('Images count:', images?.length);
 
     if (!images || !Array.isArray(images) || images.length === 0) {
       return NextResponse.json({ error: 'No images provided' }, { status: 400 });
+    }
+
+    // Anti-abuse: 10 scans per IP per day
+    if (supabase && clientIp !== 'unknown') {
+      try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const { count, error: countError } = await supabase
+          .from('scans')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_ip', clientIp)
+          .gte('created_at', today.toISOString());
+
+        if (!countError && count >= DAILY_SCAN_LIMIT) {
+          console.log(`[Anti-Abuse] IP ${clientIp} hit daily limit (${count}/${DAILY_SCAN_LIMIT})`);
+          return NextResponse.json({ 
+            error: 'daily_limit',
+            message: 'Has alcanzado el máximo de análisis por hoy. Vuelve mañana 🌅'
+          }, { status: 429 });
+        }
+      } catch (e) {
+        // Non-blocking: allow scan if check fails
+      }
     }
 
     const finalTargetName = targetName?.trim() || 'Sujeto Anónimo';
@@ -142,7 +170,8 @@ IMPORTANTE: Evita lenguaje genérico. El reporte debe sentirse científico, cín
           { 
             target_name: finalTargetName,
             ai_result: aiResult,
-            payment_status: 'free'
+            payment_status: 'free',
+            user_ip: clientIp
           }
         ])
         .select()

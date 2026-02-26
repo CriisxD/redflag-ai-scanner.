@@ -94,9 +94,8 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
           const errData = await response.json().catch(() => ({}));
           
           // Handle rate limit (429)
-          if (response.status === 429 || errData.error === 'limit_reached') {
-            setScanResult({ error: 'limit_reached', ...errData });
-            sessionStorage.setItem('lastScanResult', JSON.stringify({ error: 'limit_reached', ...errData }));
+          if (response.status === 429 || errData.error === 'limit_reached' || errData.error === 'daily_limit') {
+            setError(errData.message || 'Límite de análisis alcanzado. Vuelve mañana.');
             return;
           }
 
