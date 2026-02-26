@@ -10,6 +10,7 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
   const [isUnlocked, setIsUnlocked] = useState(forcedUnlocked);
   const [showProgressBars, setShowProgressBars] = useState(false);
   const [showSocialProof, setShowSocialProof] = useState(false);
+  const [countdown, setCountdown] = useState(600); // 10 min = 600s
 
   // Sync forcedUnlocked if it changes (e.g. from an API fetch)
   useEffect(() => {
@@ -27,12 +28,38 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
       if (saved) setTargetName(saved);
     }
     const timer = setTimeout(() => setShowProgressBars(true), 500);
-    const proofTimer = setTimeout(() => setShowSocialProof(true), 4000);
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(proofTimer);
-    };
+    return () => clearTimeout(timer);
   }, []);
+
+  // Urgency countdown (10 min)
+  useEffect(() => {
+    if (isUnlocked) return;
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 0) { clearInterval(interval); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isUnlocked]);
+
+  const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+
+  const handleShare = async () => {
+    const score = aiResult?.metricas_binarias?.[0]?.valor || '??';
+    const verdict = aiResult?.veredicto_shock || 'Sin veredicto';
+    const icon = aiResult?.verdict_icon || '🚩';
+    const shareText = `${icon} Mi RedFlag Score: ${score}% — "${verdict}"\n\nAnaliza tu crush gratis → redflagscanner.xyz 🔍`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({ text: shareText });
+      } catch (e) { /* user cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      alert('¡Copiado al portapapeles!');
+    }
+  };
 
   const handleCheckoutClick = () => {
     if (TEST_MODE) {
@@ -314,6 +341,18 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
 
           {!isUnlocked && (
             <div className="paywall-cta-v36">
+              {countdown > 0 && (
+                <div className="urgency-timer">
+                  <span className="timer-icon">⏳</span>
+                  <span>Tu análisis se eliminará en <strong>{formatTime(countdown)}</strong></span>
+                </div>
+              )}
+              {countdown <= 0 && (
+                <div className="urgency-timer expired">
+                  <span className="timer-icon">⚠️</span>
+                  <span>Tu análisis está a punto de expirar</span>
+                </div>
+              )}
               <button 
                 className={`unlock-btn-v36 ${loading ? 'loading' : ''}`}
                 onClick={handleCheckoutClick}
@@ -324,6 +363,13 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
               <p className="paywall-sub">Pago único · Acceso inmediato · Dossier generado por IA</p>
             </div>
           )}
+
+          {/* Viral Share Button */}
+          <div className="share-section">
+            <button className="share-btn" onClick={handleShare}>
+              🚩 Compartir mi RedFlag Score
+            </button>
+          </div>
         </div>
 
 
@@ -523,6 +569,24 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .sig-item p { font-size: 0.85rem !important; line-height: 1.4 !important; color: rgba(255,255,255,0.7) !important; }
 
         .paywall-cta-v36 { text-align: center; margin-top: 20px; }
+        .urgency-timer {
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          background: rgba(255, 60, 60, 0.1); border: 1px solid rgba(255, 60, 60, 0.3);
+          border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;
+          font-size: 0.85rem; color: #ff6b6b; font-weight: 600;
+          animation: urgencyPulse 2s ease-in-out infinite;
+        }
+        .urgency-timer.expired {
+          background: rgba(255, 40, 40, 0.15); border-color: rgba(255, 40, 40, 0.5);
+          color: #ff4444; animation: urgencyPulse 1s ease-in-out infinite;
+        }
+        .urgency-timer strong { color: #fff; font-size: 1.1rem; }
+        .timer-icon { font-size: 1.1rem; }
+        @keyframes urgencyPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+
         .unlock-btn-v36 { 
           width: 100%; padding: 22px; border-radius: 60px; 
           background: linear-gradient(135deg, #E0B0FF 0%, #FFB347 100%); 
@@ -534,6 +598,18 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .unlock-btn-v36:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(224, 176, 255, 0.35); }
         .unlock-btn-v36:active { transform: scale(0.98); }
         .paywall-sub { font-size: 0.85rem; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 15px; }
+
+        .share-section { text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .share-btn {
+          background: transparent; border: 2px solid rgba(255, 59, 48, 0.4);
+          color: #ff3b30; font-weight: 700; font-size: 1rem;
+          padding: 16px 32px; border-radius: 60px; cursor: pointer;
+          transition: all 0.2s; width: 100%;
+        }
+        .share-btn:hover {
+          background: rgba(255, 59, 48, 0.1); border-color: rgba(255, 59, 48, 0.7);
+          transform: translateY(-1px);
+        }
 
         .final-actions-v36 { text-align: center; margin-top: 20px; }
         .download-btn-v36 { background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 18px; border-radius: 60px; color: rgba(255,255,255,0.5); font-weight: 600; cursor: pointer; width: 100%; }
