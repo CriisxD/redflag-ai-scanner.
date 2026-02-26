@@ -12,48 +12,18 @@ const getOpenAIClient = () => {
   return new OpenAI({ apiKey });
 };
 
-const FREE_SCAN_LIMIT = 2;
-
 export async function POST(req) {
   try {
     const body = await req.json();
     const { images, targetName, context = {} } = body;
     const { daysChatting = 'N/A', hasMet = 'N/A', userIntent = 'N/A' } = context;
 
-    // Extract client IP
-    const forwarded = req.headers.get('x-forwarded-for');
-    const clientIp = forwarded ? forwarded.split(',')[0].trim() : req.headers.get('x-real-ip') || 'unknown';
-
     console.log('--- SCAN REQUEST RECEIVED ---');
     console.log('Target:', targetName);
     console.log('Images count:', images?.length);
-    console.log('Client IP:', clientIp);
 
     if (!images || !Array.isArray(images) || images.length === 0) {
       return NextResponse.json({ error: 'No images provided' }, { status: 400 });
-    }
-
-    // IP Rate Limiting: Check scan count for this IP
-    if (supabase && clientIp !== 'unknown') {
-      try {
-        const { count, error: countError } = await supabase
-          .from('scans')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_ip', clientIp);
-
-        if (!countError && count >= FREE_SCAN_LIMIT) {
-          console.log(`[Rate Limit] IP ${clientIp} has ${count} scans (limit: ${FREE_SCAN_LIMIT})`);
-          return NextResponse.json({ 
-            error: 'limit_reached',
-            message: 'Has alcanzado el límite de análisis gratuitos.',
-            scansUsed: count,
-            limit: FREE_SCAN_LIMIT
-          }, { status: 429 });
-        }
-      } catch (rlError) {
-        console.error('Rate limit check error (non-blocking):', rlError);
-        // Non-blocking: if check fails, allow the scan
-      }
     }
 
     const finalTargetName = targetName?.trim() || 'Sujeto Anónimo';
@@ -172,8 +142,7 @@ IMPORTANTE: Evita lenguaje genérico. El reporte debe sentirse científico, cín
           { 
             target_name: finalTargetName,
             ai_result: aiResult,
-            payment_status: 'free',
-            user_ip: clientIp
+            payment_status: 'free'
           }
         ])
         .select()

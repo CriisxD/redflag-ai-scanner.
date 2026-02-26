@@ -11,8 +11,7 @@ const STEPS = {
   UPLOAD: 'UPLOAD',
   MICRO_LOADING: 'MICRO_LOADING',
   SURVEY: 'SURVEY',
-  SCANNING: 'SCANNING',
-  LIMIT_REACHED: 'LIMIT_REACHED'
+  SCANNING: 'SCANNING'
 };
 
 export default function LandingPage() {
@@ -56,10 +55,6 @@ export default function LandingPage() {
   };
 
   const handleScanComplete = (result) => {
-    if (result?.error === 'limit_reached') {
-      setStep(STEPS.LIMIT_REACHED);
-      return;
-    }
     if (result && !result.error) {
       router.push('/scan');
     } else {
@@ -68,40 +63,6 @@ export default function LandingPage() {
       setScanningFiles([]);
     }
   };
-
-  // STEP: LIMIT_REACHED
-  if (step === STEPS.LIMIT_REACHED) {
-    return (
-      <div className="step-container limit-step">
-        <div className="limit-card">
-          <span className="limit-icon">🔒</span>
-          <h2 className="limit-title">Has usado tus 2 análisis gratuitos</h2>
-          <p className="limit-desc">
-            Cada análisis usa inteligencia artificial avanzada para leer tu conversación. 
-            Para seguir analizando, desbloquea tu próximo análisis.
-          </p>
-          <button className="limit-btn" onClick={() => {
-            const STORE_SLUG = 'redflag-ai-scanner';
-            const VARIANT_ID = 'eae71b99-bc07-42a4-a237-c2ed88657720';
-            window.location.href = `https://${STORE_SLUG}.lemonsqueezy.com/checkout/buy/${VARIANT_ID}`;
-          }}>
-            Desbloquear Análisis — $2.99 USD
-          </button>
-          <button className="limit-back" onClick={() => setStep(STEPS.LANDING)}>← Volver al inicio</button>
-        </div>
-        <style jsx>{`
-          .limit-step { background: #050505; height: 100vh; height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-          .limit-card { width: 100%; max-width: 420px; text-align: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 50px 30px; }
-          .limit-icon { font-size: 4rem; display: block; margin-bottom: 20px; }
-          .limit-title { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1.5rem; color: white; margin-bottom: 16px; line-height: 1.3; }
-          .limit-desc { color: rgba(255,255,255,0.5); font-size: 0.9rem; line-height: 1.5; margin-bottom: 30px; }
-          .limit-btn { width: 100%; padding: 18px; border-radius: 60px; background: linear-gradient(135deg, #E0B0FF, #FFB347); border: none; color: #1A0B2E; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; }
-          .limit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(224, 176, 255, 0.3); }
-          .limit-back { margin-top: 20px; background: transparent; border: none; color: rgba(255,255,255,0.4); font-weight: 600; cursor: pointer; font-size: 0.85rem; }
-        `}</style>
-      </div>
-    );
-  }
 
   // STEP: SCANNING
   if (step === STEPS.SCANNING) {
