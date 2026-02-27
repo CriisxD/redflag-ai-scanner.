@@ -204,10 +204,9 @@ export default function LandingPage() {
         <div className="noise-overlay"></div>
         
         <div className="top-nav">
-          <div className="brand-logo">
-            <span className="logo-emoji">🚩</span>
-            <span className="logo-text">RedFlag AI Scanner</span>
-          </div>
+          <Link href="/" className="brand-logo">
+            <img src="/assets/logo.png" alt="RedFlag AI Logo" className="logo-img" />
+          </Link>
         </div>
 
         <div className="hero-content">
@@ -302,16 +301,16 @@ export default function LandingPage() {
         .brand-logo {
           display: flex;
           align-items: center;
-          gap: 10px;
-          opacity: 0.7;
+          transition: transform 0.2s;
+        }
+        .brand-logo:hover {
+          transform: scale(1.05);
         }
 
-        .logo-text {
-          font-weight: 800;
-          font-size: 0.85rem;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.6);
+        .logo-img {
+          height: 48px;
+          width: auto;
+          filter: drop-shadow(0 0 15px rgba(255, 45, 85, 0.3));
         }
 
         .lang-opt {
