@@ -215,17 +215,21 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           </div>
         </div>
 
-        {/* Viral Share Button (Moved up) */}
-        <div className="share-section" style={{ marginBottom: '20px', textAlign: 'center' }}>
-          <button className="share-btn" onClick={handleShare}>
-            🚩 Compartir mi RedFlag Score
-          </button>
-        </div>
+          <div className="share-section" style={{ marginBottom: '20px', textAlign: 'center' }}>
+            <button className="share-btn" onClick={handleShare}>
+              {isUnlocked ? "🚀 Compartir Reporte Táctico" : "🚩 Compartir Warning Ticket (Lite)"}
+            </button>
+            {isUnlocked && (
+              <button className="share-btn download-btn" onClick={() => window.print()} style={{ marginTop: '10px' }}>
+                💾 Descargar Dossier Oficial (PDF)
+              </button>
+            )}
+          </div>
 
         {/* SECCIÓN 2: PAYWALL & STRATEGY */}
         <div className="strategy-sequence-v36">
           <div className="divider-strategy">
-            <span className="terminal-title">✨ LECTURA PROFUNDA (EXTENDIDA)</span>
+            <span className="terminal-title">✨ ANÁLISIS TÁCTICO (ELIMINACIÓN: 10m)</span>
           </div>
 
           <div className="insights-grid-v36">
@@ -233,7 +237,7 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">💀</span>
-                 <h3 className="terminal-title">The Receipts (Desglose)</h3>
+                 <h3 className="terminal-title">LAS PRUEBAS (Evidencia)</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
@@ -263,7 +267,7 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">👤</span>
-                 <h3>The Persona (Perfil)</h3>
+                 <h3>EL PERFIL (Arquetipo)</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
@@ -300,7 +304,14 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
                       </p>
                     </div>
                   ) : (
-                    <p>Calculando longitud de mensajes y tiempos de espera para determinar dominancia...</p>
+                    <div className="pbi-tease-v63">
+                      <p className="terminal-text">Calculando asimetría de mensajes y tiempos...</p>
+                      <div className="blurred-chart-v63">
+                        <div className="chart-bar-v63" style={{ width: '40%' }}></div>
+                        <div className="chart-bar-v63" style={{ width: '85%', background: 'var(--accent-red)' }}></div>
+                        <div className="pbi-value-blur">1.XX</div>
+                      </div>
+                    </div>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -358,7 +369,12 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
                       </div>
                     </div>
                   ) : (
-                    <p>Diseñando guiones de respuesta y estrategias de salida digna...</p>
+                    <div className="tactical-tease-v63">
+                      <p className="terminal-text">Diseñando respuesta asimétrica y plan de salida...</p>
+                      <div className="blurred-template-v63">
+                        "Oye, me parece que [CENSURADO]. No voy a [BORROSO]..."
+                      </div>
+                    </div>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -403,6 +419,7 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           dinamica={aiResult?.analisis_detallado?.dinamica}
           quien_manda={aiResult?.analisis_detallado?.quien_manda}
           mensaje_viral={aiResult?.mensaje_viral}
+          isUnlocked={isUnlocked}
         />
       </div>
 
@@ -552,7 +569,23 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         }
         .locked .i-content-v36 p, .locked .i-content-v36 div { filter: blur(12px); opacity: 0.2; }
 
-        .paywall-cta-v36 { margin-top: 30px; text-align: center; }
+        .pbi-tease-v63 { padding: 10px 0; }
+        .blurred-chart-v63 { 
+          height: 60px; display: flex; align-items: flex-end; gap: 10px; margin-top: 15px;
+          filter: blur(5px); opacity: 0.3; justify-content: center; position: relative;
+        }
+        .chart-bar-v63 { width: 20px; height: 100%; background: rgba(255,255,255,0.2); border-radius: 2px; }
+        .pbi-value-blur { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; font-weight: 900; }
+
+        .tactical-tease-v63 { margin-top: 10px; }
+        .blurred-template-v63 { 
+          background: rgba(255,255,255,0.03); padding: 15px; border-radius: 4px;
+          filter: blur(6px); opacity: 0.2; font-family: var(--font-terminal);
+          border: 1px dashed rgba(255,255,255,0.1); font-size: 0.9rem;
+        }
+
+        .share-btn.download-btn { background: transparent; border: 1px solid var(--accent-amber); color: var(--accent-amber); }
+        .share-btn.download-btn:hover { background: var(--accent-amber); color: #000; }
         .unlock-btn-v36 { 
           width: 100%; padding: 20px; background: var(--accent-red); border: none; color: black; 
           font-family: var(--font-terminal); font-size: 1.1rem; font-weight: 700; cursor: pointer;

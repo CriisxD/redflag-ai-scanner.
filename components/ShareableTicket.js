@@ -16,28 +16,35 @@ export default function ShareableTicket({
   quien_manda,
   mensaje_viral, 
   reportId, 
-  verdictIcon 
+  verdictIcon,
+  isUnlocked = false
 }) {
   return (
-    <div id="shareable-ticket-capture" className="ticket-container">
+    <div id="shareable-ticket-capture" className={`ticket-container ${!isUnlocked ? 'lite-mode' : ''}`}>
       <div className="status-top">
         <span className="terminal-text">REPORT_ID: {reportId || 'PENDING'}</span>
         <span className="terminal-text">ENCRYPTION: AES-256</span>
       </div>
 
       <div className="ticket-body">
+        <div className="confidential-seal">{isUnlocked ? 'OFFICIAL' : 'CONFIDENTIAL'}</div>
+        {!isUnlocked && <div className="blocked-stamp">REPORT BLOCKED</div>}
+        
         <div className="header-zone">
-          <div className="confidential-seal">CONFIDENTIAL</div>
           <div className="logo-area">
-            <span className="logo-emoji-tk">{verdictIcon || '🚩'}</span>
+            <span className="logo-emoji-tk">{isUnlocked ? (verdictIcon || '🚩') : '⚠️'}</span>
             <h1 className="terminal-title">REDFLAG ARCHIVE</h1>
           </div>
           <p className="dossier-label">UNSPECIFIED DOSSIER: {name?.toUpperCase()}</p>
         </div>
 
         <div className="verdict-zone">
-          <h2 className="shock-title terminal-title">{shock_verdict || 'ANÁLISIS COMPLETADO'}</h2>
-          <div className="dominance-badge terminal-text">DOMINANCIA: {quien_manda || 'N/A'}</div>
+          <h2 className="shock-title terminal-title">
+            {isUnlocked ? (shock_verdict || 'ANÁLISIS') : 'LITE WARNING'}
+          </h2>
+          <div className="dominance-badge terminal-text">
+            {isUnlocked ? `DOMINANCIA: ${quien_manda}` : 'EVIDENCIA COMPROMETEDORA DETECTADA'}
+          </div>
         </div>
 
         <div className="metrics-grid-tk">
@@ -48,20 +55,29 @@ export default function ShareableTicket({
           </div>
           <div className="metric-box-tk">
             <div className="m-head-tk">SIMP_INDEX</div>
-            <div className="m-value-tk terminal-title">{meme_metrics.simp_meter || 0}%</div>
-            <div className="m-bar-tk"><div className="m-fill-tk" style={{ width: `${meme_metrics.simp_meter || 0}%`, background: 'var(--accent-amber)' }} /></div>
+            <div className="m-value-tk terminal-title">{isUnlocked ? (meme_metrics.simp_meter || 0) : 'XX'}%</div>
+            <div className="m-bar-tk"><div className="m-fill-tk" style={{ width: `${isUnlocked ? (meme_metrics.simp_meter || 0) : 100}%`, background: isUnlocked ? 'var(--accent-amber)' : 'rgba(255,255,255,0.1)' }} /></div>
           </div>
         </div>
 
-        <div className="summary-zone">
-          <div className="s-row">
-            <span className="s-label-tk">VÍNCULO:</span>
-            <span className="s-val-tk terminal-text">{dinamica || 'SOSPECHOSO'}</span>
+        {!isUnlocked && (
+          <div className="locked-teaser-tk">
+            <span className="terminal-text">ANÁLISIS DE "LAS PRUEBAS" BLOQUEADO</span>
+            <div className="blur-box-tk" />
           </div>
-        </div>
+        )}
+
+        {isUnlocked && (
+          <div className="summary-zone">
+            <div className="s-row">
+              <span className="s-label-tk">VÍNCULO:</span>
+              <span className="s-val-tk terminal-text">{dinamica || 'SOSPECHOSO'}</span>
+            </div>
+          </div>
+        )}
 
         <div className="viral-punchline-tk">
-          <p className="punch-text">"{mensaje_viral || 'Análisis finalizado por la Agencia RedFlag.'}"</p>
+          <p className="punch-text">"{isUnlocked ? mensaje_viral : 'Alguien está ocultando la verdad. Reporte completo en redflagscanner.xyz'}"</p>
         </div>
 
         <div className="footer-tk">
@@ -105,6 +121,15 @@ export default function ShareableTicket({
         .m-value-tk { font-size: 1.8rem; margin-bottom: 10px; }
         .m-bar-tk { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
         .m-fill-tk { height: 100%; border-radius: 2px; }
+
+        .blocked-stamp {
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg);
+          border: 8px double var(--accent-red); color: var(--accent-red);
+          padding: 20px 40px; font-size: 3rem; font-weight: 900; opacity: 0.6;
+          z-index: 100; pointer-events: none; text-transform: uppercase;
+        }
+        .locked-teaser-tk { margin-bottom: 40px; text-align: center; }
+        .blur-box-tk { height: 40px; background: rgba(255,255,255,0.05); filter: blur(10px); margin-top: 10px; border-radius: 4px; }
 
         .summary-zone { margin-bottom: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; }
         .s-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
