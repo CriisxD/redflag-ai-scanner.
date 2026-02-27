@@ -126,9 +126,6 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         }`}>
           {/* HUD Elements -> Now Astrological / Editorial Watermarks */}
           <div className="hud-overlay">
-            <div className="brand-logo-mini">
-              <img src="/assets/logo.png" alt="Logo" className="logo-mini-img" />
-            </div>
             <div className="hud-id">{aiResult?.case_id || 'ID-RESERVADO'}</div>
             <div className="hud-status" style={{ color: '#E0B0FF' }}>LECTURA ENERGÉTICA</div>
             <div className="hud-watermark">P A T T E R N S</div>

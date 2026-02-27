@@ -10,6 +10,11 @@ export const metadata = {
     maximumScale: 1,
     viewportFit: 'cover',
   },
+  icons: {
+    icon: '/assets/logo.png',
+    shortcut: '/assets/logo.png',
+    apple: '/assets/logo.png',
+  },
 };
 
 export default function RootLayout({ children }) {
