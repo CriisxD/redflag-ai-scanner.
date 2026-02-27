@@ -572,21 +572,23 @@ export default function LandingPage() {
         .footer-links {
           display: flex;
           justify-content: center;
-          gap: 20px;
+          gap: 25px;
           margin-top: 15px;
         }
 
         .footer-links a {
-          font-size: 0.7rem;
-          color: rgba(255,255,255,0.3);
+          font-size: 0.75rem;
+          color: rgba(255,255,255,0.5) !important;
           text-decoration: none;
           text-transform: uppercase;
-          letter-spacing: 0.05em;
-          transition: color 0.2s;
+          letter-spacing: 0.08em;
+          font-weight: 600;
+          transition: all 0.2s;
         }
 
         .footer-links a:hover {
-          color: #E0B0FF;
+          color: #E0B0FF !important;
+          opacity: 1;
         }
 
         .features-grid {
