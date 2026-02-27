@@ -92,7 +92,7 @@ export default function LandingPage() {
           .analysis-icon { font-size: 3rem; display: block; margin-bottom: 20px; animation: pulse 1s infinite; }
           .loading-title { font-family: 'Inter Black', sans-serif; color: white; font-size: 1.5rem; }
           .mini-progress-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.1); margin: 20px auto; border-radius: 2px; overflow: hidden; }
-          .fill { height: 100%; background: #39ff14; width: 0; animation: fill 1.5s linear forwards; }
+          .fill { height: 100%; background: #ff2d55; width: 0; animation: fill 1.5s linear forwards; }
           @keyframes fill { to { width: 100%; } }
           @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         `}</style>
@@ -119,11 +119,11 @@ export default function LandingPage() {
         <style jsx>{`
           .upload-step { background: #050505; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
           .upload-box { width: 100%; max-width: 500px; border: 2px dashed rgba(175, 82, 222, 0.4); border-radius: 24px; padding: 60px 40px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(175, 82, 222, 0.02); }
-          .upload-box:hover { border-color: #39ff14; background: rgba(57, 255, 20, 0.02); }
+          .upload-box:hover { border-color: #ff2d55; background: rgba(255, 45, 85, 0.05); }
           .upload-icon { font-size: 4rem; display: block; margin-bottom: 24px; }
           .upload-title { font-family: 'Inter Black', sans-serif; color: white; font-size: 1.8rem; margin-bottom: 12px; line-height: 1.2; }
           .upload-subtitle { color: rgba(255,255,255,0.6); margin-bottom: 30px; }
-          .upload-btn-secondary { display: inline-block; background: #39ff14; color: black; font-weight: 900; padding: 12px 24px; border-radius: 12px; text-transform: uppercase; font-size: 0.9rem; }
+          .upload-btn-secondary { display: inline-block; background: #ff2d55; color: black; font-weight: 900; padding: 12px 24px; border-radius: 12px; text-transform: uppercase; font-size: 0.9rem; }
           .upload-hint { margin-top: 20px; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
           .back-btn { position: absolute; top: 40px; left: 40px; background: transparent; border: none; color: rgba(255,255,255,0.5); font-weight: 700; cursor: pointer; }
         `}</style>
@@ -189,9 +189,9 @@ export default function LandingPage() {
           .opt-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; }
           .opt-btn.active { background: #af52de; border-color: #af52de; color: white; }
           .survey-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; color: white; outline: none; text-align: center; }
-          .generate-btn { width: 100%; background: #39ff14; color: black; font-weight: 900; padding: 18px; border-radius: 14px; margin-top: 20px; cursor: pointer; border: none; transition: all 0.3s; }
+          .generate-btn { width: 100%; background: #ff2d55; color: black; font-weight: 900; padding: 18px; border-radius: 14px; margin-top: 20px; cursor: pointer; border: none; transition: all 0.3s; }
           .generate-btn:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
-          .generate-btn:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 0 30px rgba(57, 255, 20, 0.3); }
+          .generate-btn:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 0 30px rgba(255, 45, 85, 0.3); }
         `}</style>
       </div>
     );
@@ -488,7 +488,7 @@ export default function LandingPage() {
           height: 220px;
           border-radius: 50%;
           background: #080808;
-          border: 4px solid #39ff14;
+          border: 4px solid #ff2d55;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -518,7 +518,7 @@ export default function LandingPage() {
           width: 40px;
           height: 40px;
           border: 4px solid rgba(255, 255, 255, 0.1);
-          border-top: 4px solid #39ff14;
+          border-top: 4px solid #ff2d55;
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -542,7 +542,7 @@ export default function LandingPage() {
         }
 
         .btn-primary-text {
-          color: #39ff14;
+          color: #ff2d55;
           font-size: 1.4rem;
           font-weight: 900;
           line-height: 1.1;
