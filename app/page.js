@@ -210,13 +210,13 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="title-white">DATING</span>
-            <span className="title-red">INTELLIGENCE <span className="title-emoji">🔍</span></span>
+        <div className="hero-content crt-effect">
+          <div className="status-badge terminal-text">ACCESS_LEVEL: UNRESTRICTED</div>
+          <h1 className="hero-title terminal-title">
+            THE <span className="highlight">DARK</span> ARCHIVE
           </h1>
-          <p className="hero-subtitle">
-            Descubre la intención real detrás de cualquier conversación. Sube tus capturas y analiza la dinámica antes de involucrarte más.
+          <p className="hero-subtitle terminal-text">
+            Análisis de inteligencia no autorizado sobre tus dinámicas tóxicas. Sin filtros. Sin piedad.
           </p>
         </div>
 
@@ -234,19 +234,19 @@ export default function LandingPage() {
 
         <div className="features-grid">
           <div className="feature-card">
-            <span className="feature-icon">📊</span>
-            <h3 className="feature-title">Métricas Reales</h3>
-            <p className="feature-desc">Coqueteo, intención física y probabilidad de ghosting.</p>
+            <span className="feature-icon">📈</span>
+            <h3 className="feature-title">Meme-Metrics</h3>
+            <p className="feature-desc">Simp Score, Ghosting Prob y nivel de Delulu real.</p>
           </div>
           <div className="feature-card">
-            <span className="feature-icon">🔍</span>
-            <h3 className="feature-title">Análisis de Dinámica</h3>
-            <p className="feature-desc">Detecta desbalances de interés e intenciones ocultas.</p>
+            <span className="feature-icon">💀</span>
+            <h3 className="feature-title">The Receipts</h3>
+            <p className="feature-desc">Identificamos el mensaje exacto donde te humillaron.</p>
           </div>
           <div className="feature-card">
-            <span className="feature-icon">🧠</span>
-            <h3 className="feature-title">Estrategia Táctica</h3>
-            <p className="feature-desc">Descubre cómo responder sin perder tu ventaja.</p>
+            <span className="feature-icon">🎮</span>
+            <h3 className="feature-title">Jugada Maestra</h3>
+            <p className="feature-desc">La IA te dicta qué responder para tomar el control.</p>
           </div>
         </div>
 
@@ -368,41 +368,42 @@ export default function LandingPage() {
         }
 
         .hero-title {
+          font-family: var(--font-terminal);
           font-weight: 900;
-          font-size: clamp(3.5rem, 12vw, 5rem);
-          line-height: 0.9;
-          letter-spacing: -0.05em;
+          font-size: clamp(3rem, 10vw, 4.5rem);
+          line-height: 0.85;
+          letter-spacing: -0.02em;
           margin-bottom: 24px;
           display: flex;
           flex-direction: column;
           text-transform: uppercase;
         }
 
-        .title-white {
-          color: #ffffff;
+        .highlight {
+          color: var(--accent-red);
+          text-shadow: 0 0 40px var(--accent-red-glow);
         }
 
-        .title-red {
-          color: #ff2d55;
-          text-shadow: 0 0 30px rgba(255, 45, 85, 0.4);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          margin-top: -5px;
-        }
-
-        .title-emoji {
-          font-size: clamp(2.5rem, 8vw, 3.5rem);
+        .status-badge {
+          background: rgba(255, 45, 85, 0.1);
+          color: var(--accent-red);
+          padding: 6px 12px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 700;
+          margin-bottom: 20px;
+          border: 1px solid rgba(255, 45, 85, 0.2);
+          letter-spacing: 0.1em;
         }
 
         .hero-subtitle {
-          font-size: clamp(1rem, 4vw, 1.2rem);
-          color: rgba(255,255,255,0.7);
-          max-width: 450px;
+          font-family: var(--font-body);
+          font-size: clamp(0.9rem, 4vw, 1.1rem);
+          color: rgba(255,255,255,0.6);
+          max-width: 480px;
           margin: 0 auto;
-          line-height: 1.5;
-          font-weight: 500;
+          line-height: 1.6;
+          font-weight: 400;
         }
 
         .hero-action {
@@ -429,14 +430,14 @@ export default function LandingPage() {
         .target-input {
           flex: 1;
           min-width: 0;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(255, 45, 85, 0.2);
           padding: 14px 12px;
-          border-radius: 12px;
-          color: white;
-          font-family: 'Inter', sans-serif;
+          border-radius: 4px;
+          color: var(--accent-red);
+          font-family: var(--font-terminal);
           font-size: 0.85rem;
-          font-weight: 500;
+          font-weight: 400;
           text-align: center;
           transition: all 0.3s ease;
           outline: none;

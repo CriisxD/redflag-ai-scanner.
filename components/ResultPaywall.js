@@ -139,54 +139,77 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
 
             <div className="veredicto-shock-wrapper">
               <div className="verdict-icon-massive">
-                {aiResult?.verdict_icon || '🧿'}
+                {aiResult?.verdict_icon || '🚩'}
               </div>
-              <h2 className="veredicto-shock-v36">
-                “{aiResult?.veredicto_shock || 'Hay química... pero falta intención.'}”
+              <h2 className="veredicto-shock-v36 terminal-title">
+                {aiResult?.shock_verdict || 'ANÁLISIS COMPLETADO'}
               </h2>
+              <p className="roast-text terminal-text">{aiResult?.roast_personalizado}</p>
             </div>
 
-            <div className={`dinamica-center-v36 ${aiResult?.balance_poder ? 'has-power-info' : ''}`}>
-              <div className="power-balance-badge">
-                ⚖️ {aiResult?.balance_poder || 'Calculando Balance...'}
+            <div className="meme-metrics-grid">
+              {/* Toxic Meter */}
+              <div className="gauge-card toxic">
+                <div className="gauge-header">TOXIC_METER</div>
+                <div className="gauge-visual">
+                  <div className="speedometer">
+                    <div className="needle" style={{ transform: `rotate(${(aiResult?.meme_metrics?.toxic_meter || 0) * 1.8 - 90}deg)` }} />
+                    <div className="gauge-value terminal-title">{aiResult?.meme_metrics?.toxic_meter || 0}%</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ghosting Risk */}
+              <div className="gauge-card ghosting">
+                <div className="gauge-header">GHOSTING_RISK</div>
+                <div className="gauge-visual">
+                  <div className="speedometer">
+                    <div className="needle" style={{ transform: `rotate(${(aiResult?.meme_metrics?.ghosting_risk || 0) * 1.8 - 90}deg)`, background: 'var(--accent-amber)' }} />
+                    <div className="gauge-value terminal-title">{aiResult?.meme_metrics?.ghosting_risk || 0}%</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Simp Meter - Comparison */}
+              <div className="gauge-card simp full-width">
+                <div className="gauge-header">SIMP_O_METER</div>
+                <div className="simp-bars">
+                  <div className="simp-bar-row">
+                    <span className="simp-label">TÚ</span>
+                    <div className="simp-track"><div className="simp-fill user" style={{ width: `${aiResult?.meme_metrics?.simp_meter || 0}%` }} /></div>
+                  </div>
+                  <div className="simp-bar-row">
+                    <span className="simp-label uppercase">{targetName.slice(0, 8)}</span>
+                    <div className="simp-track"><div className="simp-fill target" style={{ width: `${100 - (aiResult?.meme_metrics?.simp_meter || 0)}%` }} /></div>
+                  </div>
+                </div>
+                <div className="simp-status terminal-text">
+                  {aiResult?.meme_metrics?.simp_meter > 50 ? 'NIVEL: SIMP LEGENDARIO' : 'NIVEL: BAJO CONTROL'}
+                </div>
+              </div>
+            </div>
+
+            <div className={`dinamica-center-v36 ${aiResult?.analisis_detallado?.quien_manda ? 'has-power-info' : ''}`}>
+              <div className="power-balance-badge terminal-text">
+                DOMINANCIA: {aiResult?.analisis_detallado?.quien_manda || 'SIMETRÍA'}
               </div>
               <div className="dinamica-row">
-                <span className="dinamica-label">Dinámica Central:</span>
-                <span className="dinamica-badge">{aiResult?.dinamica_detectada || 'Analizando...'}</span>
+                <span className="dinamica-label terminal-text">VÍNCULO:</span>
+                <span className="dinamica-badge terminal-text">{aiResult?.analisis_detallado?.dinamica || 'SOSPECHOSO'}</span>
               </div>
             </div>
 
-            <div className="metrics-v36 binary-questions">
-              {[
-                { label: aiResult?.metricas_binarias?.q1?.pregunta || '¿Quiere volver?', valor: aiResult?.metricas_binarias?.q1?.valor },
-                { label: aiResult?.metricas_binarias?.q2?.pregunta || '¿Te extraña?', valor: aiResult?.metricas_binarias?.q2?.valor },
-                { label: aiResult?.metricas_binarias?.q3?.pregunta || '¿Busca algo serio?', valor: aiResult?.metricas_binarias?.q3?.valor }
-              ].map((m, idx) => {
-                const color = getStatusColor(m.valor || 0);
-                return (
-                  <div key={idx} className="metric-row-v36 binary">
-                    <div className="m-info-v36">
-                      <span className="m-label-v36 binary">{m.label}</span>
-                      <span className="m-val-v36 binary" style={{ color }}>{m.valor || 0}%</span>
-                    </div>
-                    <div className="m-bar-v36 binary">
-                      <div 
-                        className="m-fill-v36" 
-                        style={{ 
-                          width: showProgressBars ? `${m.valor || 0}%` : '0%', 
-                          background: `linear-gradient(90deg, ${color}33, ${color})`,
-                          boxShadow: `0 0 10px ${color}33`
-                        }} 
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            {!isUnlocked && aiResult?.lite_verdict && (
+              <div className="lite-ticket-v36">
+                <div className="lite-header terminal-text">--- {aiResult.lite_verdict.titulo} ---</div>
+                <p className="lite-resumen terminal-text">{aiResult.lite_verdict.resumen}</p>
+                <div className="lite-footer terminal-text">PAGO REQUERIDO PARA REVELAR PRUEBAS</div>
+              </div>
+            )}
 
             <div className="viral-punchline-v41">
-              <p className="punchline-text">"{aiResult?.punchline_viral || 'El que más escribe siempre es el que menos poder tiene.'}"</p>
-              <div className="tiktok-tag">SOUL KINETICS | DEEP DIVE</div>
+              <p className="punchline-text">"{aiResult?.mensaje_viral || 'El que más escribe siempre es el que menos poder tiene.'}"</p>
+              <div className="tiktok-tag">DARK ARCHIVE | OFFICIAL DOSSIER</div>
             </div>
 
           </div>
@@ -199,33 +222,24 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           </div>
 
           <div className="insights-grid-v36">
-             {/* Bloque 1: Intención Real */}
+             {/* Bloque 1: The Receipts (PRUEBAS) */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
-                 <span className="i-icon-v36">🎯</span>
-                 <h3>Móvil Inconsciente</h3>
+                 <span className="i-icon-v36">💀</span>
+                 <h3 className="terminal-title">The Receipts</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
                     <div className="intelligence-node">
-                      <p className="main-conc">{aiResult?.analisis_premium?.intencion_real?.conclusion}</p>
-                      
-                      {aiResult?.analisis_premium?.intencion_real?.citas_textuales?.length > 0 && (
-                        <div className="quotes-container">
-                          <span className="ev-label">Eco del Chat (Evidencia):</span>
-                          {aiResult.analisis_premium.intencion_real.citas_textuales.map((cita, i) => (
-                            <div key={i} className="quote-item">“{cita}”</div>
-                          ))}
+                      {aiResult?.analisis_detallado?.the_receipts?.map((receipt, i) => (
+                        <div key={i} className="receipt-item">
+                          <div className="quote-item">“{receipt.mensaje}”</div>
+                          <p className="ev-text terminal-text">↳ {receipt.explicacion}</p>
                         </div>
-                      )}
-
-                      <div className="evidence-box">
-                        <span className="ev-label">Lectura de Señales:</span>
-                        <p className="ev-text">{aiResult?.analisis_premium?.intencion_real?.justificacion_evidencia}</p>
-                      </div>
+                      ))}
                     </div>
                   ) : (
-                    <p>Mapeando patrones ocultos en el lenguaje utilizado...</p>
+                    <p className="terminal-text">Identificando patrones de manipulación y desinterés...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -390,17 +404,11 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           name={targetName}
           reportId={aiResult?.case_id}
           verdictIcon={aiResult?.verdict_icon}
-          balancePoder={aiResult?.balance_poder}
-          metrics={{
-            ghosting: { label: 'RIESGO DISTANCIA', valor: aiResult?.pronostico?.ghosting, color: getStatusColor(aiResult?.pronostico?.ghosting || 0, true) },
-            compromiso: { label: 'PROB. COMPROMISO', valor: aiResult?.pronostico?.compromiso, color: getStatusColor(aiResult?.pronostico?.compromiso || 0) },
-            limbo: { label: 'RIESGO LIMBO', valor: aiResult?.pronostico?.limbo, color: getStatusColor(aiResult?.pronostico?.limbo || 0, true) }
-          }}
-          veredicto={aiResult?.veredicto_shock}
-          dinamica={aiResult?.dinamica_detectada}
-          subContextual={aiResult?.subtitulo_contextual}
-          fraseViral={aiResult?.frase_viral}
-          lineaPatron={aiResult?.linea_patron}
+          shock_verdict={aiResult?.shock_verdict}
+          meme_metrics={aiResult?.meme_metrics}
+          dinamica={aiResult?.analisis_detallado?.dinamica}
+          quien_manda={aiResult?.analisis_detallado?.quien_manda}
+          mensaje_viral={aiResult?.mensaje_viral}
         />
       </div>
 
@@ -409,275 +417,128 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
       <style jsx>{`
         .result-container {
           min-height: 100vh; width: 100vw; background: #050505; color: white;
-          padding: 20px 15px; font-family: 'Inter', sans-serif;
+          padding: 20px 15px; font-family: var(--font-body);
           position: relative; overflow-x: hidden;
-        }
-        .ambient-glow {
-          position: absolute; top: -10%; left: -10%; width: 70vw; height: 70vw;
-          background: radial-gradient(circle, rgba(224, 176, 255, 0.08) 0%, transparent 70%);
-          pointer-events: none; z-index: 0;
         }
         .content-max { position: relative; z-index: 10; width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
         
         .report-container-v36 {
-          background: rgba(10, 6, 18, 0.6);
-          border-radius: 40px;
+          background: rgba(0, 0, 0, 0.9);
+          border-radius: 4px;
           padding-bottom: 20px;
           width: 100%;
-          border: 1px solid rgba(224, 176, 255, 0.15);
+          border: 1px solid rgba(255, 45, 85, 0.2);
           position: relative;
           overflow: hidden;
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+          box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
-        .state-toxic {
-          box-shadow: 0 0 80px rgba(255, 111, 97, 0.15);
-          border-color: rgba(255, 111, 97, 0.3);
-        }
-        .state-toxic::after {
-          content: ""; position: absolute; inset: 0;
-          background: radial-gradient(circle at top right, rgba(255, 111, 97, 0.1), transparent 50%);
-          animation: alarmPulse 4s infinite; pointer-events: none;
+        .report-container-v36::before {
+          content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+          background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+          animation: scanline 4s linear infinite;
         }
 
-        .state-safe {
-          box-shadow: 0 0 60px rgba(224, 176, 255, 0.15);
-          border-color: rgba(224, 176, 255, 0.3);
-        }
-
-        @keyframes alarmPulse {
-          0%, 100% { opacity: 0.2; }
-          50% { opacity: 0.6; }
+        @keyframes scanline {
+          0% { top: 0; }
+          100% { top: 100%; }
         }
 
         .hud-overlay {
           position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-          pointer-events: none; z-index: 2;
-          font-family: 'Inter', sans-serif; padding: 20px; opacity: 0.5;
+          pointer-events: none; z-index: 2; padding: 20px; opacity: 0.5;
         }
-        .hud-id { position: absolute; top: 18px; left: 22px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.15em; color: rgba(255,255,255,0.3); }
-        .hud-status { position: absolute; top: 18px; right: 22px; font-size: 0.6rem; color: #E0B0FF; font-weight: 800; letter-spacing: 0.1em; }
-        .hud-watermark { 
-          position: absolute; bottom: 15%; right: -30px; 
-          font-family: 'Playfair Display', serif;
-          font-size: 6rem; font-weight: 700; color: rgba(224, 176, 255, 0.03);
-          transform: rotate(-30deg); pointer-events: none; white-space: nowrap;
+        .hud-id { position: absolute; top: 18px; left: 22px; font-size: 0.6rem; font-family: var(--font-terminal); color: var(--accent-red); }
+        .hud-status { position: absolute; top: 18px; right: 22px; font-size: 0.6rem; font-family: var(--font-terminal); color: var(--accent-amber); }
+
+        .shareable-zone-v36 { padding: 50px 20px 30px; position: relative; z-index: 5; }
+
+        .veredicto-shock-wrapper { margin-bottom: 40px; text-align: center; }
+        .verdict-icon-massive { font-size: 4rem; margin-bottom: 10px; filter: drop-shadow(0 0 20px var(--accent-red-glow)); }
+        .veredicto-shock-v36 { font-size: 3rem; color: var(--accent-red); margin-bottom: 10px; }
+        .roast-text { font-size: 0.95rem; color: rgba(255,255,255,0.7); max-width: 300px; margin: 0 auto; line-height: 1.4; }
+
+        .meme-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .gauge-card { 
+          background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); 
+          border-radius: 8px; padding: 15px; text-align: center;
         }
-
-        .shareable-zone-v36 { padding: 60px 25px 40px; position: relative; z-index: 5; }
-
-        .header-v36 { text-align: center; margin-bottom: 25px; }
-        .badge-v36 { 
-          display: inline-block; font-size: 0.75rem; font-weight: 800; color: #1A0B2E;
-          background: linear-gradient(135deg, #E0B0FF, #F2D8FF); 
-          padding: 8px 18px; border-radius: 50px; margin-bottom: 12px; letter-spacing: 0.15em;
-          box-shadow: 0 4px 15px rgba(224, 176, 255, 0.2);
-        }
-        .subtitle-v36 { font-size: 0.9rem; color: rgba(255,255,255,0.5); font-weight: 500; font-style: italic; font-family: 'Playfair Display', serif; }
-
-        .veredicto-shock-wrapper { margin-bottom: 35px; text-align: center; }
-        .verdict-icon-massive { 
-          font-size: 4.5rem; margin-bottom: 15px; line-height: 1;
-          filter: drop-shadow(0 0 25px rgba(224, 176, 255, 0.3));
-          animation: floatIcon 6s ease-in-out infinite;
-        }
-        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
-        .veredicto-shock-v36 { 
-          font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700;
-          color: #FFF3E0; line-height: 1.1; letter-spacing: -0.02em;
-        }
-
-        .dinamica-center-v36 { margin-bottom: 40px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        .power-balance-badge {
-          font-size: 0.75rem; font-weight: 800; color: #FFB347;
-          background: rgba(255, 179, 71, 0.1); border: 1px solid rgba(255, 179, 71, 0.3);
-          padding: 6px 16px; border-radius: 50px; text-transform: uppercase;
-          letter-spacing: 0.1em; animation: fadeIn 1.5s both; backdrop-filter: blur(5px);
-        }
-        .dinamica-row { display: flex; align-items: center; }
-        .dinamica-label { font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.5); margin-right: 8px; }
-        .dinamica-badge { font-size: 0.95rem; font-weight: 800; color: #E0B0FF; }
-
-        .metrics-v36 { display: flex; flex-direction: column; gap: 24px; margin-bottom: 40px; }
-        .metric-row-v36 { display: flex; flex-direction: column; gap: 8px; text-align: left; }
-        .m-info-v36 { display: flex; justify-content: space-between; align-items: flex-end; }
-        .m-label-v36 { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 0.05em; }
-        .m-val-v36 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; }
-        .m-bar-v36 { width: 100%; height: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
-        .m-fill-v36 { height: 100%; border-radius: 10px; transition: width 2s cubic-bezier(0.19, 1, 0.22, 1); }
+        .gauge-header { font-family: var(--font-terminal); font-size: 0.6rem; color: rgba(255,255,255,0.4); margin-bottom: 15px; letter-spacing: 0.1em; }
         
-        .viral-punchline-v41 { 
-          margin-top: 40px; border-top: 1px solid rgba(224, 176, 255, 0.15); padding-top: 30px; text-align: center;
+        .speedometer { position: relative; width: 80px; height: 40px; margin: 0 auto; overflow: hidden; }
+        .speedometer::before {
+          content: ""; position: absolute; top: 0; left: 0; width: 80px; height: 80px;
+          border-radius: 50%; border: 8px solid rgba(255, 45, 85, 0.1);
+          border-bottom-color: transparent; border-left-color: transparent;
+          transform: rotate(-135deg);
         }
-        .punchline-text { 
-          font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; font-style: italic; 
-          line-height: 1.3; color: #FFF3E0; margin-bottom: 15px;
+        .needle {
+          position: absolute; bottom: 0; left: 50%; width: 2px; height: 35px;
+          background: var(--accent-red); transform-origin: bottom center;
+          transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 0 10px var(--accent-red);
         }
-        .tiktok-tag { 
-          font-size: 0.65rem; font-weight: 800; color: #E0B0FF; letter-spacing: 0.2em; text-transform: uppercase;
-        }
+        .gauge-value { font-size: 1.2rem; color: white; margin-top: 10px; }
 
-        /* Editorial Insights Redesign */
-        .strategy-sequence-v36 { margin-top: 10px; }
-        .divider-strategy { display: flex; justify-content: center; margin-bottom: 30px; }
-        .divider-strategy span { font-size: 0.75rem; font-weight: 800; color: #E0B0FF; border: 1px solid rgba(224, 176, 255, 0.3); padding: 8px 18px; border-radius: 100px; letter-spacing: 0.1em; background: rgba(224, 176, 255, 0.05); }
+        .simp-bars { display: flex; flex-direction: column; gap: 10px; }
+        .simp-bar-row { display: flex; align-items: center; gap: 10px; }
+        .simp-label { font-size: 0.6rem; color: rgba(255,255,255,0.5); width: 30px; text-align: left; }
+        .simp-track { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+        .simp-fill { height: 100%; transition: width 2s ease; }
+        .simp-fill.user { background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red-glow); }
+        .simp-fill.target { background: var(--accent-amber); box-shadow: 0 0 10px rgba(255, 179, 71, 0.3); }
 
-        .insights-grid-v36 { display: flex; flex-direction: column; gap: 18px; margin-bottom: 40px; }
-        .insight-card-v36 { 
-          background: rgba(26, 15, 46, 0.4); 
-          border: 1px solid rgba(224, 176, 255, 0.15); 
-          border-radius: 20px; padding: 25px; transition: all 0.3s;
-          backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        .simp-status { font-size: 0.6rem; color: var(--accent-red); margin-top: 10px; opacity: 0.8; letter-spacing: 0.1em; }
+        .gauge-card.full-width { grid-column: span 2; }
+
+        .lite-ticket-v36 {
+          background: rgba(255, 45, 85, 0.05); border: 1px dashed var(--accent-red);
+          padding: 20px; text-align: center; margin-bottom: 30px; border-radius: 4px;
         }
-        .scenario-card { border-left: 3px solid #E0B0FF; }
-        .i-header-v36 { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-        .i-icon-v36 { font-size: 1.4rem; }
-        .i-header-v36 h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #E0B0FF; letter-spacing: 0.05em; }
-        .i-content-v36 { position: relative; }
-        .i-content-v36 p { font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.8); font-weight: 400; }
-        .scenarios { display: flex; flex-direction: column; gap: 15px; }
-        .scenario-item { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.03); }
-        .s-label { font-size: 0.8rem; font-weight: 700; color: #E0B0FF; display: block; margin-bottom: 6px; }
-        .blur-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 30%, #0A0612 100%); pointer-events: none; border-radius: 0 0 20px 20px; }
-        .locked .i-content-v36 p { filter: blur(6px); }
+        .lite-header { font-size: 0.7rem; color: var(--accent-red); margin-bottom: 10px; font-weight: 700; }
+        .lite-resumen { font-size: 0.9rem; color: white; margin-bottom: 15px; font-style: italic; }
+        .lite-footer { font-size: 0.6rem; color: rgba(255,255,255,0.4); }
 
-        /* v5.0 Editorial Personalization Styles */
-        .intelligence-node, .tactical-node { display: flex; flex-direction: column; gap: 15px; }
-        .main-conc { font-weight: 700; color: #FFF3E0; margin-bottom: 5px; font-size: 1.05rem; }
-        .evidence-box { background: rgba(0,0,0,0.2); padding: 14px; border-radius: 12px; border-left: 2px solid #FFB347; }
-        .ev-label, .t-label { font-size: 0.75rem; font-weight: 800; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .ev-text { font-size: 0.95rem !important; color: rgba(255,255,255,0.7) !important; }
+        .dinamica-center-v36 { margin-bottom: 30px; text-align: center; }
+        .power-balance-badge { font-size: 0.7rem; color: var(--accent-amber); background: rgba(255, 179, 71, 0.1); padding: 5px 15px; border-radius: 2px; border: 1px solid rgba(255, 179, 71, 0.2); display: inline-block; margin-bottom: 15px; }
+        .dinamica-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .dinamica-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+        .dinamica-badge { font-size: 0.85rem; color: white; }
+
+        .insight-card-v36 { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 4px; padding: 20px; margin-bottom: 15px; }
+        .i-header-v36 { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .i-icon-v36 { font-size: 1.2rem; }
+        .i-header-v36 h3 { font-size: 0.9rem; color: var(--accent-red); }
         
-        .quotes-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-        .quote-item { 
-          background: rgba(224, 176, 255, 0.08); border-left: 3px solid #E0B0FF; 
-          padding: 12px 16px; border-radius: 0 12px 12px 0; 
-          font-family: 'Playfair Display', serif; font-size: 1.05rem; 
-          color: #FFF3E0; font-style: italic; font-weight: 600;
-        }
+        .receipt-item { margin-bottom: 20px; border-left: 2px solid rgba(255, 45, 85, 0.3); padding-left: 15px; }
+        .quote-item { font-family: var(--font-terminal); font-size: 0.95rem; color: white; font-style: italic; margin-bottom: 8px; }
+        .ev-text { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
 
-        .indicators-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-        .ind-tag { font-size: 0.75rem; font-weight: 700; color: #1A0B2E; background: #E0B0FF; padding: 5px 12px; border-radius: 8px; }
-        
-        .power-node { display: flex; flex-direction: column; gap: 15px; }
-        .power-ruler { background: linear-gradient(135deg, rgba(255, 179, 71, 0.1) 0%, rgba(224, 176, 255, 0.05) 100%); padding: 16px; border-radius: 14px; border: 1px solid rgba(255, 179, 71, 0.2); text-align: center; }
-        .power-winner { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #FFB347; margin-top: 5px; font-weight: 700; }
-        .risk-alert { background: rgba(255, 111, 97, 0.1); border: 1px solid rgba(255, 111, 97, 0.3); padding: 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #FF6F61; text-align: center; }
-        
-        .heuristic-prob { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); }
-        .prob-text { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.5); }
-        .highlight .prob-text { color: #E0B0FF; }
+        .tactical-node { display: flex; flex-direction: column; gap: 15px; }
+        .t-label { font-size: 0.65rem; color: var(--accent-amber); margin-bottom: 8px; display: block; }
+        .main-conc { font-size: 1rem; color: white; margin-bottom: 10px; line-height: 1.5; }
+        .template-box { background: rgba(255, 45, 85, 0.05); border: 1px dashed rgba(255, 45, 85, 0.3); padding: 15px; border-radius: 4px; color: var(--accent-red); font-size: 0.95rem; line-height: 1.5; }
 
-        .template-box { background: rgba(0,0,0,0.3); padding: 18px; border-radius: 14px; border: 1px solid rgba(224, 176, 255, 0.3); font-family: 'Inter', sans-serif; color: #E0B0FF; font-size: 1rem; font-weight: 500; line-height: 1.5; position: relative; }
-        
-        .signals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-        .sig-item { padding: 14px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
-        .sig-label { font-size: 0.7rem; font-weight: 800; display: block; margin-bottom: 6px; letter-spacing: 0.05em; text-transform: uppercase; }
-        .pos .sig-label { color: #E0B0FF; }
-        .neg .sig-label { color: #FF6F61; }
-        .sig-item p { font-size: 0.85rem !important; line-height: 1.4 !important; color: rgba(255,255,255,0.7) !important; }
+        .blur-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 20%, #050505 90%); pointer-events: none; }
+        .locked .i-content-v36 p { filter: blur(8px); opacity: 0.5; }
 
-        .paywall-cta-v36 { text-align: center; margin-top: 20px; }
-        .urgency-timer {
-          display: flex; align-items: center; justify-content: center; gap: 8px;
-          background: rgba(255, 60, 60, 0.1); border: 1px solid rgba(255, 60, 60, 0.3);
-          border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;
-          font-size: 0.85rem; color: #ff6b6b; font-weight: 600;
-          animation: urgencyPulse 2s ease-in-out infinite;
-        }
-        .urgency-timer.expired {
-          background: rgba(255, 40, 40, 0.15); border-color: rgba(255, 40, 40, 0.5);
-          color: #ff4444; animation: urgencyPulse 1s ease-in-out infinite;
-        }
-        .urgency-timer strong { color: #fff; font-size: 1.1rem; }
-        .timer-icon { font-size: 1.1rem; }
-        @keyframes urgencyPulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
-
+        .paywall-cta-v36 { margin-top: 30px; text-align: center; }
         .unlock-btn-v36 { 
-          width: 100%; padding: 22px; border-radius: 60px; 
-          background: linear-gradient(135deg, #E0B0FF 0%, #FFB347 100%); 
-          border: none; color: #1A0B2E; font-family: 'Inter', sans-serif;
-          font-size: 1.2rem; font-weight: 800; letter-spacing: 0.05em;
-          cursor: pointer; box-shadow: 0 10px 30px rgba(224, 176, 255, 0.25);
-          transition: transform 0.2s, box-shadow 0.2s;
+          width: 100%; padding: 20px; background: var(--accent-red); border: none; color: black; 
+          font-family: var(--font-terminal); font-size: 1.1rem; font-weight: 700; cursor: pointer;
+          transition: all 0.2s; box-shadow: 0 0 30px var(--accent-red-glow);
         }
-        .unlock-btn-v36:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(224, 176, 255, 0.35); }
-        .unlock-btn-v36:active { transform: scale(0.98); }
-        .paywall-sub { font-size: 0.85rem; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 15px; }
+        .unlock-btn-v36:hover { transform: scale(1.02); box-shadow: 0 0 50px var(--accent-red-glow); }
 
-        .share-section { text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
-        .share-btn {
-          background: transparent; border: 2px solid rgba(255, 59, 48, 0.4);
-          color: #ff3b30; font-weight: 700; font-size: 1rem;
-          padding: 16px 32px; border-radius: 60px; cursor: pointer;
-          transition: all 0.2s; width: 100%;
-        }
-        .share-btn:hover {
-          background: rgba(255, 59, 48, 0.1); border-color: rgba(255, 59, 48, 0.7);
-          transform: translateY(-1px);
-        }
+        .urgency-timer { font-family: var(--font-terminal); font-size: 0.75rem; color: var(--accent-red); margin-bottom: 20px; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        .final-actions-v36 { text-align: center; margin-top: 20px; }
-        .download-btn-v36 { background: transparent; border: 1px solid rgba(255,255,255,0.1); padding: 18px; border-radius: 60px; color: rgba(255,255,255,0.5); font-weight: 600; cursor: pointer; width: 100%; }
-        .download-btn-v36.tiktok-style {
-          background: rgba(26, 15, 46, 0.8); color: #E0B0FF; border: 1px solid rgba(224, 176, 255, 0.3); font-family: 'Inter', sans-serif;
-          font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s;
+        .share-btn { 
+          width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.1); 
+          color: rgba(255,255,255,0.6); padding: 15px; font-family: var(--font-terminal);
+          font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
         }
-        .download-btn-v36.tiktok-style:hover { background: rgba(224, 176, 255, 0.1); transform: translateY(-3px); }
-
-        .social-toast {
-          position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-          background: rgba(26, 15, 46, 0.95); border: 1px solid rgba(224, 176, 255, 0.2);
-          padding: 12px 20px; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
-          color: #FFF3E0; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-          backdrop-filter: blur(10px);
-          animation: slideUp 0.6s cubic-bezier(0.2, 1, 0.3, 1); z-index: 100;
-          max-width: calc(100vw - 32px); text-align: center;
-        }
-        @keyframes slideUp { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-
-        /* ===== MOBILE RESPONSIVE ===== */
-        @media (max-width: 480px) {
-          .result-container { padding: 12px 10px; }
-          .content-max { gap: 24px; }
-          .report-container-v36 { border-radius: 28px; }
-          .shareable-zone-v36 { padding: 40px 16px 24px; }
-          .badge-v36 { font-size: 0.65rem; padding: 6px 14px; }
-          .subtitle-v36 { font-size: 0.8rem; }
-          .verdict-icon-massive { font-size: 3.5rem; }
-          .veredicto-shock-v36 { font-size: 2rem; }
-          .power-balance-badge { font-size: 0.65rem; padding: 5px 12px; }
-          .dinamica-label { font-size: 0.75rem; }
-          .dinamica-badge { font-size: 0.85rem; }
-          .m-label-v36 { font-size: 0.75rem; }
-          .m-val-v36 { font-size: 1.1rem; }
-          .m-bar-v36 { height: 10px; }
-          .punchline-text { font-size: 1.2rem; }
-          .tiktok-tag { font-size: 0.55rem; }
-          .insight-card-v36 { padding: 18px 16px; border-radius: 16px; }
-          .i-header-v36 h3 { font-size: 0.95rem; }
-          .i-content-v36 p { font-size: 0.9rem; }
-          .main-conc { font-size: 0.95rem; }
-          .quote-item { font-size: 0.9rem; padding: 10px 12px; }
-          .evidence-box { padding: 12px; }
-          .ev-text { font-size: 0.85rem !important; }
-          .power-winner { font-size: 1.2rem; }
-          .signals-grid { grid-template-columns: 1fr; gap: 10px; }
-          .sig-item p { font-size: 0.8rem !important; }
-          .template-box { padding: 14px; font-size: 0.9rem; }
-          .unlock-btn-v36 { padding: 18px; font-size: 1.05rem; }
-          .paywall-sub { font-size: 0.75rem; }
-          .download-btn-v36 { padding: 14px; }
-          .download-btn-v36.tiktok-style { font-size: 0.9rem; }
-          .hud-watermark { font-size: 4rem; }
-          .social-toast { font-size: 0.75rem; padding: 10px 16px; bottom: 16px; }
-        }
+        .share-btn:hover { border-color: white; color: white; }
       `}</style>
     </div>
   );

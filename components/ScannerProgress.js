@@ -12,15 +12,15 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
   const [showPreHook, setShowPreHook] = useState(false);
 
   const datingIntelligencePhrases = [
-    `🔍 Analizando dinámica de conversación...`,
-    `📡 Detectando patrones de interés...`,
-    `⚖️ Evaluando desbalance emocional...`,
-    `👻 Calculando probabilidad de ghosting...`,
-    `🎯 Generando veredicto estratégico...`,
-    `✨ Casi listo. Ajustando detalles finales...`
+    `🕵️ Leyendo tus humillaciones...`,
+    `🚩 Contando las red flags que ignoraste...`,
+    `🤡 Midiendo el tamaño de tu nariz de payaso...`,
+    `⚖️ Pesando el desinterés de ${targetName || 'tu casi-algo'}...`,
+    `🔥 Preparando el roast definitivo...`,
+    `💀 Casi listo para destruir tu esperanza...`
   ];
 
-  // Load the images into URLs
+  // ... Load the images into URLs ...
   useEffect(() => {
     if (imageFiles && imageFiles.length > 0) {
       const urls = imageFiles.map(file => URL.createObjectURL(file));
@@ -93,9 +93,8 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
         if (!response.ok) {
           const errData = await response.json().catch(() => ({}));
           
-          // Handle rate limit (429)
           if (response.status === 429 || errData.error === 'limit_reached' || errData.error === 'daily_limit') {
-            setError(errData.message || 'Límite de análisis alcanzado. Vuelve mañana.');
+            setError(errData.message || 'Límite alcanzado. Vuelve mañana.');
             return;
           }
 
@@ -158,13 +157,13 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
           </>
         ) : (
           <div className="pre-hook-container">
-            <span className="hook-icon">💡</span>
+            <span className="hook-icon">{scanResult?.verdict_icon || '⚠️'}</span>
             <h2 className="hook-text">
-              {scanResult?.aiResult?.red_flag_principal 
-                ? `Identificado: ${scanResult.aiResult.red_flag_principal}` 
-                : "Patrón de interés desigual identificado."}
+              {scanResult?.shock_verdict 
+                ? `VEREDICTO: ${scanResult.shock_verdict}` 
+                : "Humillación detectada."}
             </h2>
-            <p className="hook-subtext">Generando informe de Dating Intelligence...</p>
+            <p className="hook-subtext">Compilando el expediente de toxicidad...</p>
           </div>
         )}
       </div>
@@ -173,7 +172,7 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
         .scanner-container {
           position: fixed; inset: 0; width: 100vw; height: 100vh; background-color: #000; overflow: hidden;
           display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
-          font-family: 'Inter', -apple-system, sans-serif;
+          font-family: var(--font-body);
         }
         .bg-image {
           position: absolute; inset: 0; background-size: cover; background-position: center;
@@ -183,19 +182,19 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
         @keyframes fadeZoom { from { opacity: 0; transform: scale(1.1); } to { opacity: 1; transform: scale(1); } }
         .bg-overlay { position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%); z-index: 2; }
         .laser-scanner {
-          position: absolute; left: 0; width: 100%; height: 2px; background: #39ff14;
-          box-shadow: 0 0 15px #39ff14; z-index: 3; animation: scanLine 2.5s linear infinite alternate;
+          position: absolute; left: 0; width: 100%; height: 2px; background: var(--accent-red);
+          box-shadow: 0 0 15px var(--accent-red); z-index: 3; animation: scanLine 2.5s linear infinite alternate;
         }
         @keyframes scanLine { 0% { top: 0%; } 100% { top: 100%; } }
         .content-wrapper { position: relative; z-index: 10; width: 90%; max-width: 480px; text-align: center; }
-        .progress-bar-container { width: 100%; height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden; margin-bottom: 20px; }
-        .progress-bar-fill { height: 100%; background: #39ff14; transition: width 0.1s linear; box-shadow: 0 0 10px #39ff14; }
-        .progress-text { font-family: 'Inter Black', sans-serif; font-size: 3.5rem; color: #fff; margin-bottom: 20px; }
-        .anxiety-phrase { font-weight: 700; font-size: 1rem; color: #39ff14; text-transform: uppercase; letter-spacing: 0.1em; animation: textPop 0.4s both; }
+        .progress-bar-container { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
+        .progress-bar-fill { height: 100%; background: var(--accent-red); transition: width 0.1s linear; box-shadow: 0 0 10px var(--accent-red); }
+        .progress-text { font-family: var(--font-terminal); font-size: 3.5rem; color: #fff; margin-bottom: 20px; }
+        .anxiety-phrase { font-family: var(--font-terminal); font-weight: 700; font-size: 0.9rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.1em; animation: textPop 0.4s both; }
         .pre-hook-container { animation: textPop 0.5s both; }
-        .hook-icon { font-size: 3rem; display: block; margin-bottom: 20px; }
-        .hook-text { font-family: 'Inter Black', sans-serif; font-size: 1.8rem; color: #fff; line-height: 1.2; margin-bottom: 10px; }
-        .hook-subtext { color: #af52de; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+        .hook-icon { font-size: 3rem; display: block; margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--accent-red-glow)); }
+        .hook-text { font-family: var(--font-terminal); font-size: 2rem; color: #fff; line-height: 1.2; margin-bottom: 10px; }
+        .hook-subtext { color: var(--accent-amber); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
         @keyframes textPop { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
       `}</style>
     </div>
