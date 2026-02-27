@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useLang } from '@/lib/LangContext';
 import ScannerProgress from '@/components/ScannerProgress';
 import imageCompression from 'browser-image-compression';
@@ -253,6 +254,10 @@ export default function LandingPage() {
           <p>
             Prueba Social: <span className="footer-highlight">+4,200</span> análisis realizados esta semana.
           </p>
+          <div className="footer-links">
+            <Link href="/terms">Términos</Link>
+            <Link href="/privacy">Privacidad</Link>
+          </div>
         </div>
       </div>
 
