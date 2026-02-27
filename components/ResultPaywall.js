@@ -226,14 +226,21 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">💀</span>
-                 <h3 className="terminal-title">The Receipts</h3>
+                 <h3 className="terminal-title">The Receipts (Desglose)</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
                     <div className="intelligence-node">
                       {aiResult?.analisis_detallado?.the_receipts?.map((receipt, i) => (
-                        <div key={i} className="receipt-item">
+                        <div key={i} className="receipt-item-v62">
+                          <div className="receipt-meta">
+                             <span className="t-label">TÁCTICA: {receipt.tactica || 'N/A'}</span>
+                          </div>
                           <div className="quote-item">“{receipt.mensaje}”</div>
+                          <div className="translation-box">
+                             <span className="t-label">TRADUCCIÓN REAL:</span>
+                             <p className="terminal-text">{receipt.traduccion_real}</p>
+                          </div>
                           <p className="ev-text terminal-text">↳ {receipt.explicacion}</p>
                         </div>
                       ))}
@@ -245,52 +252,48 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
                </div>
              </div>
 
-             {/* Bloque 2: Patrón Psicológico */}
+             {/* Bloque 2: Perfil Psicológico (Arquetipo) */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
-                 <span className="i-icon-v36">🧠</span>
-                 <h3>Arquetipo de Apego</h3>
+                 <span className="i-icon-v36">👤</span>
+                 <h3>The Persona (Perfil)</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
-                    <div className="intelligence-node">
-                      <p className="main-conc">{aiResult?.analisis_premium?.patron_psicologico?.etiqueta}</p>
-                      <div className="indicators-list">
-                        {aiResult?.analisis_premium?.patron_psicologico?.indicadores_detectados?.map((ind, i) => (
-                          <span key={i} className="ind-tag">{ind}</span>
-                        ))}
-                      </div>
+                    <div className="intelligence-node arquetipo-v62">
+                      <h4 className="terminal-title">{aiResult?.analisis_detallado?.persona?.arquetipo}</h4>
+                      <p className="terminal-text">{aiResult?.analisis_detallado?.persona?.descripcion}</p>
                     </div>
                   ) : (
-                    <p>Identificando bloqueos emocionales y sesgos de apego...</p>
+                    <p>Clasificando perfil psicológico en arquetipos virales...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
              </div>
 
-             {/* Bloque 3: Balance de Poder y Energía (NUEVO V4.3) */}
+             {/* Bloque 3: PBI (Power Balance Index) */}
              <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
                  <span className="i-icon-v36">⚖️</span>
-                 <h3>Asimetría de Energía</h3>
+                 <h3>Power Balance Index (PBI)</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
-                    <div className="power-node">
-                      <div className="power-ruler">
-                        <span className="t-label">Mayor Inversión Emocional:</span>
-                        <p className="power-winner">{aiResult?.analisis_premium?.poder_y_energia?.mas_invertido}</p>
+                    <div className="pbi-dashboard-v62">
+                      <div className="pbi-formula terminal-text">
+                        PBI = (Σ L𝐭 * E𝐭) / (Σ L𝐬 * E𝐬)
                       </div>
-                      <div className="evidence-box">
-                        <span className="ev-label">Flujo de Interacción:</span>
-                        <p className="ev-text">{aiResult?.analisis_premium?.poder_y_energia?.analisis_energia}</p>
+                      <div className="pbi-result">
+                         <span className="res-label terminal-text">RESULTADO CLÍNICO:</span>
+                         <div className="res-value terminal-title">{aiResult?.meme_metrics?.pbi || '1.0'}</div>
                       </div>
-                      <div className="risk-alert">
-                        <span>⚠️ {aiResult?.analisis_premium?.poder_y_energia?.riesgo_emocional}</span>
-                      </div>
+                      <p className="pbi-verdict terminal-text">
+                        {aiResult?.meme_metrics?.pbi > 1.5 ? 'ESTADO: SUBORDINACIÓN EMOCIONAL' : 
+                         aiResult?.meme_metrics?.pbi < 0.8 ? 'ESTADO: CONTROL ESTRATÉGICO' : 'ESTADO: BALANCE INESTABLE'}
+                      </p>
                     </div>
                   ) : (
-                    <p>Midiendo desbalances en la iniciación y volumen de texto de {targetName}...</p>
+                    <p>Calculando longitud de mensajes y tiempos de espera para determinar dominancia...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -327,38 +330,28 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
                </div>
              </div>
 
-             {/* Bloque 5: Estrategia Final */}
-             <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
+             {/* Bloque 5: La Jugada Maestra (Tactical) */}
+             <div className={`insight-card-v36 tactical-card-v62 ${isUnlocked ? 'unlocked' : 'locked'}`}>
                <div className="i-header-v36">
-                 <span className="i-icon-v36">💡</span>
-                 <h3>Plan de Arquitectura Relacional</h3>
+                 <span className="i-icon-v36">🕹️</span>
+                 <h3>La Jugada Maestra</h3>
                </div>
                <div className="i-content-v36">
                   {isUnlocked ? (
-                    <div className="tactical-node">
+                    <div className="tactical-node-v62">
                       <div className="msg-template">
-                        <span className="t-label">Transmisión Sugerida:</span>
-                        <div className="template-box">
-                          {aiResult?.analisis_premium?.estrategia_final?.mensaje_sugerido}
+                        <span className="t-label">RESPUESTA DE CONTROL:</span>
+                        <div className="template-box-v62">
+                          {aiResult?.estrategia_venganza?.respuesta_control}
                         </div>
                       </div>
-                      <div className="frame-box">
-                        <span className="t-label">Estado Mental (Frame):</span>
-                        <p>{aiResult?.analisis_premium?.estrategia_final?.marco_conversational}</p>
-                      </div>
-                      <div className="signals-grid">
-                        <div className="sig-item pos">
-                          <span className="sig-label">Ecos de Avance:</span>
-                          <p>{aiResult?.analisis_premium?.estrategia_final?.que_observar?.positivo}</p>
-                        </div>
-                        <div className="sig-item neg">
-                          <span className="sig-label">Ecos de Retirada:</span>
-                          <p>{aiResult?.analisis_premium?.estrategia_final?.que_observar?.negativo}</p>
-                        </div>
+                      <div className="nuclear-box">
+                        <span className="t-label">OPCIÓN NUCLEAR (BLOQUEO):</span>
+                        <p className="terminal-text">{aiResult?.estrategia_venganza?.opcion_nuclear}</p>
                       </div>
                     </div>
                   ) : (
-                    <p>Diseñando tácticas de respuesta asimétrica...</p>
+                    <p>Diseñando guiones de respuesta y estrategias de salida digna...</p>
                   )}
                   {!isUnlocked && <div className="blur-overlay" />}
                </div>
@@ -505,19 +498,32 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .dinamica-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
         .dinamica-badge { font-size: 0.85rem; color: white; }
 
-        .insight-card-v36 { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 4px; padding: 20px; margin-bottom: 15px; }
-        .i-header-v36 { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .i-icon-v36 { font-size: 1.2rem; }
-        .i-header-v36 h3 { font-size: 0.9rem; color: var(--accent-red); }
-        
-        .receipt-item { margin-bottom: 20px; border-left: 2px solid rgba(255, 45, 85, 0.3); padding-left: 15px; }
-        .quote-item { font-family: var(--font-terminal); font-size: 0.95rem; color: white; font-style: italic; margin-bottom: 8px; }
-        .ev-text { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
+        .receipt-item-v62 { margin-bottom: 25px; border-left: 2px solid var(--accent-red); padding-left: 15px; }
+        .receipt-meta { margin-bottom: 10px; }
+        .translation-box { background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 4px; margin: 10px 0; border-left: 2px solid var(--accent-amber); }
+        .translation-box p { font-style: italic; color: var(--accent-amber); font-size: 0.95rem; line-height: 1.4; }
 
-        .tactical-node { display: flex; flex-direction: column; gap: 15px; }
-        .t-label { font-size: 0.65rem; color: var(--accent-amber); margin-bottom: 8px; display: block; }
-        .main-conc { font-size: 1rem; color: white; margin-bottom: 10px; line-height: 1.5; }
-        .template-box { background: rgba(255, 45, 85, 0.05); border: 1px dashed rgba(255, 45, 85, 0.3); padding: 15px; border-radius: 4px; color: var(--accent-red); font-size: 0.95rem; line-height: 1.5; }
+        .arquetipo-v62 h4 { color: var(--accent-red); font-size: 1.3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .pbi-dashboard-v62 { text-align: center; padding: 10px 0; }
+        .pbi-formula { font-size: 0.65rem; color: rgba(255,255,255,0.3); margin-bottom: 15px; font-family: var(--font-terminal); }
+        .pbi-result { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px; }
+        .res-label { font-size: 0.6rem; opacity: 0.5; font-family: var(--font-terminal); }
+        .res-value { font-size: 3rem; color: var(--accent-red); text-shadow: 0 0 20px var(--accent-red-glow); }
+        .pbi-verdict { font-size: 0.75rem; font-weight: 900; color: var(--accent-amber); letter-spacing: 0.05em; font-family: var(--font-terminal); }
+
+        .tactical-node-v62 { display: flex; flex-direction: column; gap: 20px; }
+        .template-box-v62 { 
+          background: rgba(255, 45, 85, 0.1); border: 1px solid var(--accent-red); 
+          padding: 18px; border-radius: 4px; color: white; font-size: 1.15rem; 
+          line-height: 1.5; font-family: var(--font-terminal); box-shadow: inset 0 0 15px rgba(255, 45, 85, 0.1);
+        }
+        .nuclear-box { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+        .nuclear-box p { font-size: 0.9rem; color: rgba(255,255,255,0.7); font-style: italic; line-height: 1.4; }
+
+        .t-label { font-size: 0.65rem; color: var(--accent-amber); margin-bottom: 8px; display: block; font-family: var(--font-terminal); }
+        .quote-item { font-family: var(--font-terminal); font-size: 1rem; color: white; font-style: italic; margin-bottom: 8px; opacity: 0.9; }
+        .ev-text { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
 
         .blur-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 20%, #050505 90%); pointer-events: none; }
         .locked .i-content-v36 p { filter: blur(8px); opacity: 0.5; }
