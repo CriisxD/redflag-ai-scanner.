@@ -238,8 +238,7 @@ export default function LandingPage() {
           >
             <div className="glitch-overlay"></div>
             <span className="btn-icon">⚡</span>
-            <span className="btn-primary-text">ANALIZAR CONVERSACIÓN</span>
-            <span className="btn-secondary-text">REVELAR MIS RED FLAGS</span>
+            <span className="btn-primary-text">REVELAR LA VERDAD</span>
           </button>
         </div>
 
@@ -628,14 +627,14 @@ export default function LandingPage() {
         }
 
         .btn-primary-text {
-          color: #fff;
+          color: var(--accent-red);
           font-size: 1.4rem;
           font-weight: 900;
           line-height: 1.1;
           text-align: center;
           letter-spacing: -0.02em;
           text-transform: uppercase;
-          text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+          text-shadow: 0 0 15px var(--accent-red-glow);
         }
 
         .btn-secondary-text {
