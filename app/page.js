@@ -563,6 +563,26 @@ export default function LandingPage() {
           z-index: 10;
         }
 
+        .footer-links {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+          margin-top: 15px;
+        }
+
+        .footer-links a {
+          font-size: 0.7rem;
+          color: rgba(255,255,255,0.3);
+          text-decoration: none;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+          color: #E0B0FF;
+        }
+
         .features-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
