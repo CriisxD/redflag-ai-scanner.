@@ -218,7 +218,7 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         {/* SECCIÓN 2: PAYWALL & STRATEGY */}
         <div className="strategy-sequence-v36">
           <div className="divider-strategy">
-            <span>✨ LECTURA PROFUNDA</span>
+            <span className="terminal-title">✨ LECTURA PROFUNDA (EXTENDIDA)</span>
           </div>
 
           <div className="insights-grid-v36">
@@ -432,6 +432,14 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           animation: scanline 4s linear infinite;
         }
 
+        .strategy-sequence-v36 {
+          background: rgba(255, 255, 255, 0.02);
+          padding: 30px 15px;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.03);
+          margin-top: 20px;
+        }
+
         @keyframes scanline {
           0% { top: 0; }
           100% { top: 100%; }
@@ -498,35 +506,50 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .dinamica-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
         .dinamica-badge { font-size: 0.85rem; color: white; }
 
+        .insight-card-v36 { 
+          background: rgba(15, 15, 15, 0.9); 
+          border: 1px solid rgba(255, 255, 255, 0.1); 
+          border-radius: 8px; padding: 20px; margin-bottom: 20px;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .i-header-v36 { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; }
+        .i-icon-v36 { font-size: 1.2rem; filter: drop-shadow(0 0 5px var(--accent-red-glow)); }
+        .i-header-v36 h3 { font-size: 0.95rem; color: #fff; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
+
         .receipt-item-v62 { margin-bottom: 25px; border-left: 2px solid var(--accent-red); padding-left: 15px; }
         .receipt-meta { margin-bottom: 10px; }
         .translation-box { background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 4px; margin: 10px 0; border-left: 2px solid var(--accent-amber); }
         .translation-box p { font-style: italic; color: var(--accent-amber); font-size: 0.95rem; line-height: 1.4; }
 
-        .arquetipo-v62 h4 { color: var(--accent-red); font-size: 1.3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .arquetipo-v62 h4 { color: var(--accent-red); font-size: 1.3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
         
         .pbi-dashboard-v62 { text-align: center; padding: 10px 0; }
-        .pbi-formula { font-size: 0.65rem; color: rgba(255,255,255,0.3); margin-bottom: 15px; font-family: var(--font-terminal); }
+        .pbi-formula { font-size: 0.65rem; color: rgba(255,255,255,0.4); margin-bottom: 15px; font-family: var(--font-terminal); }
         .pbi-result { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px; }
-        .res-label { font-size: 0.6rem; opacity: 0.5; font-family: var(--font-terminal); }
-        .res-value { font-size: 3rem; color: var(--accent-red); text-shadow: 0 0 20px var(--accent-red-glow); }
-        .pbi-verdict { font-size: 0.75rem; font-weight: 900; color: var(--accent-amber); letter-spacing: 0.05em; font-family: var(--font-terminal); }
+        .res-label { font-size: 0.6rem; opacity: 0.6; font-family: var(--font-terminal); text-transform: uppercase; }
+        .res-value { font-size: 3.5rem; color: var(--accent-red); text-shadow: 0 0 25px var(--accent-red-glow); font-family: var(--font-terminal); font-weight: 900; }
+        .pbi-verdict { font-size: 0.75rem; font-weight: 900; color: var(--accent-amber); letter-spacing: 0.1em; font-family: var(--font-terminal); }
 
         .tactical-node-v62 { display: flex; flex-direction: column; gap: 20px; }
         .template-box-v62 { 
-          background: rgba(255, 45, 85, 0.1); border: 1px solid var(--accent-red); 
-          padding: 18px; border-radius: 4px; color: white; font-size: 1.15rem; 
+          background: rgba(255, 45, 85, 0.12); border: 1px solid var(--accent-red); 
+          padding: 18px; border-radius: 4px; color: #fff; font-size: 1.15rem; 
           line-height: 1.5; font-family: var(--font-terminal); box-shadow: inset 0 0 15px rgba(255, 45, 85, 0.1);
         }
         .nuclear-box { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
-        .nuclear-box p { font-size: 0.9rem; color: rgba(255,255,255,0.7); font-style: italic; line-height: 1.4; }
 
-        .t-label { font-size: 0.65rem; color: var(--accent-amber); margin-bottom: 8px; display: block; font-family: var(--font-terminal); }
-        .quote-item { font-family: var(--font-terminal); font-size: 1rem; color: white; font-style: italic; margin-bottom: 8px; opacity: 0.9; }
-        .ev-text { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
+        .t-label { font-size: 0.65rem; color: var(--accent-amber); margin-bottom: 8px; display: block; font-family: var(--font-terminal); text-transform: uppercase; font-weight: 800; }
+        .quote-item { font-family: var(--font-terminal); font-size: 1rem; color: #fff; font-style: italic; margin-bottom: 8px; }
+        .ev-text { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
 
-        .blur-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 20%, #050505 90%); pointer-events: none; }
-        .locked .i-content-v36 p { filter: blur(8px); opacity: 0.5; }
+        .blur-overlay { 
+          position: absolute; inset: 0; 
+          background: linear-gradient(rgba(5,5,5,0) 10%, rgba(5,5,5,0.85) 60%, #050505 100%); 
+          pointer-events: none; z-index: 10;
+        }
+        .locked .i-content-v36 p, .locked .i-content-v36 div { filter: blur(12px); opacity: 0.2; }
 
         .paywall-cta-v36 { margin-top: 30px; text-align: center; }
         .unlock-btn-v36 { 
