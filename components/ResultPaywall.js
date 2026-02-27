@@ -124,6 +124,16 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           riskValue < 30 ? 'state-safe' : 
           'state-normal'
         }`}>
+          <div className="hero-footer" style={{ marginTop: '60px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '40px' }}>
+          <div className="disclaimer-text">
+            Descargo de responsabilidad: RedFlag AI Scanner es un producto independiente y no está afiliado, respaldado ni patrocinado por OpenAI ni Google. Esta plataforma es una interfaz personalizada construida sobre modelos de inteligencia artificial para fines de entretenimiento y análisis de datos.
+          </div>
+          <div className="footer-links">
+            <a href="/terms">Términos</a>
+            <a href="/privacy">Privacidad</a>
+            <span className="footer-contact">soporte@redflagscanner.xyz</span>
+          </div>
+        </div>
           {/* HUD Elements -> Now Astrological / Editorial Watermarks */}
           <div className="hud-overlay">
             <div className="hud-id">{aiResult?.case_id || 'ID-RESERVADO'}</div>
@@ -518,7 +528,31 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .lite-resumen { font-size: 0.9rem; color: white; margin-bottom: 15px; font-style: italic; }
         .lite-footer { font-size: 0.6rem; color: rgba(255,255,255,0.4); }
 
-        .dinamica-center-v36 { margin-bottom: 30px; text-align: center; }
+        .hero-footer { width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
+        .disclaimer-text {
+          font-size: 0.65rem;
+          color: rgba(255,255,255,0.25);
+          line-height: 1.5;
+          margin-bottom: 20px;
+          font-style: italic;
+        }
+        .footer-links {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 25px;
+          margin-top: 15px;
+        }
+        .footer-links a, .footer-contact {
+          font-size: 0.75rem;
+          color: rgba(255,255,255,0.4) !important;
+          text-decoration: none;
+          letter-spacing: 0.05em;
+          font-weight: 500;
+        }
+        .footer-contact { font-family: var(--font-terminal); opacity: 0.5; }
+        
+        .paywall-cta-v36 { margin-top: 30px; text-align: center; }
         .power-balance-badge { font-size: 0.7rem; color: var(--accent-amber); background: rgba(255, 179, 71, 0.1); padding: 5px 15px; border-radius: 2px; border: 1px solid rgba(255, 179, 71, 0.2); display: inline-block; margin-bottom: 15px; }
         .dinamica-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .dinamica-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); }

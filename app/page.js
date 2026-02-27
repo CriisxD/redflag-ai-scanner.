@@ -216,7 +216,7 @@ export default function LandingPage() {
             REDFLAG <span className="highlight">AI</span>
           </h1>
           <p className="hero-subtitle terminal-text">
-            Análisis de inteligencia no autorizado sobre tus dinámicas tóxicas. Sin filtros. Sin piedad.
+            SaaS de análisis de sentimientos táctico para tus conversaciones. Sin filtros. Sin piedad.
           </p>
         </div>
 
@@ -261,13 +261,13 @@ export default function LandingPage() {
         </div>
 
         <div className="hero-footer">
-          <p>
-            Prueba Social: <span className="footer-highlight">+4,200</span> análisis realizados esta semana.
-          </p>
+          <div className="disclaimer-text">
+            Descargo de responsabilidad: RedFlag AI Scanner es un producto independiente y no está afiliado, respaldado ni patrocinado por OpenAI ni Google. Esta plataforma es una interfaz personalizada construida sobre modelos de inteligencia artificial para fines de entretenimiento y análisis de datos.
+          </div>
           <div className="footer-links">
             <a href="/terms">Términos</a>
             <a href="/privacy">Privacidad</a>
-            <a href="mailto:soporte@redflagscanner.xyz">Contacto</a>
+            <span className="footer-contact">soporte@redflagscanner.xyz</span>
           </div>
         </div>
       </div>
@@ -650,20 +650,31 @@ export default function LandingPage() {
         }
 
         .hero-footer {
-          margin-top: 40px;
+          margin-top: 60px;
           margin-bottom: 60px;
           text-align: center;
           z-index: 10;
+          padding: 0 20px;
+          max-width: 600px;
+        }
+
+        .disclaimer-text {
+          font-size: 0.65rem;
+          color: rgba(255,255,255,0.25);
+          line-height: 1.5;
+          margin-bottom: 20px;
+          font-style: italic;
         }
 
         .footer-links {
           display: flex;
           justify-content: center;
+          align-items: center;
           gap: 25px;
           margin-top: 15px;
         }
 
-        .footer-links a {
+        .footer-links a, .footer-contact {
           font-size: 0.75rem;
           color: rgba(255,255,255,0.4) !important;
           text-decoration: none;
@@ -673,8 +684,12 @@ export default function LandingPage() {
         }
 
         .footer-links a:hover {
-          color: #E0B0FF !important;
-          opacity: 1;
+          color: var(--accent-red) !important;
+        }
+
+        .footer-contact {
+          font-family: var(--font-terminal);
+          opacity: 0.5;
         }
 
         .features-grid {
