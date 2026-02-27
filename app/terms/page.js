@@ -93,50 +93,73 @@ export default function TermsPage() {
           background: #050505;
           display: flex;
           justify-content: center;
-          padding: 40px 20px;
+          padding: 80px 20px;
           color: white;
-          font-family: 'Inter', sans-serif;
+          font-family: var(--font-body);
         }
         .legal-card {
           max-width: 800px;
           width: 100%;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 28px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 4px;
           padding: 40px;
-          line-height: 1.6;
+          line-height: 1.8;
+          position: relative;
         }
         .back-link {
           display: inline-block;
-          color: #ffb347;
+          color: var(--accent-amber);
           text-decoration: none;
           margin-bottom: 30px;
-          font-weight: 600;
-          font-size: 0.9rem;
+          font-weight: 700;
+          font-size: 0.8rem;
+          font-family: var(--font-terminal);
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
         }
         h1 {
-          font-size: 2.5rem;
+          font-size: clamp(2rem, 5vw, 3rem);
           margin-bottom: 10px;
-          background: linear-gradient(135deg, #E0B0FF, #FFB347);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          font-family: var(--font-terminal);
+          font-weight: 950;
+          text-transform: uppercase;
+          letter-spacing: -0.02em;
+          color: white;
+        }
+        h1::after {
+          content: "";
+          display: block;
+          width: 60px;
+          height: 4px;
+          background: var(--accent-red);
+          margin-top: 10px;
         }
         .last-updated {
-          color: rgba(255, 255, 255, 0.4);
-          font-size: 0.85rem;
-          margin-bottom: 40px;
+          color: rgba(255, 255, 255, 0.3);
+          font-size: 0.75rem;
+          margin-bottom: 50px;
+          font-family: var(--font-terminal);
         }
         section {
-          margin-bottom: 30px;
+          margin-bottom: 40px;
         }
         h2 {
-          font-size: 1.25rem;
-          color: #E0B0FF;
+          font-size: 1.1rem;
+          color: var(--accent-red);
           margin-bottom: 15px;
+          font-family: var(--font-terminal);
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
         p {
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.95rem;
+        }
+        strong {
+          color: white;
+          font-weight: 700;
         }
       `}</style>
     </div>
