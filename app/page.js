@@ -255,8 +255,8 @@ export default function LandingPage() {
             Prueba Social: <span className="footer-highlight">+4,200</span> análisis realizados esta semana.
           </p>
           <div className="footer-links">
-            <Link href="/terms">Términos</Link>
-            <Link href="/privacy">Privacidad</Link>
+            <a href="/terms">Términos</a>
+            <a href="/privacy">Privacidad</a>
             <a href="mailto:soporte@redflagscanner.xyz">Contacto</a>
           </div>
         </div>
@@ -578,11 +578,10 @@ export default function LandingPage() {
 
         .footer-links a {
           font-size: 0.75rem;
-          color: rgba(255,255,255,0.5) !important;
+          color: rgba(255,255,255,0.4) !important;
           text-decoration: none;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          font-weight: 600;
+          letter-spacing: 0.05em;
+          font-weight: 500;
           transition: all 0.2s;
         }
 
