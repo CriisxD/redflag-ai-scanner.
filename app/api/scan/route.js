@@ -27,6 +27,22 @@ export async function POST(req) {
     console.log('Target:', targetName);
     console.log('Images count:', images?.length);
 
+    // 0. Lazy Deletion: Remove scans older than 10 minutes
+    if (supabase) {
+      try {
+        const tenMinsAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+        const { error: cleanupError } = await supabase
+          .from('scans')
+          .delete()
+          .lt('created_at', tenMinsAgo);
+        
+        if (cleanupError) console.error('Cleanup Error:', cleanupError);
+        else console.log('Cleaned up records older than:', tenMinsAgo);
+      } catch (e) {
+        console.error('Lazy cleanup failed:', e);
+      }
+    }
+
     if (!images || !Array.isArray(images) || images.length === 0) {
       return NextResponse.json({ error: 'No images provided' }, { status: 400 });
     }
@@ -198,7 +214,8 @@ IMPORTANTE: Evita lenguaje genérico. El reporte debe sentirse científico, cín
     return NextResponse.json({
       scanId: scanData.id,
       aiResult,
-      checkoutUrl
+      checkoutUrl,
+      createdAt: scanData.created_at
     });
 
   } catch (error) {

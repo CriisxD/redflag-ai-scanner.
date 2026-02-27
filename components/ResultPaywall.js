@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import ShareableTicket from './ShareableTicket';
 
-export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = false }) {
+export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = false, createdAt = null }) {
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(forcedUnlocked);
@@ -32,6 +32,18 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
   }, []);
 
   // Urgency countdown (10 min)
+  useEffect(() => {
+    // Sync countdown with real createdAt time if available
+    const effectiveCreatedAt = createdAt || aiResult?.createdAt;
+    if (effectiveCreatedAt) {
+      const createdTime = new Date(effectiveCreatedAt).getTime();
+      const now = Date.now();
+      const diffInSeconds = Math.floor((now - createdTime) / 1000);
+      const remaining = Math.max(0, 600 - diffInSeconds);
+      setCountdown(remaining);
+    }
+  }, [createdAt, aiResult?.createdAt]);
+
   useEffect(() => {
     if (isUnlocked) return;
     const interval = setInterval(() => {

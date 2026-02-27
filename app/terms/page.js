@@ -39,12 +39,23 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2>4. Uso de Datos e Imágenes</h2>
+          <h2>4. Almacenamiento y Seguridad</h2>
+          <p>
+            Tus análisis y referencias de chat se almacenan en nuestra base de datos (Supabase) 
+            de forma estrictamente temporal. Implementamos una política de **autodestrucción de 10 minutos**: 
+            una vez generado el análisis, el registro completo es eliminado permanentemente 
+            de nuestro sistema tras 10 minutos. Te recomendamos descargar o capturar tu 
+            resultado si deseas conservarlo.
+          </p>
+        </section>
+
+        <section>
+          <h2>5. Uso de Datos e Imágenes</h2>
           <p>
             Al subir capturas de pantalla, garantizas que tienes el derecho de utilizar 
-            dichas imágenes. Las imágenes son procesadas por OpenAI para el análisis y 
-            almacenadas de forma temporal según nuestra Política de Privacidad. No nos 
-            hacemos responsables del contenido de las imágenes subidas por los usuarios.
+            dichas imágenes. Para proteger tu privacidad, **todas las imágenes y el análisis 
+            generado se eliminan automáticamente de nuestros servidores 10 minutos después 
+            de su creación**. No conservamos copias permanentes de tus conversaciones.
           </p>
         </section>
 

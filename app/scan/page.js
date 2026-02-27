@@ -35,6 +35,7 @@ function PaywallPageInner() {
       setScanResult({
         scanId: json.scanId,
         aiResult: json.aiResult,
+        createdAt: json.createdAt,
         isUnlocked: true 
       });
     } catch (err) {
@@ -77,6 +78,7 @@ function PaywallPageInner() {
       onCheckout={handleCheckout} 
       aiResult={scanResult?.aiResult || scanResult}
       forcedUnlocked={isPaymentSuccess || scanResult?.isUnlocked}
+      createdAt={scanResult?.createdAt}
     />
   );
 }

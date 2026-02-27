@@ -38,11 +38,13 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2>3. Procesamiento por IA</h2>
+          <h2>3. Procesamiento por IA y Retención</h2>
           <p>
             Las imágenes y el texto que subes son enviados a los servidores de OpenAI 
-            para ser procesados. OpenAI cumple con estrictas regulaciones de privacidad, 
-            pero te recomendamos no subir información extremadamente sensible o privada.
+            para ser procesados. **Garantizamos una retención mínima**: todo el contenido 
+            (imágenes y análisis) se elimina permanentemente de nuestra base de datos 
+            exactamente 10 minutos después de ser generado. No mantenemos registros históricos 
+            de tus chats.
           </p>
         </section>
 

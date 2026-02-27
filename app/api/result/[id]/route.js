@@ -25,7 +25,8 @@ export async function GET(req, { params }) {
       aiResult: aiResult,
       paymentStatus: scan.payment_status,
       isUnlocked: isPaid,
-      targetName: scan.target_name
+      targetName: scan.target_name,
+      createdAt: scan.created_at
     });
 
   } catch (err) {
