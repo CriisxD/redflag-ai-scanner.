@@ -211,9 +211,9 @@ export default function LandingPage() {
         </div>
 
         <div className="hero-content crt-effect">
-          <div className="status-badge terminal-text">ACCESS_LEVEL: UNRESTRICTED</div>
+          <div className="status-badge terminal-text">ENGINE: THE_DARK_ARCHIVE_v6.1</div>
           <h1 className="hero-title terminal-title">
-            THE <span className="highlight">DARK</span> ARCHIVE
+            REDFLAG <span className="highlight">AI</span>
           </h1>
           <p className="hero-subtitle terminal-text">
             Análisis de inteligencia no autorizado sobre tus dinámicas tóxicas. Sin filtros. Sin piedad.
@@ -221,14 +221,25 @@ export default function LandingPage() {
         </div>
 
         <div className="hero-action">
+          <div className="visual-teaser-tk">
+             <div className="teaser-card blurred-ticket">
+               <div className="teaser-label">REPORT_PREVIEW</div>
+               <div className="teaser-metrics">
+                 <div className="t-bar" />
+                 <div className="t-bar" />
+                 <div className="t-bar" />
+               </div>
+             </div>
+          </div>
           <div className="glow-ring"></div>
           <button 
-            className={`scan-btn ${isCompressing ? 'loading' : ''}`} 
+            className={`scan-btn glitch-btn ${isCompressing ? 'loading' : ''}`} 
             onClick={() => setStep(STEPS.UPLOAD)}
           >
+            <div className="glitch-overlay"></div>
             <span className="btn-icon">⚡</span>
             <span className="btn-primary-text">ANALIZAR CONVERSACIÓN</span>
-            <span className="btn-secondary-text">ANÁLISIS INSTANTÁNEO</span>
+            <span className="btn-secondary-text">REVELAR MIS RED FLAGS</span>
           </button>
         </div>
 
@@ -413,9 +424,59 @@ export default function LandingPage() {
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          margin-top: -10px;
+          margin-top: 20px;
           gap: 20px;
         }
+
+        .visual-teaser-tk {
+          position: absolute;
+          right: -160px;
+          top: 50%;
+          transform: translateY(-50%) rotate(10deg);
+          opacity: 0.4;
+          filter: blur(8px);
+          pointer-events: none;
+          transition: all 0.5s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .hero-action:hover .visual-teaser-tk {
+          opacity: 0.7;
+          filter: blur(4px);
+          transform: translateY(-55%) rotate(5deg) scale(1.1);
+        }
+
+        .teaser-card {
+          width: 140px;
+          height: 200px;
+          background: #111;
+          border: 1px solid var(--accent-red);
+          padding: 15px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          box-shadow: 0 0 30px rgba(0,0,0,1);
+          position: relative;
+        }
+
+        .teaser-card::after {
+          content: "CONFIDENTIAL";
+          position: absolute;
+          top: 50%; left: 50%;
+          transform: translate(-50%, -50%) rotate(-30deg);
+          color: var(--accent-red);
+          font-size: 0.8rem;
+          font-weight: 900;
+          opacity: 0.2;
+          border: 2px solid var(--accent-red);
+          padding: 4px;
+        }
+
+        .teaser-label { font-size: 0.5rem; color: var(--accent-red); font-family: var(--font-terminal); letter-spacing: 0.1em; }
+        .t-bar { height: 4px; background: rgba(255,255,255,0.05); width: 100%; border-radius: 2px; }
+        .teaser-metrics { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
 
         .input-group {
           width: 100%;
@@ -485,8 +546,8 @@ export default function LandingPage() {
 
         .scan-btn {
           position: relative;
-          width: 220px;
-          height: 220px;
+          width: 250px;
+          height: 250px;
           border-radius: 50%;
           background: #080808;
           border: 4px solid #ff2d55;
@@ -496,14 +557,38 @@ export default function LandingPage() {
           justify-content: center;
           cursor: pointer;
           transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          box-shadow: 0 0 40px rgba(57, 255, 20, 0.25), inset 0 0 20px rgba(57, 255, 20, 0.1);
+          box-shadow: 0 0 50px var(--accent-red-glow), inset 0 0 20px rgba(255, 45, 85, 0.2);
           z-index: 2;
+          overflow: hidden;
+          animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+          0% { border-color: #ff2d55; box-shadow: 0 0 40px var(--accent-red-glow); }
+          50% { border-color: #ff5e7e; box-shadow: 0 0 70px var(--accent-red-glow); }
+          100% { border-color: #ff2d55; box-shadow: 0 0 40px var(--accent-red-glow); }
+        }
+
+        .glitch-btn:hover .glitch-overlay {
+          position: absolute;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(255, 45, 85, 0.15);
+          animation: glitch-anim 0.25s infinite;
+          z-index: 1;
+        }
+
+        @keyframes glitch-anim {
+          0% { clip-path: inset(10% 0 30% 0); transform: translate(-4px, 2px); }
+          20% { clip-path: inset(40% 0 10% 0); transform: translate(4px, -2px); }
+          40% { clip-path: inset(20% 0 50% 0); transform: translate(-1px, 4px); }
+          60% { clip-path: inset(60% 0 20% 0); transform: translate(1px, -4px); }
+          80% { clip-path: inset(30% 0 40% 0); transform: translate(4px, 2px); }
+          100% { clip-path: inset(10% 0 30% 0); transform: translate(-4px, -2px); }
         }
 
         .scan-btn:hover {
           transform: scale(1.05);
-          box-shadow: 0 0 60px rgba(57, 255, 20, 0.4), inset 0 0 30px rgba(57, 255, 20, 0.2);
-          background: #0f1c0f;
+          background: #111;
         }
 
         .scan-btn:active {
@@ -543,24 +628,26 @@ export default function LandingPage() {
         }
 
         .btn-primary-text {
-          color: #ff2d55;
+          color: #fff;
           font-size: 1.4rem;
           font-weight: 900;
           line-height: 1.1;
           text-align: center;
           letter-spacing: -0.02em;
           text-transform: uppercase;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         .btn-secondary-text {
-          color: rgba(255,255,255,0.4);
-          font-size: 0.7rem;
+          color: var(--accent-red);
+          font-size: 0.85rem;
           font-weight: 800;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.15em;
           margin-top: 10px;
           text-transform: uppercase;
-          max-width: 140px;
+          max-width: 180px;
           text-align: center;
+          font-family: var(--font-terminal);
         }
 
         .hero-footer {
