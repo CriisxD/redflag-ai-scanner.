@@ -257,6 +257,7 @@ export default function LandingPage() {
           <div className="footer-links">
             <Link href="/terms">Términos</Link>
             <Link href="/privacy">Privacidad</Link>
+            <a href="mailto:soporte@redflagscanner.xyz">Contacto</a>
           </div>
         </div>
       </div>

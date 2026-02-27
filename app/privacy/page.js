@@ -66,6 +66,15 @@ export default function PrivacyPage() {
             incluye una opción para ser eliminado.
           </p>
         </section>
+
+        <section>
+          <h2>6. Contacto</h2>
+          <p>
+            Para cualquier consulta sobre tu privacidad, puedes contactarnos en:
+            <br />
+            <strong>soporte@redflagscanner.xyz</strong>
+          </p>
+        </section>
       </div>
 
       <style jsx>{`

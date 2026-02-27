@@ -76,6 +76,15 @@ export default function TermsPage() {
             aceptación de los nuevos términos.
           </p>
         </section>
+
+        <section>
+          <h2>7. Contacto</h2>
+          <p>
+            Si tienes alguna pregunta sobre estos términos, puedes contactarnos en: 
+            <br />
+            <strong>soporte@redflagscanner.xyz</strong>
+          </p>
+        </section>
       </div>
 
       <style jsx>{`
