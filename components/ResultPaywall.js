@@ -215,6 +215,13 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           </div>
         </div>
 
+        {/* Viral Share Button (Moved up) */}
+        <div className="share-section" style={{ marginBottom: '20px', textAlign: 'center' }}>
+          <button className="share-btn" onClick={handleShare}>
+            🚩 Compartir mi RedFlag Score
+          </button>
+        </div>
+
         {/* SECCIÓN 2: PAYWALL & STRATEGY */}
         <div className="strategy-sequence-v36">
           <div className="divider-strategy">
@@ -383,12 +390,6 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
             </div>
           )}
 
-          {/* Viral Share Button */}
-          <div className="share-section">
-            <button className="share-btn" onClick={handleShare}>
-              🚩 Compartir mi RedFlag Score
-            </button>
-          </div>
         </div>
 
 
