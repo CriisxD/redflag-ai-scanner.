@@ -249,11 +249,6 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
             <button className="share-btn" onClick={handleShare} disabled={downloading}>
               {downloading ? "Generando Imagen Penal..." : (isUnlocked ? "🚀 Compartir Reporte Táctico" : "🚩 Compartir Warning Ticket (Lite)")}
             </button>
-            {isUnlocked && (
-              <button className="share-btn download-btn" onClick={() => window.print()} style={{ marginTop: '10px' }}>
-                💾 Descargar Dossier Oficial (PDF)
-              </button>
-            )}
           </div>
 
         {/* SECCIÓN 2: PAYWALL & STRATEGY */}
