@@ -571,23 +571,23 @@ export default function LandingPage() {
         .glitch-btn:hover .glitch-overlay {
           position: absolute;
           top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(255, 45, 85, 0.15);
-          animation: glitch-anim 0.25s infinite;
+          background: linear-gradient(180deg, transparent 0%, rgba(255, 45, 85, 0.4) 50%, transparent 100%);
+          animation: radar-scan 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
           z-index: 1;
         }
 
-        @keyframes glitch-anim {
-          0% { clip-path: inset(10% 0 30% 0); transform: translate(-4px, 2px); }
-          20% { clip-path: inset(40% 0 10% 0); transform: translate(4px, -2px); }
-          40% { clip-path: inset(20% 0 50% 0); transform: translate(-1px, 4px); }
-          60% { clip-path: inset(60% 0 20% 0); transform: translate(1px, -4px); }
-          80% { clip-path: inset(30% 0 40% 0); transform: translate(4px, 2px); }
-          100% { clip-path: inset(10% 0 30% 0); transform: translate(-4px, -2px); }
+        @keyframes radar-scan {
+          0% { transform: translateY(-100%); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(100%); opacity: 0; }
         }
 
+
         .scan-btn:hover {
-          transform: scale(1.05);
-          background: #111;
+          transform: scale(1.02);
+          background: rgba(255, 45, 85, 0.05);
+          box-shadow: 0 0 60px var(--accent-red-glow), inset 0 0 30px rgba(255, 45, 85, 0.4);
         }
 
         .scan-btn:active {
