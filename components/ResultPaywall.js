@@ -302,6 +302,16 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
                         {aiResult?.meme_metrics?.pbi > 1.5 ? 'ESTADO: SUBORDINACIÓN EMOCIONAL' : 
                          aiResult?.meme_metrics?.pbi < 0.8 ? 'ESTADO: CONTROL ESTRATÉGICO' : 'ESTADO: BALANCE INESTABLE'}
                       </p>
+                      
+                      <div className="pbi-legend terminal-text">
+                        <div className="legend-item"><span className="l-color warning"></span> <strong>&gt; 1.5</strong> : Subordinación (Esfuerzo Asimétrico)</div>
+                        <div className="legend-item"><span className="l-color neutral"></span> <strong>0.8 - 1.5</strong> : Simetría / Balance Inestable</div>
+                        <div className="legend-item"><span className="l-color safe"></span> <strong>&lt; 0.8</strong> : Control Estratégico (Dominancia)</div>
+                        <p className="pbi-explainer">
+                          El índice mide quién invierte más energía (longitud de mensajes y velocidad de respuesta). 
+                          Valores altos indican que tú estás persiguiendo la validación.
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     <div className="pbi-tease-v63">
@@ -586,7 +596,28 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .pbi-result { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px; }
         .res-label { font-size: 0.6rem; opacity: 0.6; font-family: var(--font-terminal); text-transform: uppercase; }
         .res-value { font-size: 3.5rem; color: var(--accent-red); text-shadow: 0 0 25px var(--accent-red-glow); font-family: var(--font-terminal); font-weight: 900; }
-        .pbi-verdict { font-size: 0.75rem; font-weight: 900; color: var(--accent-amber); letter-spacing: 0.1em; font-family: var(--font-terminal); }
+        .pbi-verdict { font-size: 0.75rem; font-weight: 900; color: var(--accent-amber); letter-spacing: 0.1em; font-family: var(--font-terminal); margin-bottom: 25px; }
+
+        .pbi-legend {
+          padding-top: 20px;
+          border-top: 1px dashed rgba(255,255,255,0.1);
+          text-align: left;
+          font-size: 0.7rem;
+          color: rgba(255,255,255,0.7);
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          background: rgba(0,0,0,0.2);
+          padding: 20px;
+          border-radius: 8px;
+        }
+        .legend-item { display: flex; align-items: center; gap: 10px; }
+        .legend-item strong { color: white; width: 65px; display: inline-block; font-size: 0.75rem; }
+        .l-color { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .l-color.warning { background: var(--accent-red); box-shadow: 0 0 5px var(--accent-red-glow); }
+        .l-color.neutral { background: var(--accent-amber); opacity: 0.8; }
+        .l-color.safe { background: #E0B0FF; opacity: 0.8; }
+        .pbi-explainer { margin-top: 10px; font-size: 0.65rem; line-height: 1.5; color: rgba(255,255,255,0.4); font-style: italic; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
 
         .tactical-node-v62 { display: flex; flex-direction: column; gap: 20px; }
         .template-box-v62 { 
