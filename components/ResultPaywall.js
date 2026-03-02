@@ -524,12 +524,12 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .gauge-card.full-width { grid-column: span 2; }
 
         .lite-ticket-v36 {
-          background: rgba(255, 45, 85, 0.05); border: 1px dashed var(--accent-red);
-          padding: 20px; text-align: center; margin-bottom: 30px; border-radius: 4px;
+          background: rgba(255, 45, 85, 0.05); border: 1px dashed rgba(255, 45, 85, 0.4);
+          padding: 30px 20px; text-align: center; margin: 40px 0; border-radius: 8px;
         }
-        .lite-header { font-size: 0.7rem; color: var(--accent-red); margin-bottom: 10px; font-weight: 700; }
-        .lite-resumen { font-size: 0.9rem; color: white; margin-bottom: 15px; font-style: italic; }
-        .lite-footer { font-size: 0.6rem; color: rgba(255,255,255,0.4); }
+        .lite-header { font-size: 0.85rem; color: var(--accent-red); margin-bottom: 20px; font-weight: 800; letter-spacing: 0.1em; }
+        .lite-resumen { font-size: 1.1rem; color: white; margin-bottom: 25px; font-style: italic; line-height: 1.6; padding: 0 15px; }
+        .lite-footer { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; }
 
         .hero-footer { width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
         .disclaimer-text {
@@ -555,7 +555,8 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         }
         .footer-contact { font-family: var(--font-terminal); opacity: 0.5; }
         
-        .paywall-cta-v36 { margin-top: 30px; text-align: center; }
+        .paywall-cta-v36 { margin-top: 50px; text-align: center; padding: 0 10px; }
+        .paywall-sub { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.5; margin-top: 25px; }
         .power-balance-badge { font-size: 0.7rem; color: var(--accent-amber); background: rgba(255, 179, 71, 0.1); padding: 5px 15px; border-radius: 2px; border: 1px solid rgba(255, 179, 71, 0.2); display: inline-block; margin-bottom: 15px; }
         .dinamica-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .dinamica-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
@@ -564,14 +565,14 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         .insight-card-v36 { 
           background: rgba(15, 15, 15, 0.9); 
           border: 1px solid rgba(255, 255, 255, 0.1); 
-          border-radius: 8px; padding: 20px; margin-bottom: 20px;
+          border-radius: 12px; padding: 30px 25px; margin-bottom: 30px;
           position: relative;
           overflow: hidden;
           box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        .i-header-v36 { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; }
-        .i-icon-v36 { font-size: 1.2rem; filter: drop-shadow(0 0 5px var(--accent-red-glow)); }
-        .i-header-v36 h3 { font-size: 0.95rem; color: #fff; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
+        .i-header-v36 { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 20px; }
+        .i-icon-v36 { font-size: 1.5rem; filter: drop-shadow(0 0 5px var(--accent-red-glow)); }
+        .i-header-v36 h3 { font-size: 1.1rem; color: #fff; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
 
         .receipt-item-v62 { margin-bottom: 25px; border-left: 2px solid var(--accent-red); padding-left: 15px; }
         .receipt-meta { margin-bottom: 10px; }
@@ -621,24 +622,27 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           border: 1px dashed rgba(255,255,255,0.1); font-size: 0.9rem;
         }
 
-        .share-btn.download-btn { background: transparent; border: 1px solid var(--accent-amber); color: var(--accent-amber); }
-        .share-btn.download-btn:hover { background: var(--accent-amber); color: #000; }
+        .share-btn.download-btn { background: rgba(255, 179, 71, 0.05); border: 1px solid var(--accent-amber); color: var(--accent-amber); margin-top: 15px; }
+        .share-btn.download-btn:hover { background: var(--accent-amber); color: #000; transform: translateY(-2px); }
         .unlock-btn-v36 { 
-          width: 100%; padding: 20px; background: var(--accent-red); border: none; color: black; 
-          font-family: var(--font-terminal); font-size: 1.1rem; font-weight: 700; cursor: pointer;
+          width: 100%; padding: 22px; background: var(--accent-red); border: none; color: black; 
+          font-family: var(--font-terminal); font-size: 1.15rem; font-weight: 800; cursor: pointer;
           transition: all 0.2s; box-shadow: 0 0 30px var(--accent-red-glow);
+          border-radius: 8px; text-transform: uppercase; letter-spacing: 0.05em;
         }
         .unlock-btn-v36:hover { transform: scale(1.02); box-shadow: 0 0 50px var(--accent-red-glow); }
 
-        .urgency-timer { font-family: var(--font-terminal); font-size: 0.75rem; color: var(--accent-red); margin-bottom: 20px; animation: blink 1s infinite; }
+        .urgency-timer { font-family: var(--font-terminal); font-size: 0.9rem; color: var(--accent-red); margin-bottom: 30px; animation: blink 1s infinite; font-weight: 700; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .share-btn { 
-          width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.1); 
-          color: rgba(255,255,255,0.6); padding: 15px; font-family: var(--font-terminal);
-          font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+          width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); 
+          color: white; padding: 18px; font-family: var(--font-terminal);
+          font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+          border-radius: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .share-btn:hover { border-color: white; color: white; }
+        .share-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--accent-amber); color: var(--accent-amber); transform: translateY(-2px); }
       `}</style>
     </div>
   );
