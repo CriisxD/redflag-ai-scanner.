@@ -125,6 +125,18 @@ ESTRUCTURA DE RESPUESTA (JSON):
     "respuesta_control": "<Guion exacto para descolocar al otro>",
     "opcion_nuclear": "<Justificación definitiva para el bloqueo>"
   },
+  "analisis_premium": {
+    "simulacion_escenarios": {
+      "inercia": {
+        "descripcion": "<Qué pasará si sigues actuando igual (destructivo)>",
+        "probabilidad_estimada": "<Porcentaje alto, ej: 95%>"
+      },
+      "cambio_tactico": {
+        "descripcion": "<Qué pasará si aplicas la Jugada Maestra (empoderante)>",
+        "probabilidad_estimada": "<Porcentaje, ej: 60%>"
+      }
+    }
+  },
   "lite_verdict": {
     "titulo": "TICKET DE ADVERTENCIA",
     "resumen": "Toxicidad crítica detectada. Reporte bloqueado por seguridad."
