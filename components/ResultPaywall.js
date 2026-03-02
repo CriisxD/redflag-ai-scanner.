@@ -58,19 +58,49 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
   const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   const handleShare = async () => {
-    const score = aiResult?.metricas_binarias?.[0]?.valor || '??';
-    const verdict = aiResult?.veredicto_shock || 'Sin veredicto';
-    const icon = aiResult?.verdict_icon || '🚩';
-    const shareText = `${icon} Mi RedFlag Score: ${score}% — "${verdict}"\n\nAnaliza tu crush gratis → redflagscanner.xyz 🔍`;
+    const element = document.getElementById('shareable-ticket-capture');
+    if (!element) return;
+    setDownloading(true);
     
-    if (navigator.share) {
-      try {
-        await navigator.share({ text: shareText });
-      } catch (e) { /* user cancelled */ }
-    } else {
-      await navigator.clipboard.writeText(shareText);
-      alert('¡Copiado al portapapeles!');
+    try {
+      const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#050505' });
+      
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        const file = new File([blob], `redflag-${targetName}.png`, { type: 'image/png' });
+        
+        const shareText = `${aiResult?.verdict_icon || '🚩'} Mi RedFlag Score: ${aiResult?.meme_metrics?.toxic_meter || '??'}% — "${aiResult?.shock_verdict || 'Sin veredicto'}"\n\nAnaliza tu crush gratis → redflagscanner.xyz 🔍`;
+
+        // Check if Web Share API with files is supported
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              text: shareText,
+              files: [file]
+            });
+          } catch (e) {
+            // User cancelled or share failed, fallback to direct download just in case
+            console.log('Share cancelled or failed, falling back to download');
+            fallbackDownload(canvas);
+          }
+        } else {
+          // Fallback to direct download
+          fallbackDownload(canvas);
+        }
+        setDownloading(false);
+      }, 'image/png');
+    } catch (err) {
+      console.error('Image generation error:', err);
+      setDownloading(false);
     }
+  };
+
+  const fallbackDownload = (canvas) => {
+    const image = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = `redflag-viral-${targetName}.png`;
+    link.click();
   };
 
   const handleCheckoutClick = () => {
@@ -216,8 +246,8 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
         </div>
 
           <div className="share-section" style={{ marginBottom: '20px', textAlign: 'center' }}>
-            <button className="share-btn" onClick={handleShare}>
-              {isUnlocked ? "🚀 Compartir Reporte Táctico" : "🚩 Compartir Warning Ticket (Lite)"}
+            <button className="share-btn" onClick={handleShare} disabled={downloading}>
+              {downloading ? "Generando Imagen Penal..." : (isUnlocked ? "🚀 Compartir Reporte Táctico" : "🚩 Compartir Warning Ticket (Lite)")}
             </button>
             {isUnlocked && (
               <button className="share-btn download-btn" onClick={() => window.print()} style={{ marginTop: '10px' }}>
