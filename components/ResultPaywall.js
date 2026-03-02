@@ -124,16 +124,6 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           riskValue < 30 ? 'state-safe' : 
           'state-normal'
         }`}>
-          <div className="hero-footer" style={{ marginTop: '60px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '40px' }}>
-          <div className="disclaimer-text">
-            Descargo de responsabilidad: RedFlag AI Scanner es un producto independiente y no está afiliado, respaldado ni patrocinado por OpenAI ni Google. Esta plataforma es una interfaz personalizada construida sobre modelos de inteligencia artificial para fines de entretenimiento y análisis de datos.
-          </div>
-          <div className="footer-links">
-            <a href="/terms">Términos</a>
-            <a href="/privacy">Privacidad</a>
-            <span className="footer-contact">soporte@redflagscanner.xyz</span>
-          </div>
-        </div>
           {/* HUD Elements -> Now Astrological / Editorial Watermarks */}
           <div className="hud-overlay">
             <div className="hud-id">{aiResult?.case_id || 'ID-RESERVADO'}</div>
@@ -431,6 +421,19 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           mensaje_viral={aiResult?.mensaje_viral}
           isUnlocked={isUnlocked}
         />
+
+        {/* Global Footer moved to the bottom */}
+        <div className="hero-footer" style={{ margin: '60px auto 40px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '40px' }}>
+          <div className="disclaimer-text">
+            Descargo de responsabilidad: RedFlag AI Scanner es un producto independiente y no está afiliado, respaldado ni patrocinado por OpenAI ni Google. Esta plataforma es una interfaz personalizada construida sobre modelos de inteligencia artificial para fines de entretenimiento y análisis de datos.
+          </div>
+          <div className="footer-links">
+            <a href="/terms">Términos</a>
+            <a href="/privacy">Privacidad</a>
+            <span className="footer-contact">soporte@redflagscanner.xyz</span>
+          </div>
+        </div>
+
       </div>
 
 
@@ -482,15 +485,15 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
 
         .shareable-zone-v36 { padding: 50px 20px 30px; position: relative; z-index: 5; }
 
-        .veredicto-shock-wrapper { margin-bottom: 40px; text-align: center; }
-        .verdict-icon-massive { font-size: 4rem; margin-bottom: 10px; filter: drop-shadow(0 0 20px var(--accent-red-glow)); }
-        .veredicto-shock-v36 { font-size: 3rem; color: var(--accent-red); margin-bottom: 10px; }
-        .roast-text { font-size: 0.95rem; color: rgba(255,255,255,0.7); max-width: 300px; margin: 0 auto; line-height: 1.4; }
+        .veredicto-shock-wrapper { margin-bottom: 50px; text-align: center; }
+        .verdict-icon-massive { font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--accent-red-glow)); }
+        .veredicto-shock-v36 { font-size: 3.5rem; color: var(--accent-red); margin-bottom: 15px; letter-spacing: -0.02em; }
+        .roast-text { font-size: 1.05rem; color: rgba(255,255,255,0.7); max-width: 380px; margin: 0 auto; line-height: 1.5; }
 
-        .meme-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .meme-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
         .gauge-card { 
           background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); 
-          border-radius: 8px; padding: 15px; text-align: center;
+          border-radius: 12px; padding: 25px 15px; text-align: center;
         }
         .gauge-header { font-family: var(--font-terminal); font-size: 0.6rem; color: rgba(255,255,255,0.4); margin-bottom: 15px; letter-spacing: 0.1em; }
         
