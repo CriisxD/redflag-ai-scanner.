@@ -13,10 +13,10 @@ export async function POST(req) {
       const hmac = crypto.createHmac('sha256', secret);
       const digest = hmac.update(rawBody).digest('hex');
 
-      // Validating signature (optional in dev but good for prod)
+      // Validating signature (Strict mode for Prod)
       if (signature !== digest) {
-        console.warn('⚠️ Invalid Creem signature. Proceeding cautiously or you should reject in pure Prod.');
-        // return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+        console.error('⚠️ Invalid Creem signature detected! Rejecting request.');
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
     }
 
