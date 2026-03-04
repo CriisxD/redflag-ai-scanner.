@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import OpenAI from 'openai';
 
-const LEMON_SQUEEZY_API_KEY = process.env.LEMON_SQUEEZY_API_KEY;
-const STORE_ID = process.env.LEMON_SQUEEZY_STORE_ID;
-const VARIANT_ID = process.env.LEMON_SQUEEZY_VARIANT_ID; // The $2.99 product variant
+const CREEM_CHECKOUT_URL = "https://www.creem.io/payment/prod_36caBKBHKOxbOmqbApPgqc";
 
 const getOpenAIClient = () => {
   const apiKey = process.env.OPENAI_API_KEY?.trim();
@@ -202,8 +200,8 @@ ESTRUCTURA DE RESPUESTA (JSON):
     }
 
     // 3. Return result + checkout link
-    const STORE_SLUG = process.env.LEMON_SQUEEZY_STORE_SLUG || 'redflag-ai-scanner';
-    const checkoutUrl = `https://${STORE_SLUG}.lemonsqueezy.com/checkout/buy/${VARIANT_ID}?checkout[custom][scan_id]=${scanData.id}`;
+    // Passing the scan_id as reference to validate the webhook later
+    const checkoutUrl = `${CREEM_CHECKOUT_URL}?client_reference_id=${scanData.id}`;
 
     // Attach user intent for the frontend
     aiResult.user_intent = userIntent;
