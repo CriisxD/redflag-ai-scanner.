@@ -32,10 +32,10 @@ export default function ResultPage({ params }) {
   };
 
   const handleCheckout = () => {
-    // Construct checkout URL based on ID
-    // In production, this would redirect to LemonSqueezy
-    const VARIANT_ID = '391093'; // Example variant
-    const checkoutUrl = `https://redflagscanner.lemonsqueezy.com/checkout/buy/${VARIANT_ID}?embed=1&checkout[custom][scan_id]=${id}`;
+    // Construct Creem checkout URL based on ID
+    // Pass the scan_id as client_reference_id for the webhook
+    const CREEM_CHECKOUT_URL = "https://www.creem.io/payment/prod_36caBKBHKOxbOmqbApPgqc";
+    const checkoutUrl = `${CREEM_CHECKOUT_URL}?client_reference_id=${id}`;
     window.location.href = checkoutUrl;
   };
 
