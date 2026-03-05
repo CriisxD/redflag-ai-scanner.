@@ -105,17 +105,17 @@ export default function ShareableTicket({
           letter-spacing: 0.2em;
         }
 
-        .header-zone { margin-bottom: 60px; }
+        .header-zone { margin-bottom: 40px; }
         .logo-area { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .logo-emoji-tk { font-size: 2.5rem; }
         .logo-area h1 { font-size: 1.8rem; letter-spacing: 0.1em; color: white; }
         .dossier-label { font-family: var(--font-terminal); font-size: 0.8rem; color: var(--accent-red); letter-spacing: 0.05em; }
 
-        .verdict-zone { margin-bottom: 60px; text-align: center; border: 1px solid rgba(255,255,255,0.05); padding: 30px 10px; background: rgba(255,45,85,0.02); }
+        .verdict-zone { margin-bottom: 40px; text-align: center; border: 1px solid rgba(255,255,255,0.05); padding: 20px 10px; background: rgba(255,45,85,0.02); }
         .shock-title { font-size: 3.5rem; color: var(--accent-red); margin-bottom: 15px; line-height: 1; }
         .dominance-badge { font-size: 0.8rem; color: var(--accent-amber); letter-spacing: 0.1em; }
 
-        .metrics-grid-tk { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 60px; }
+        .metrics-grid-tk { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
         .metric-box-tk { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
         .m-head-tk { font-family: var(--font-terminal); font-size: 0.6rem; color: rgba(255,255,255,0.4); margin-bottom: 10px; letter-spacing: 0.1em; }
         .m-value-tk { font-size: 1.8rem; margin-bottom: 10px; }
@@ -131,7 +131,7 @@ export default function ShareableTicket({
         .locked-teaser-tk { margin-bottom: 40px; text-align: center; }
         .blur-box-tk { height: 40px; background: rgba(255,255,255,0.05); filter: blur(10px); margin-top: 10px; border-radius: 4px; }
 
-        .summary-zone { margin-bottom: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; }
+        .summary-zone { margin-bottom: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
         .s-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
         .s-label-tk { font-family: var(--font-terminal); font-size: 0.75rem; color: rgba(255,255,255,0.5); }
         .s-val-tk { font-size: 0.95rem; color: white; }
