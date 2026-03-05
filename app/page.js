@@ -32,6 +32,13 @@ export default function LandingPage() {
 
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files || []);
+    
+    if (files.length > 3) {
+      alert('⚠️ Solo puedes subir un máximo de 3 capturas o fotos a la vez.');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
     if (files.length > 0) {
       setIsCompressing(true);
       try {
