@@ -77,7 +77,7 @@ export default function ShareableTicket({
         )}
 
         <div className="viral-punchline-tk">
-          <p className="punch-text">"{isUnlocked ? mensaje_viral : 'Alguien está ocultando la verdad. Reporte completo en redflagscanner.xyz'}"</p>
+          <p className="punch-text">"{isUnlocked ? mensaje_viral : 'Hay secretos perturbadores en este chat. Escanea los tuyos en redflagscanner.xyz'}"</p>
         </div>
 
         <div className="footer-tk">
