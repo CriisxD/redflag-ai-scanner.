@@ -10,11 +10,11 @@ export default function ScannerProgress({ chatData, onComplete, targetName }) {
   const [showPreHook, setShowPreHook] = useState(false);
 
   const datingIntelligencePhrases = [
-    `🕵️ Leyendo tus humillaciones...`,
-    `🚩 Contando las red flags que ignoraste...`,
-    `🤡 Midiendo el tamaño de tu nariz de payaso...`,
-    `⚖️ Pesando el desinterés de ${targetName || 'tu casi-algo'}...`,
-    `🔥 Preparando el roast definitivo...`,
+    `🕵️ Leyendo tu historial de humillaciones...`,
+    `🚩 Contando las veces que te clavaron el visto...`,
+    `🤡 Calculando la longitud de tus testamentos...`,
+    `⚖️ Cuantificando el desinterés de ${targetName || 'tu casi-algo'}...`,
+    `🔥 Recolectando los peores "jajaja"...`,
     `💀 Casi listo para destruir tu esperanza...`
   ];
 
