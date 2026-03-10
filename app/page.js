@@ -86,6 +86,7 @@ export default function LandingPage() {
       router.push(`/result/${result.scanId}`);
     } else {
       console.error('Scan Error Detailed:', result);
+      alert('⚠️ Error en el análisis: ' + (result.error?.message || result.error || 'Server error, intenta de nuevo.'));
       setStep(STEPS.LANDING);
       setChatData(null);
     }

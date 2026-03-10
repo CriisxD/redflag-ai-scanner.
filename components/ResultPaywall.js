@@ -723,6 +723,24 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
           box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .share-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--accent-amber); color: var(--accent-amber); transform: translateY(-2px); }
+
+        @media (max-width: 768px) {
+          .result-container { padding: 10px 5px; }
+          .report-container-v36 { padding: 15px; }
+          .shareable-zone-v36 { padding: 30px 10px 15px; }
+          .verdict-icon-massive { font-size: 3.5rem; }
+          .veredicto-shock-v36 { font-size: 2rem; }
+          .roast-text { font-size: 0.9rem; }
+          .meme-metrics-grid { grid-template-columns: 1fr; gap: 15px; }
+          .gauge-card.full-width { grid-column: span 1; }
+          .insight-card-v36 { padding: 20px 15px; }
+          .template-box-v62 { font-size: 0.95rem; padding: 12px; }
+          .res-value { font-size: 2.5rem; }
+          .pbi-verdict { font-size: 0.65rem; }
+          .unlock-btn-v36 { font-size: 0.95rem; padding: 16px; }
+          .share-btn { padding: 14px; font-size: 0.8rem; }
+          .dinamica-center-v36 { text-align: center; }
+        }
       `}</style>
     </div>
   );

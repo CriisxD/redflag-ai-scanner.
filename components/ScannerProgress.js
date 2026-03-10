@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function ScannerProgress({ chatData, onComplete, targetName, context = {} }) {
+export default function ScannerProgress({ chatData, onComplete, targetName }) {
   const [progress, setProgress] = useState(0);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [scanResult, setScanResult] = useState(null);
@@ -57,8 +57,7 @@ export default function ScannerProgress({ chatData, onComplete, targetName, cont
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             textData: chatData?.condensedText,
-            targetName: targetName || 'Sujeto Anónimo',
-            context
+            targetName: targetName || 'Sujeto Anónimo'
           })
         });
 
@@ -85,7 +84,7 @@ export default function ScannerProgress({ chatData, onComplete, targetName, cont
     if (chatData) {
       startScan();
     }
-  }, [chatData, targetName, context]);
+  }, [chatData, targetName]);
 
   // Transition Logic
   useEffect(() => {
