@@ -1,111 +1,59 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import html2canvas from 'html2canvas';
-import ShareableTicket from './ShareableTicket';
 
 export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = false, createdAt = null }) {
-  const [loading, setLoading] = useState(false);
-  const [downloading, setDownloading] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [isUnlocked, setIsUnlocked] = useState(forcedUnlocked);
-  const [showProgressBars, setShowProgressBars] = useState(false);
-  const [showSocialProof, setShowSocialProof] = useState(false);
-  const [countdown, setCountdown] = useState(600); // 10 min = 600s
+  const [loading, setLoading] = useState(false);
   const [localStats, setLocalStats] = useState(null);
+  const [targetName, setTargetName] = useState('Sujeto Anónimo');
+  const [animateIn, setAnimateIn] = useState(true);
 
-  // Sync forcedUnlocked if it changes (e.g. from an API fetch)
+  const TEST_MODE = false;
+
   useEffect(() => {
     if (forcedUnlocked) setIsUnlocked(true);
   }, [forcedUnlocked]);
-
-  // TESTING MODE: Set to true to auto-unlock without payment
-  const TEST_MODE = false; 
-
-  const [targetName, setTargetName] = useState('Sujeto Anónimo');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = sessionStorage.getItem('targetName');
       if (saved) setTargetName(saved);
-      
       const stats = localStorage.getItem('rf_local_stats');
-      if (stats) setLocalStats(JSON.parse(stats));
+      if (stats) {
+        try { setLocalStats(JSON.parse(stats)); } catch(e) {}
+      }
     }
-    const timer = setTimeout(() => setShowProgressBars(true), 500);
-    return () => clearTimeout(timer);
   }, []);
 
-  // Urgency countdown (10 min)
-  useEffect(() => {
-    // Sync countdown with real createdAt time if available
-    const effectiveCreatedAt = createdAt || aiResult?.createdAt;
-    if (effectiveCreatedAt) {
-      const createdTime = new Date(effectiveCreatedAt).getTime();
-      const now = Date.now();
-      const diffInSeconds = Math.floor((now - createdTime) / 1000);
-      const remaining = Math.max(0, 600 - diffInSeconds);
-      setCountdown(remaining);
+  // Determine total slides
+  const FREE_SLIDES = 5;
+  const PAYWALL_SLIDE = 5;
+  const PREMIUM_SLIDES_START = 6;
+  const totalSlides = isUnlocked ? 10 : 6; // 5 free + paywall, or 5 free + 4 premium
+
+  const goNext = useCallback(() => {
+    if (currentSlide === PAYWALL_SLIDE && !isUnlocked) return;
+    if (currentSlide < totalSlides - 1) {
+      setAnimateIn(false);
+      setTimeout(() => {
+        setCurrentSlide(prev => prev + 1);
+        setAnimateIn(true);
+      }, 200);
     }
-  }, [createdAt, aiResult?.createdAt]);
+  }, [currentSlide, totalSlides, isUnlocked]);
 
-  useEffect(() => {
-    if (isUnlocked) return;
-    const interval = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 0) { clearInterval(interval); return 0; }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isUnlocked]);
-
-  const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-
-  const handleShare = async () => {
-    const element = document.getElementById('shareable-ticket-capture');
-    if (!element) return;
-    setDownloading(true);
-    
-    try {
-      const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#050505' });
-      
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
-        const file = new File([blob], `redflag-${targetName}.png`, { type: 'image/png' });
-        
-        const shareText = `${aiResult?.verdict_icon || '🚩'} Mi RedFlag Score: ${aiResult?.meme_metrics?.toxic_meter || '??'}% — "${aiResult?.shock_verdict || 'Sin veredicto'}"\n\nAnaliza tu crush gratis → redflagscanner.xyz 🔍`;
-
-        // Check if Web Share API with files is supported
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({
-              text: shareText,
-              files: [file]
-            });
-          } catch (e) {
-            // User cancelled or share failed, fallback to direct download just in case
-            console.log('Share cancelled or failed, falling back to download');
-            fallbackDownload(canvas);
-          }
-        } else {
-          // Fallback to direct download
-          fallbackDownload(canvas);
-        }
-        setDownloading(false);
-      }, 'image/png');
-    } catch (err) {
-      console.error('Image generation error:', err);
-      setDownloading(false);
+  const goPrev = useCallback(() => {
+    if (currentSlide > 0) {
+      setAnimateIn(false);
+      setTimeout(() => {
+        setCurrentSlide(prev => prev - 1);
+        setAnimateIn(true);
+      }, 200);
     }
-  };
-
-  const fallbackDownload = (canvas) => {
-    const image = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.href = image;
-    link.download = `redflag-viral-${targetName}.png`;
-    link.click();
-  };
+  }, [currentSlide]);
 
   const handleCheckoutClick = () => {
     if (TEST_MODE) {
@@ -116,631 +64,630 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
     if (onCheckout) onCheckout();
   };
 
-  const handleDownload = async () => {
-    const element = document.getElementById('shareable-ticket-capture');
-    if (!element) return;
-    setDownloading(true);
-    try {
-      const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#050505' });
-      const image = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = image;
-      link.download = `redflag-report-${targetName}.png`;
-      link.click();
-    } catch (err) {
-      console.error('Download error:', err);
-    } finally {
-      setDownloading(false);
-    }
+  // --- SLIDE RENDERERS ---
+
+  const renderSlideIntro = () => {
+    const total = localStats?.totalMessages || '???';
+    return (
+      <div className="slide-content slide-intro">
+        <div className="intro-icon">🔍</div>
+        <h1 className="intro-title">Tu historial con</h1>
+        <div className="intro-name">{targetName}</div>
+        <h1 className="intro-title">está listo.</h1>
+        <div className="intro-stat">
+          <span className="stat-number">{total.toLocaleString?.() || total}</span>
+          <span className="stat-label">mensajes analizados</span>
+        </div>
+        <p className="intro-warning">Prepárate. Esto puede doler.</p>
+      </div>
+    );
   };
 
-  const getStatusColor = (val, isRisk = false) => {
-    if (isRisk) {
-      if (val < 30) return '#E0B0FF'; // Lilac (Safe)
-      if (val < 60) return '#FFB347'; // Amber (Warn)
-      return '#FF6F61'; // Coral (Risk)
-    }
-    if (val < 30) return '#FF6F61';
-    if (val < 60) return '#FFB347';
-    return '#E0B0FF';
-  };
+  const renderSlideSimpOMeter = () => {
+    const u1 = localStats?.users?.[0];
+    const u2 = localStats?.users?.[1];
+    const u1Pct = localStats?.simpScoreBase?.[u1?.name] || 50;
+    const u2Pct = localStats?.simpScoreBase?.[u2?.name] || 50;
+    const winner = u1Pct > u2Pct ? u1?.name : u2?.name;
 
-  const riskValue = aiResult?.metricas_viral?.riesgo_objetivo?.valor || 0;
-
-  return (
-    <div className="result-container">
-      <div className="ambient-glow" />
-      
-      <div className="content-max">
-        {/* SECCIÓN 1: ZONA COMPARTIBLE (Capture Zone) */}
-        <div className={`report-container-v36 ${
-          riskValue > 75 ? 'state-toxic' : 
-          riskValue < 30 ? 'state-safe' : 
-          'state-normal'
-        }`}>
-          {/* HUD Elements -> Now Astrological / Editorial Watermarks */}
-          <div className="hud-overlay">
-            <div className="hud-id">{aiResult?.case_id || 'ID-RESERVADO'}</div>
-            <div className="hud-status" style={{ color: '#E0B0FF' }}>LECTURA ENERGÉTICA</div>
-            <div className="hud-watermark">P A T T E R N S</div>
+    return (
+      <div className="slide-content slide-simp">
+        <div className="slide-badge">SIMP-O-METER</div>
+        <h2 className="slide-title">¿Quién escribe más?</h2>
+        
+        <div className="simp-chart">
+          <div className="simp-row">
+            <span className="simp-name">{u1?.name?.slice(0, 12)}</span>
+            <div className="simp-track">
+              <div className="simp-fill fill-red" style={{ width: `${u1Pct}%` }}>
+                <span className="fill-label">{u1Pct}%</span>
+              </div>
+            </div>
+            <span className="simp-msgs">{u1?.count} msgs</span>
           </div>
-
-          <div className="shareable-zone-v36">
-            <div className="header-v36">
-              <div className="badge-v36">ANÁLISIS DE VÍNCULO</div>
-              <p className="subtitle-v36">{aiResult?.subtitulo_contextual || 'Lectura de campo: Dinámica detectada'}</p>
-            </div>
-
-            <div className="veredicto-shock-wrapper">
-              <div className="verdict-icon-massive">
-                {aiResult?.verdict_icon || '🚩'}
-              </div>
-              <h2 className="veredicto-shock-v36 terminal-title">
-                {aiResult?.shock_verdict || 'ANÁLISIS COMPLETADO'}
-              </h2>
-              <p className="roast-text terminal-text">{aiResult?.roast_personalizado}</p>
-            </div>
-
-            <div className="meme-metrics-grid">
-              {/* Toxic Meter */}
-              <div className="gauge-card toxic">
-                <div className="gauge-header">TOXIC_METER</div>
-                <div className="gauge-visual">
-                  <div className="speedometer">
-                    <div className="needle" style={{ transform: `rotate(${(aiResult?.meme_metrics?.toxic_meter || 0) * 1.8 - 90}deg)` }} />
-                    <div className="gauge-value terminal-title">{aiResult?.meme_metrics?.toxic_meter || 0}%</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Ghosting Risk */}
-              <div className="gauge-card ghosting">
-                <div className="gauge-header">GHOSTING_RISK</div>
-                <div className="gauge-visual">
-                  <div className="speedometer">
-                    <div className="needle" style={{ transform: `rotate(${(aiResult?.meme_metrics?.ghosting_risk || 0) * 1.8 - 90}deg)`, background: 'var(--accent-amber)' }} />
-                    <div className="gauge-value terminal-title">{aiResult?.meme_metrics?.ghosting_risk || 0}%</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Simp Meter - Comparison (Now Real Stats) */}
-              <div className="gauge-card simp full-width">
-                <div className="gauge-header">SIMP_O_METER (VOLUMEN REAL)</div>
-                <div className="simp-bars">
-                  {localStats ? (
-                    <>
-                      <div className="simp-bar-row">
-                        <span className="simp-label uppercase">{localStats.users[0].name.slice(0, 10)}</span>
-                        <div className="simp-track"><div className="simp-fill user" style={{ width: `${localStats.simpScoreBase[localStats.users[0].name]}%` }} /></div>
-                        <span className="simp-count">{localStats.users[0].count} msgs</span>
-                      </div>
-                      <div className="simp-bar-row">
-                        <span className="simp-label uppercase">{localStats.users[1].name.slice(0, 10)}</span>
-                        <div className="simp-track"><div className="simp-fill target" style={{ width: `${localStats.simpScoreBase[localStats.users[1].name]}%` }} /></div>
-                        <span className="simp-count">{localStats.users[1].count} msgs</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="simp-bar-row">
-                        <span className="simp-label">TÚ</span>
-                        <div className="simp-track"><div className="simp-fill user" style={{ width: `${aiResult?.meme_metrics?.simp_meter || 0}%` }} /></div>
-                      </div>
-                      <div className="simp-bar-row">
-                        <span className="simp-label uppercase">{targetName.slice(0, 8)}</span>
-                        <div className="simp-track"><div className="simp-fill target" style={{ width: `${100 - (aiResult?.meme_metrics?.simp_meter || 0)}%` }} /></div>
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className="simp-status terminal-text">
-                  {localStats 
-                    ? `MÁS INTENSO: ${(localStats.mostTalkative).toUpperCase()}` 
-                    : (aiResult?.meme_metrics?.simp_meter > 50 ? 'NIVEL: SIMP LEGENDARIO' : 'NIVEL: BAJO CONTROL')}
-                </div>
+          <div className="simp-row">
+            <span className="simp-name">{u2?.name?.slice(0, 12)}</span>
+            <div className="simp-track">
+              <div className="simp-fill fill-amber" style={{ width: `${u2Pct}%` }}>
+                <span className="fill-label">{u2Pct}%</span>
               </div>
             </div>
-
-            <div className={`dinamica-center-v36 ${aiResult?.analisis_detallado?.quien_manda ? 'has-power-info' : ''}`}>
-              <div className="power-balance-badge terminal-text">
-                DOMINANCIA: {aiResult?.analisis_detallado?.quien_manda || 'SIMETRÍA'}
-              </div>
-              <div className="dinamica-row">
-                <span className="dinamica-label terminal-text">VÍNCULO:</span>
-                <span className="dinamica-badge terminal-text">{aiResult?.analisis_detallado?.dinamica || 'SOSPECHOSO'}</span>
-              </div>
-            </div>
-
-            {!isUnlocked && aiResult?.lite_verdict && (
-              <div className="lite-ticket-v36">
-                <div className="lite-header terminal-text">--- {aiResult.lite_verdict.titulo} ---</div>
-                <p className="lite-resumen terminal-text">{aiResult.lite_verdict.resumen}</p>
-                <div className="lite-footer terminal-text">PAGO REQUERIDO PARA REVELAR PRUEBAS</div>
-              </div>
-            )}
-
-            <div className="viral-punchline-v41">
-              <p className="punchline-text">"{aiResult?.mensaje_viral || 'El que más escribe siempre es el que menos poder tiene.'}"</p>
-              <div className="tiktok-tag">DARK ARCHIVE | OFFICIAL DOSSIER</div>
-            </div>
-
+            <span className="simp-msgs">{u2?.count} msgs</span>
           </div>
         </div>
 
-          <div className="share-section" style={{ marginBottom: '20px', textAlign: 'center' }}>
-            <button className="share-btn" onClick={handleShare} disabled={downloading}>
-              {downloading ? "Generando Imagen Penal..." : (isUnlocked ? "🚀 Compartir Reporte Táctico" : "🚩 Compartir Warning Ticket (Lite)")}
-            </button>
+        <div className="simp-verdict">
+          <p>Alguien está remando demasiado fuerte en este barco...</p>
+          <div className="simp-winner">🚣 {winner} está REMANDO solo/a</div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSlideGhosting = () => {
+    const u1 = localStats?.users?.[0];
+    const u2 = localStats?.users?.[1];
+    const g1 = localStats?.ghostingFactor?.[u1?.name] || '?';
+    const g2 = localStats?.ghostingFactor?.[u2?.name] || '?';
+    const ghoster = localStats?.ghostingFactor?.worstGhoster;
+
+    return (
+      <div className="slide-content slide-ghost">
+        <div className="slide-badge ghost-badge">👻 GHOSTING FACTOR</div>
+        <h2 className="slide-title">Récord de espera</h2>
+
+        <div className="ghost-comparison">
+          <div className="ghost-card">
+            <div className="ghost-name">{u1?.name?.slice(0, 12)}</div>
+            <div className="ghost-time">{g1}</div>
+            <div className="ghost-label">máx. sin responder</div>
           </div>
-
-        {/* SECCIÓN 2: PAYWALL & STRATEGY */}
-        <div className="strategy-sequence-v36">
-          <div className="divider-strategy">
-            <span className="terminal-title">✨ ANÁLISIS TÁCTICO (ELIMINACIÓN: 10m)</span>
+          <div className="ghost-vs">VS</div>
+          <div className="ghost-card">
+            <div className="ghost-name">{u2?.name?.slice(0, 12)}</div>
+            <div className="ghost-time">{g2}</div>
+            <div className="ghost-label">máx. sin responder</div>
           </div>
+        </div>
 
-          <div className="insights-grid-v36">
-             {/* Bloque 1: The Receipts (PRUEBAS) */}
-             <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
-               <div className="i-header-v36">
-                 <span className="i-icon-v36">💀</span>
-                 <h3 className="terminal-title">LAS PRUEBAS (Evidencia)</h3>
-               </div>
-               <div className="i-content-v36">
-                  {isUnlocked ? (
-                    <div className="intelligence-node">
-                      {aiResult?.analisis_detallado?.the_receipts?.map((receipt, i) => (
-                        <div key={i} className="receipt-item-v62">
-                          <div className="receipt-meta">
-                             <span className="t-label">TÁCTICA: {receipt.tactica || 'N/A'}</span>
-                          </div>
-                          <div className="quote-item">“{receipt.mensaje}”</div>
-                          <div className="translation-box">
-                             <span className="t-label">TRADUCCIÓN REAL:</span>
-                             <p className="terminal-text">{receipt.traduccion_real}</p>
-                          </div>
-                          <p className="ev-text terminal-text">↳ {receipt.explicacion}</p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="terminal-text">Identificando patrones de manipulación y desinterés...</p>
-                  )}
-                  {!isUnlocked && <div className="blur-overlay" />}
-               </div>
-             </div>
+        <div className="ghost-verdict">
+          {ghoster === u1?.name
+            ? `${u1?.name} tiene el récord de dejar en visto. ¿Prioridad Máxima? Nah.`
+            : `${u2?.name} tiene el récord de dejar en visto. Eres su "Opción de Emergencia".`
+          }
+        </div>
+      </div>
+    );
+  };
 
-             {/* Bloque 2: Perfil Psicológico (Arquetipo) */}
-             <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
-               <div className="i-header-v36">
-                 <span className="i-icon-v36">👤</span>
-                 <h3>EL PERFIL (Arquetipo)</h3>
-               </div>
-               <div className="i-content-v36">
-                  {isUnlocked ? (
-                    <div className="intelligence-node arquetipo-v62">
-                      <h4 className="terminal-title">{aiResult?.analisis_detallado?.persona?.arquetipo}</h4>
-                      <p className="terminal-text">{aiResult?.analisis_detallado?.persona?.descripcion}</p>
-                    </div>
-                  ) : (
-                    <p>Clasificando perfil psicológico en arquetipos virales...</p>
-                  )}
-                  {!isUnlocked && <div className="blur-overlay" />}
-               </div>
-             </div>
+  const renderSlideActivity = () => {
+    const peak = localStats?.activityData?.peakHour ?? 22;
+    const tod = localStats?.activityData?.timeOfDay || 'Noche';
+    const dist = localStats?.activityData?.hourlyDistribution || new Array(24).fill(0);
+    const maxVal = Math.max(...dist, 1);
 
-             {/* Bloque 3: PBI (Power Balance Index) */}
-             <div className={`insight-card-v36 ${isUnlocked ? 'unlocked' : 'locked'}`}>
-               <div className="i-header-v36">
-                 <span className="i-icon-v36">⚖️</span>
-                 <h3>Power Balance Index (PBI)</h3>
-               </div>
-               <div className="i-content-v36">
-                  {isUnlocked ? (
-                    <div className="pbi-dashboard-v62">
-                      <div className="pbi-formula terminal-text">
-                        PBI = (Σ L𝐭 * E𝐭) / (Σ L𝐬 * E𝐬)
-                      </div>
-                      <div className="pbi-result">
-                         <span className="res-label terminal-text">RESULTADO CLÍNICO:</span>
-                         <div className="res-value terminal-title">{aiResult?.meme_metrics?.pbi || '1.0'}</div>
-                      </div>
-                      <p className="pbi-verdict terminal-text">
-                        {aiResult?.meme_metrics?.pbi > 1.5 ? 'ESTADO: SUBORDINACIÓN EMOCIONAL' : 
-                         aiResult?.meme_metrics?.pbi < 0.8 ? 'ESTADO: CONTROL ESTRATÉGICO' : 'ESTADO: BALANCE INESTABLE'}
-                      </p>
-                      
-                      <div className="pbi-legend terminal-text">
-                        <div className="legend-item"><span className="l-color warning"></span> <strong>&gt; 1.5</strong> : Subordinación (Esfuerzo Asimétrico)</div>
-                        <div className="legend-item"><span className="l-color neutral"></span> <strong>0.8 - 1.5</strong> : Simetría / Balance Inestable</div>
-                        <div className="legend-item"><span className="l-color safe"></span> <strong>&lt; 0.8</strong> : Control Estratégico (Dominancia)</div>
-                        <p className="pbi-explainer">
-                          El índice mide quién invierte más energía (longitud de mensajes y velocidad de respuesta). 
-                          Valores altos indican que tú estás persiguiendo la validación.
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="pbi-tease-v63">
-                      <p className="terminal-text">Calculando asimetría de mensajes y tiempos...</p>
-                      <div className="blurred-chart-v63">
-                        <div className="chart-bar-v63" style={{ width: '40%' }}></div>
-                        <div className="chart-bar-v63" style={{ width: '85%', background: 'var(--accent-red)' }}></div>
-                        <div className="pbi-value-blur">1.XX</div>
-                      </div>
-                    </div>
-                  )}
-                  {!isUnlocked && <div className="blur-overlay" />}
-               </div>
-             </div>
+    return (
+      <div className="slide-content slide-activity">
+        <div className="slide-badge activity-badge">🌙 HORARIO DE ACTIVIDAD</div>
+        <h2 className="slide-title">¿Es amor o es insomnio?</h2>
 
-             {/* Bloque 4: Simulación Heurística */}
-             <div className={`insight-card-v36 scenario-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
-               <div className="i-header-v36">
-                 <span className="i-icon-v36">🔮</span>
-                 <h3>Proyección de Vínculo</h3>
-               </div>
-               <div className="i-content-v36 scenarios">
-                 {isUnlocked ? (
-                   <>
-                     <div className="scenario-item path-a">
-                       <span className="s-label">Línea de Inercia Actual:</span>
-                       <p>{aiResult?.analisis_premium?.simulacion_escenarios?.inercia?.descripcion}</p>
-                       <div className="heuristic-prob">
-                         <span className="prob-text">Probabilidad Estimada: {aiResult?.analisis_premium?.simulacion_escenarios?.inercia?.probabilidad_estimada}</span>
-                       </div>
-                     </div>
-                     <div className="scenario-item path-b">
-                       <span className="s-label">Aplicando Nuevo Enfoque:</span>
-                       <p>{aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico?.descripcion}</p>
-                       <div className="heuristic-prob highlight">
-                         <span className="prob-text">Probabilidad Estimada: {aiResult?.analisis_premium?.simulacion_escenarios?.cambio_tactico?.probabilidad_estimada}</span>
-                       </div>
-                     </div>
-                   </>
-                 ) : (
-                   <p>Modelando futuros probables basados en comportamientos previos...</p>
-                 )}
-                 {!isUnlocked && <div className="blur-overlay" />}
-               </div>
-             </div>
+        <div className="heatmap-grid">
+          {dist.map((val, i) => (
+            <div key={i} className="heat-col">
+              <div
+                className="heat-bar"
+                style={{
+                  height: `${Math.max(4, (val / maxVal) * 100)}%`,
+                  opacity: val === 0 ? 0.1 : 0.3 + (val / maxVal) * 0.7
+                }}
+              />
+              {i % 4 === 0 && <span className="heat-label">{i}h</span>}
+            </div>
+          ))}
+        </div>
 
-             {/* Bloque 5: La Jugada Maestra (Tactical) */}
-             <div className={`insight-card-v36 tactical-card-v62 ${isUnlocked ? 'unlocked' : 'locked'}`}>
-               <div className="i-header-v36">
-                 <span className="i-icon-v36">🕹️</span>
-                 <h3>La Jugada Maestra</h3>
-               </div>
-               <div className="i-content-v36">
-                  {isUnlocked ? (
-                    <div className="tactical-node-v62">
-                      <div className="msg-template">
-                        <span className="t-label">RESPUESTA DE CONTROL:</span>
-                        <div className="template-box-v62">
-                          {aiResult?.estrategia_venganza?.respuesta_control}
-                        </div>
-                      </div>
-                      <div className="nuclear-box">
-                        <span className="t-label">OPCIÓN NUCLEAR (BLOQUEO):</span>
-                        <p className="terminal-text">{aiResult?.estrategia_venganza?.opcion_nuclear}</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="tactical-tease-v63">
-                      <p className="terminal-text">Diseñando respuesta asimétrica y plan de salida...</p>
-                      <div className="blurred-template-v63">
-                        "Oye, me parece que [CENSURADO]. No voy a [BORROSO]..."
-                      </div>
-                    </div>
-                  )}
-                  {!isUnlocked && <div className="blur-overlay" />}
-               </div>
-             </div>
-          </div>
+        <div className="activity-verdict">
+          <div className="peak-badge">Pico: {peak}:00 ({tod})</div>
+          <p>{peak >= 0 && peak < 6 
+            ? '¿Quién habla a estas horas? O es amor tóxico o nadie más les contesta.' 
+            : peak >= 22 
+            ? 'Conversaciones nocturnas... el horario favorito de los "¿sigues despierto?" 🌚'
+            : 'Al menos no se escriben a las 3AM. Eso es... algo.'
+          }</p>
+        </div>
+      </div>
+    );
+  };
 
-          {!isUnlocked && (
-            <div className="paywall-cta-v36">
-              {countdown > 0 && (
-                <div className="urgency-timer">
-                  <span className="timer-icon">⏳</span>
-                  <span>Tu análisis se eliminará en <strong>{formatTime(countdown)}</strong></span>
-                </div>
-              )}
-              {countdown <= 0 && (
-                <div className="urgency-timer expired">
-                  <span className="timer-icon">⚠️</span>
-                  <span>Tu análisis está a punto de expirar</span>
-                </div>
-              )}
-              <button 
-                className={`unlock-btn-v36 ${loading ? 'loading' : ''}`}
-                onClick={handleCheckoutClick}
-                disabled={loading}
-              >
-                {loading ? "Procesando pago..." : "Revelar Análisis Completo — $2.99 USD"}
-              </button>
-              <p className="paywall-sub">Pago único · Acceso inmediato · Dossier generado por IA</p>
+  const renderSlideEmojis = () => {
+    const emojis = localStats?.topEmojis || [];
+
+    return (
+      <div className="slide-content slide-emojis">
+        <div className="slide-badge emoji-badge">🎭 TOP EMOJIS</div>
+        <h2 className="slide-title">Su lenguaje secreto</h2>
+
+        <div className="emoji-showcase">
+          {emojis.length > 0 ? emojis.map((e, i) => (
+            <div key={i} className="emoji-item">
+              <div className="emoji-big">{e.emoji}</div>
+              <div className="emoji-count">{e.count}x</div>
+              <div className="emoji-rank">#{i + 1}</div>
+            </div>
+          )) : (
+            <div className="emoji-empty">
+              <div className="emoji-big">😶</div>
+              <p>Ni un emoji. Esta conversación es más seca que el Sahara.</p>
             </div>
           )}
-
         </div>
 
-
-
-        <ShareableTicket 
-          name={targetName}
-          reportId={aiResult?.case_id}
-          verdictIcon={aiResult?.verdict_icon}
-          shock_verdict={aiResult?.shock_verdict}
-          meme_metrics={aiResult?.meme_metrics}
-          dinamica={aiResult?.analisis_detallado?.dinamica}
-          quien_manda={aiResult?.analisis_detallado?.quien_manda}
-          mensaje_viral={aiResult?.mensaje_viral}
-          isUnlocked={isUnlocked}
-        />
-
-        {/* Global Footer moved to the bottom */}
-        <div className="hero-footer" style={{ margin: '60px auto 40px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '40px' }}>
-          <div className="disclaimer-text">
-            Descargo de responsabilidad: RedFlag AI Scanner es un producto independiente y no está afiliado, respaldado ni patrocinado por OpenAI ni Google. Esta plataforma es una interfaz personalizada construida sobre modelos de inteligencia artificial para fines de entretenimiento y análisis de datos.
-          </div>
-          <div className="footer-links">
-            <a href="/terms">Términos</a>
-            <a href="/privacy">Privacidad</a>
-            <span className="footer-contact">soporte@redflagscanner.xyz</span>
-          </div>
+        <div className="emoji-verdict">
+          {emojis.some(e => ['❤️','😍','🥰','💕','😘'].includes(e.emoji))
+            ? 'Hay corazoncitos... pero ¿de quién? Eso lo revela el análisis premium. 👀'
+            : emojis.some(e => ['💀','🤡','😭'].includes(e.emoji))
+            ? 'Mucho "💀" y poco "❤️". Esto huele a zona de amistad o caos total.'
+            : 'Emojis neutrales. La pasión en este chat está en coma inducido.'
+          }
         </div>
+      </div>
+    );
+  };
 
+  const renderPaywallSlide = () => (
+    <div className="slide-content slide-paywall">
+      <div className="paywall-lock">🔒</div>
+      <h2 className="paywall-title">ACCESO RESTRINGIDO</h2>
+      <p className="paywall-sub">Las estadísticas dicen lo que pasó.</p>
+      <p className="paywall-hook">La IA sabe <strong>POR QUÉ</strong> pasó.</p>
+      
+      <div className="paywall-features">
+        <div className="pw-feature">💀 Perfil Psicológico</div>
+        <div className="pw-feature">🚩 Red Flags Ocultas</div>
+        <div className="pw-feature">🔥 "The Receipts" (Traductor de Subtexto)</div>
+        <div className="pw-feature">🕹️ La Jugada Maestra</div>
       </div>
 
+      <button 
+        className={`paywall-btn ${loading ? 'loading' : ''}`}
+        onClick={handleCheckoutClick}
+        disabled={loading}
+      >
+        {loading ? 'Procesando...' : 'Desbloquear Análisis — $3.99 USD'}
+      </button>
+      <p className="paywall-disclaimer">Pago único · Acceso inmediato · Generado por IA</p>
+    </div>
+  );
 
+  // --- PREMIUM SLIDES ---
+  const renderSlideArchetype = () => (
+    <div className="slide-content slide-archetype">
+      <div className="slide-badge premium-badge">👤 PERFIL PSICOLÓGICO</div>
+      <div className="archetype-icon">{aiResult?.verdict_icon || '🎭'}</div>
+      <h2 className="archetype-title">{aiResult?.analisis_detallado?.persona?.arquetipo || 'Arquetipo Desconocido'}</h2>
+      <p className="archetype-desc">{aiResult?.analisis_detallado?.persona?.descripcion}</p>
+      <div className="archetype-dynamic">
+        <span className="dyn-label">VÍNCULO:</span>
+        <span className="dyn-value">{aiResult?.analisis_detallado?.dinamica || '???'}</span>
+      </div>
+      <div className="archetype-power">
+        DOMINANCIA: {aiResult?.analisis_detallado?.quien_manda || 'Indefinida'}
+      </div>
+    </div>
+  );
+
+  const renderSlideToxicity = () => {
+    const toxic = aiResult?.meme_metrics?.toxic_meter || 0;
+    const ghost = aiResult?.meme_metrics?.ghosting_risk || 0;
+    const pbi = aiResult?.meme_metrics?.pbi || 1.0;
+
+    return (
+      <div className="slide-content slide-toxicity">
+        <div className="slide-badge premium-badge">☣️ NIVEL DE TOXICIDAD</div>
+        <h2 className="slide-title">{aiResult?.shock_verdict || 'ANÁLISIS'}</h2>
+        <p className="roast-text">{aiResult?.roast_personalizado}</p>
+
+        <div className="toxicity-meters">
+          <div className="meter-row">
+            <span className="meter-label">Toxicidad</span>
+            <div className="meter-track"><div className="meter-fill toxic" style={{ width: `${toxic}%` }} /></div>
+            <span className="meter-val">{toxic}%</span>
+          </div>
+          <div className="meter-row">
+            <span className="meter-label">Ghosting</span>
+            <div className="meter-track"><div className="meter-fill ghost" style={{ width: `${ghost}%` }} /></div>
+            <span className="meter-val">{ghost}%</span>
+          </div>
+        </div>
+
+        <div className="pbi-box">
+          <div className="pbi-label">Power Balance Index</div>
+          <div className="pbi-value">{pbi}</div>
+          <div className="pbi-status">
+            {pbi > 1.5 ? 'SUBORDINACIÓN EMOCIONAL' : pbi < 0.8 ? 'CONTROL ESTRATÉGICO' : 'BALANCE INESTABLE'}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSlideReceipts = () => {
+    const receipts = aiResult?.analisis_detallado?.the_receipts || [];
+    return (
+      <div className="slide-content slide-receipts">
+        <div className="slide-badge premium-badge">📝 THE RECEIPTS</div>
+        <h2 className="slide-title">Traductor de Subtexto</h2>
+
+        <div className="receipts-list">
+          {receipts.slice(0, 3).map((r, i) => (
+            <div key={i} className="receipt-card">
+              <div className="receipt-tactic">{r.tactica}</div>
+              <div className="receipt-quote">"{r.mensaje}"</div>
+              <div className="receipt-translation">
+                <span className="trans-label">TRADUCCIÓN REAL:</span>
+                <p>{r.traduccion_real}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderSlideMasterstroke = () => (
+    <div className="slide-content slide-masterstroke">
+      <div className="slide-badge premium-badge">🕹️ LA JUGADA MAESTRA</div>
+      <h2 className="slide-title">{aiResult?.estrategia_venganza?.jugada_maestra || 'Contacto Cero'}</h2>
+
+      <div className="move-card">
+        <div className="move-label">RESPUESTA DE CONTROL:</div>
+        <div className="move-template">{aiResult?.estrategia_venganza?.respuesta_control}</div>
+      </div>
+
+      <div className="move-card nuclear">
+        <div className="move-label">OPCIÓN NUCLEAR (BLOQUEO):</div>
+        <p className="move-text">{aiResult?.estrategia_venganza?.opcion_nuclear}</p>
+      </div>
+
+      <div className="viral-quote">
+        "{aiResult?.mensaje_viral || 'El que más escribe siempre es el que menos poder tiene.'}"
+      </div>
+
+      <div className="final-watermark">REDFLAGSCANNER.XYZ</div>
+    </div>
+  );
+
+  const slides = [
+    renderSlideIntro,
+    renderSlideSimpOMeter,
+    renderSlideGhosting,
+    renderSlideActivity,
+    renderSlideEmojis,
+    isUnlocked ? renderSlideArchetype : renderPaywallSlide,
+    ...(isUnlocked ? [renderSlideToxicity, renderSlideReceipts, renderSlideMasterstroke] : [])
+  ];
+
+  const actualTotalSlides = slides.length;
+
+  return (
+    <div className="story-container">
+      {/* Progress Bars */}
+      <div className="story-progress">
+        {slides.map((_, i) => (
+          <div key={i} className={`progress-segment ${i < currentSlide ? 'done' : i === currentSlide ? 'active' : ''}`}>
+            <div className="progress-fill" />
+          </div>
+        ))}
+      </div>
+
+      {/* Tap Zones */}
+      <div className="tap-zone tap-left" onClick={goPrev} />
+      <div className="tap-zone tap-right" onClick={goNext} />
+
+      {/* Current Slide */}
+      <div className={`slide-wrapper ${animateIn ? 'animate-in' : 'animate-out'}`}>
+        {slides[currentSlide]?.()}
+      </div>
+
+      {/* Slide Counter */}
+      <div className="slide-counter">{currentSlide + 1} / {actualTotalSlides}</div>
 
       <style jsx>{`
-        .result-container {
-          min-height: 100vh; width: 100vw; background: #050505; color: white;
-          padding: 20px 15px; font-family: var(--font-body);
-          position: relative; overflow-x: hidden;
-        }
-        .content-max { position: relative; z-index: 10; width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
-        
-        .report-container-v36 {
-          background: rgba(0, 0, 0, 0.9);
-          border-radius: 4px;
-          padding-bottom: 20px;
-          width: 100%;
-          border: 1px solid rgba(255, 45, 85, 0.2);
-          position: relative;
+        .story-container {
+          position: fixed; inset: 0;
+          background: #050505;
+          display: flex; flex-direction: column;
+          font-family: 'Inter', 'Segoe UI', sans-serif;
+          color: white;
           overflow: hidden;
-          box-shadow: 0 0 50px rgba(0,0,0,1);
+          -webkit-user-select: none;
+          user-select: none;
         }
 
-        .report-container-v36::before {
-          content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-          background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
-          animation: scanline 4s linear infinite;
+        /* Progress Bar */
+        .story-progress {
+          display: flex; gap: 3px;
+          padding: 12px 10px 0;
+          z-index: 100;
+          position: absolute; top: 0; left: 0; right: 0;
+        }
+        .progress-segment {
+          flex: 1; height: 3px;
+          background: rgba(255,255,255,0.15);
+          border-radius: 2px; overflow: hidden;
+        }
+        .progress-segment.done .progress-fill,
+        .progress-segment.active .progress-fill {
+          width: 100%; height: 100%;
+          border-radius: 2px;
+        }
+        .progress-segment.done .progress-fill {
+          background: rgba(255,255,255,0.7);
+        }
+        .progress-segment.active .progress-fill {
+          background: #FF2D55;
+          animation: progressGrow 0.4s ease forwards;
+        }
+        @keyframes progressGrow {
+          from { width: 0; } to { width: 100%; }
         }
 
-        .strategy-sequence-v36 {
-          background: rgba(255, 255, 255, 0.02);
-          padding: 30px 15px;
-          border-radius: 12px;
-          border: 1px solid rgba(255, 255, 255, 0.03);
+        /* Tap Zones */
+        .tap-zone {
+          position: absolute; top: 0; bottom: 0; z-index: 50; cursor: pointer;
+        }
+        .tap-left { left: 0; width: 30%; }
+        .tap-right { right: 0; width: 70%; }
+
+        /* Slide Wrapper */
+        .slide-wrapper {
+          flex: 1; display: flex; align-items: center; justify-content: center;
+          padding: 60px 24px 80px;
+          transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+        .animate-in { opacity: 1; transform: translateX(0); }
+        .animate-out { opacity: 0; transform: translateX(30px); }
+
+        /* Slide Counter */
+        .slide-counter {
+          position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+          font-size: 0.7rem; color: rgba(255,255,255,0.25);
+          font-family: 'Courier New', monospace; letter-spacing: 0.1em;
+        }
+
+        /* --- SHARED SLIDE STYLES --- */
+        .slide-content {
+          width: 100%; max-width: 420px;
+          display: flex; flex-direction: column;
+          align-items: center; text-align: center;
+          gap: 20px;
+        }
+        .slide-badge {
+          font-size: 0.65rem; font-weight: 800;
+          letter-spacing: 0.15em; text-transform: uppercase;
+          color: #FF2D55; background: rgba(255,45,85,0.1);
+          padding: 6px 16px; border-radius: 20px;
+          border: 1px solid rgba(255,45,85,0.3);
+        }
+        .premium-badge {
+          color: #E0B0FF; background: rgba(224,176,255,0.1);
+          border-color: rgba(224,176,255,0.3);
+        }
+        .ghost-badge { color: #8B8BFF; background: rgba(139,139,255,0.1); border-color: rgba(139,139,255,0.3); }
+        .activity-badge { color: #FFB347; background: rgba(255,179,71,0.1); border-color: rgba(255,179,71,0.3); }
+        .emoji-badge { color: #FF6F61; background: rgba(255,111,97,0.1); border-color: rgba(255,111,97,0.3); }
+
+        .slide-title {
+          font-size: 1.6rem; font-weight: 800; line-height: 1.2;
+          background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+          -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- SLIDE: INTRO --- */
+        .intro-icon { font-size: 4rem; margin-bottom: 10px; }
+        .intro-title { font-size: 1.4rem; color: rgba(255,255,255,0.8); font-weight: 600; margin: 0; }
+        .intro-name {
+          font-size: 2.4rem; font-weight: 900; color: #FF2D55;
+          text-shadow: 0 0 30px rgba(255,45,85,0.5);
+        }
+        .intro-stat {
+          display: flex; flex-direction: column; gap: 4px;
           margin-top: 20px;
         }
-
-        @keyframes scanline {
-          0% { top: 0; }
-          100% { top: 100%; }
+        .stat-number {
+          font-size: 3.5rem; font-weight: 900; color: white;
+          font-family: 'Courier New', monospace;
+        }
+        .stat-label { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+        .intro-warning {
+          font-size: 0.9rem; color: rgba(255,255,255,0.4);
+          font-style: italic; margin-top: 20px;
         }
 
-        .hud-overlay {
-          position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-          pointer-events: none; z-index: 2; padding: 20px; opacity: 0.5;
-        }
-        .hud-id { position: absolute; top: 18px; left: 22px; font-size: 0.6rem; font-family: var(--font-terminal); color: var(--accent-red); }
-        .hud-status { position: absolute; top: 18px; right: 22px; font-size: 0.6rem; font-family: var(--font-terminal); color: var(--accent-amber); }
+        /* --- SLIDE: SIMP --- */
+        .simp-chart { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+        .simp-row { display: flex; align-items: center; gap: 10px; }
+        .simp-name { font-size: 0.7rem; color: rgba(255,255,255,0.6); width: 80px; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .simp-track { flex: 1; height: 28px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; position: relative; }
+        .simp-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; transition: width 1.5s ease; }
+        .fill-red { background: linear-gradient(90deg, #FF2D55, #FF6F61); }
+        .fill-amber { background: linear-gradient(90deg, #FFB347, #FFCC80); }
+        .fill-label { font-size: 0.75rem; font-weight: 800; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .simp-msgs { font-size: 0.6rem; color: rgba(255,255,255,0.3); width: 50px; text-align: right; font-family: 'Courier New', monospace; }
+        .simp-verdict { margin-top: 10px; }
+        .simp-verdict p { font-size: 0.9rem; color: rgba(255,255,255,0.5); font-style: italic; }
+        .simp-winner { font-size: 1rem; font-weight: 800; color: #FF2D55; margin-top: 8px; }
 
-        .shareable-zone-v36 { padding: 50px 20px 30px; position: relative; z-index: 5; }
-
-        .veredicto-shock-wrapper { margin-bottom: 50px; text-align: center; }
-        .verdict-icon-massive { font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--accent-red-glow)); }
-        .veredicto-shock-v36 { font-size: 3.5rem; color: var(--accent-red); margin-bottom: 15px; letter-spacing: -0.02em; }
-        .roast-text { font-size: 1.05rem; color: rgba(255,255,255,0.7); max-width: 380px; margin: 0 auto; line-height: 1.5; }
-
-        .meme-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
-        .gauge-card { 
-          background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); 
-          border-radius: 12px; padding: 25px 15px; text-align: center;
+        /* --- SLIDE: GHOSTING --- */
+        .ghost-comparison { display: flex; align-items: center; gap: 15px; width: 100%; }
+        .ghost-card {
+          flex: 1; background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 12px; padding: 20px 10px; text-align: center;
         }
-        .gauge-header { font-family: var(--font-terminal); font-size: 0.6rem; color: rgba(255,255,255,0.4); margin-bottom: 15px; letter-spacing: 0.1em; }
-        
-        .speedometer { position: relative; width: 80px; height: 40px; margin: 0 auto; overflow: hidden; }
-        .speedometer::before {
-          content: ""; position: absolute; top: 0; left: 0; width: 80px; height: 80px;
-          border-radius: 50%; border: 8px solid rgba(255, 45, 85, 0.1);
-          border-bottom-color: transparent; border-left-color: transparent;
-          transform: rotate(-135deg);
+        .ghost-name { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ghost-time { font-size: 2rem; font-weight: 900; color: #8B8BFF; font-family: 'Courier New', monospace; }
+        .ghost-label { font-size: 0.6rem; color: rgba(255,255,255,0.3); margin-top: 6px; }
+        .ghost-vs { font-size: 1.2rem; font-weight: 900; color: rgba(255,255,255,0.2); }
+        .ghost-verdict {
+          font-size: 0.85rem; color: rgba(255,255,255,0.6);
+          background: rgba(139,139,255,0.08); padding: 15px;
+          border-radius: 8px; border-left: 3px solid #8B8BFF;
+          text-align: left; line-height: 1.5;
         }
-        .needle {
-          position: absolute; bottom: 0; left: 50%; width: 2px; height: 35px;
-          background: var(--accent-red); transform-origin: bottom center;
-          transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 0 0 10px var(--accent-red);
-        }
-        .gauge-value { font-size: 1.2rem; color: white; margin-top: 10px; }
 
-        .simp-bars { display: flex; flex-direction: column; gap: 10px; }
-        .simp-bar-row { display: flex; align-items: center; gap: 10px; }
-        .simp-label { font-size: 0.6rem; color: rgba(255,255,255,0.5); width: 50px; text-align: left; }
-        .simp-count { font-size: 0.6rem; color: rgba(255,255,255,0.3); width: 40px; text-align: right; font-family: var(--font-terminal); }
-        .simp-track { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
-        .simp-fill { height: 100%; transition: width 2s ease; }
-        .simp-fill.user { background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red-glow); }
-        .simp-fill.target { background: var(--accent-amber); box-shadow: 0 0 10px rgba(255, 179, 71, 0.3); }
-
-        .simp-status { font-size: 0.6rem; color: var(--accent-red); margin-top: 10px; opacity: 0.8; letter-spacing: 0.1em; }
-        .gauge-card.full-width { grid-column: span 2; }
-
-        .lite-ticket-v36 {
-          background: rgba(255, 45, 85, 0.05); border: 1px dashed rgba(255, 45, 85, 0.4);
-          padding: 30px 20px; text-align: center; margin: 40px 0; border-radius: 8px;
-        }
-        .lite-header { font-size: 0.85rem; color: var(--accent-red); margin-bottom: 20px; font-weight: 800; letter-spacing: 0.1em; }
-        .lite-resumen { font-size: 1.1rem; color: white; margin-bottom: 25px; font-style: italic; line-height: 1.6; padding: 0 15px; }
-        .lite-footer { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; }
-
-        .hero-footer { width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
-        .disclaimer-text {
-          font-size: 0.65rem;
-          color: rgba(255,255,255,0.25);
-          line-height: 1.5;
-          margin-bottom: 20px;
-          font-style: italic;
-        }
-        .footer-links {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 25px;
-          margin-top: 15px;
-        }
-        .footer-links a, .footer-contact {
-          font-size: 0.75rem;
-          color: rgba(255,255,255,0.4) !important;
-          text-decoration: none;
-          letter-spacing: 0.05em;
-          font-weight: 500;
-        }
-        .footer-contact { font-family: var(--font-terminal); opacity: 0.5; }
-        
-        .paywall-cta-v36 { margin-top: 50px; text-align: center; padding: 0 10px; }
-        .paywall-sub { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.5; margin-top: 25px; }
-        .power-balance-badge { font-size: 0.7rem; color: var(--accent-amber); background: rgba(255, 179, 71, 0.1); padding: 5px 15px; border-radius: 2px; border: 1px solid rgba(255, 179, 71, 0.2); display: inline-block; margin-bottom: 15px; }
-        .dinamica-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .dinamica-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
-        .dinamica-badge { font-size: 0.85rem; color: white; }
-
-        .insight-card-v36 { 
-          background: rgba(15, 15, 15, 0.9); 
-          border: 1px solid rgba(255, 255, 255, 0.1); 
-          border-radius: 12px; padding: 30px 25px; margin-bottom: 30px;
+        /* --- SLIDE: ACTIVITY --- */
+        .heatmap-grid {
+          display: flex; align-items: flex-end; gap: 2px;
+          width: 100%; height: 120px;
+          background: rgba(255,255,255,0.02);
+          border-radius: 8px; padding: 10px 5px 20px;
           position: relative;
-          overflow: hidden;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        .i-header-v36 { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 20px; }
-        .i-icon-v36 { font-size: 1.5rem; filter: drop-shadow(0 0 5px var(--accent-red-glow)); }
-        .i-header-v36 h3 { font-size: 1.1rem; color: #fff; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
+        .heat-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; }
+        .heat-bar {
+          width: 100%; min-height: 4px;
+          background: linear-gradient(to top, #FFB347, #FF6F61);
+          border-radius: 2px 2px 0 0;
+          transition: height 1s ease;
+        }
+        .heat-label { position: absolute; bottom: -16px; font-size: 0.5rem; color: rgba(255,255,255,0.3); }
+        .activity-verdict { margin-top: 15px; }
+        .peak-badge {
+          font-size: 0.75rem; font-weight: 800; color: #FFB347;
+          background: rgba(255,179,71,0.1); padding: 6px 14px;
+          border-radius: 20px; display: inline-block; margin-bottom: 10px;
+        }
+        .activity-verdict p { font-size: 0.85rem; color: rgba(255,255,255,0.5); font-style: italic; line-height: 1.5; }
 
-        .receipt-item-v62 { margin-bottom: 25px; border-left: 2px solid var(--accent-red); padding-left: 15px; }
-        .receipt-meta { margin-bottom: 10px; }
-        .translation-box { background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 4px; margin: 10px 0; border-left: 2px solid var(--accent-amber); }
-        .translation-box p { font-style: italic; color: var(--accent-amber); font-size: 0.95rem; line-height: 1.4; }
+        /* --- SLIDE: EMOJIS --- */
+        .emoji-showcase { display: flex; gap: 20px; justify-content: center; margin: 10px 0; }
+        .emoji-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .emoji-big { font-size: 3.5rem; }
+        .emoji-count { font-size: 0.8rem; font-weight: 800; color: rgba(255,255,255,0.6); font-family: 'Courier New', monospace; }
+        .emoji-rank { font-size: 0.6rem; color: rgba(255,255,255,0.3); }
+        .emoji-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .emoji-empty p { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+        .emoji-verdict {
+          font-size: 0.85rem; color: rgba(255,255,255,0.5);
+          background: rgba(255,111,97,0.08); padding: 15px;
+          border-radius: 8px; border-left: 3px solid #FF6F61;
+          text-align: left; line-height: 1.5;
+        }
 
-        .arquetipo-v62 h4 { color: var(--accent-red); font-size: 1.3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
-        
-        .pbi-dashboard-v62 { text-align: center; padding: 10px 0; }
-        .pbi-formula { font-size: 0.65rem; color: rgba(255,255,255,0.4); margin-bottom: 15px; font-family: var(--font-terminal); }
-        .pbi-result { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px; }
-        .res-label { font-size: 0.6rem; opacity: 0.6; font-family: var(--font-terminal); text-transform: uppercase; }
-        .res-value { font-size: 3.5rem; color: var(--accent-red); text-shadow: 0 0 25px var(--accent-red-glow); font-family: var(--font-terminal); font-weight: 900; }
-        .pbi-verdict { font-size: 0.75rem; font-weight: 900; color: var(--accent-amber); letter-spacing: 0.1em; font-family: var(--font-terminal); margin-bottom: 25px; }
+        /* --- SLIDE: PAYWALL --- */
+        .slide-paywall { gap: 16px; }
+        .paywall-lock { font-size: 4rem; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .paywall-title { font-size: 1.8rem; font-weight: 900; color: #FF2D55; letter-spacing: 0.1em; }
+        .paywall-sub { font-size: 1rem; color: rgba(255,255,255,0.5); }
+        .paywall-hook { font-size: 1.15rem; color: rgba(255,255,255,0.8); }
+        .paywall-hook strong { color: #FF2D55; }
+        .paywall-features {
+          display: flex; flex-direction: column; gap: 10px;
+          width: 100%; text-align: left; margin: 10px 0;
+        }
+        .pw-feature {
+          font-size: 0.85rem; color: rgba(255,255,255,0.7);
+          background: rgba(255,255,255,0.03);
+          padding: 12px 16px; border-radius: 8px;
+          border: 1px solid rgba(255,255,255,0.06);
+        }
+        .paywall-btn {
+          width: 100%; padding: 18px; border: none;
+          background: #FF2D55; color: white;
+          font-size: 1.05rem; font-weight: 800;
+          border-radius: 12px; cursor: pointer;
+          box-shadow: 0 0 30px rgba(255,45,85,0.4);
+          transition: all 0.2s; text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+        .paywall-btn:hover { transform: scale(1.02); box-shadow: 0 0 50px rgba(255,45,85,0.6); }
+        .paywall-btn.loading { opacity: 0.6; cursor: wait; }
+        .paywall-disclaimer { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
 
-        .pbi-legend {
-          padding-top: 20px;
-          border-top: 1px dashed rgba(255,255,255,0.1);
-          text-align: left;
-          font-size: 0.7rem;
-          color: rgba(255,255,255,0.7);
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          background: rgba(0,0,0,0.2);
-          padding: 20px;
+        /* --- PREMIUM SLIDES --- */
+        .archetype-icon { font-size: 4rem; }
+        .archetype-title { font-size: 1.8rem; font-weight: 900; color: #E0B0FF; }
+        .archetype-desc { font-size: 0.95rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+        .archetype-dynamic {
+          display: flex; gap: 10px; align-items: center;
+          background: rgba(255,255,255,0.03); padding: 10px 18px;
           border-radius: 8px;
         }
-        .legend-item { display: flex; align-items: center; gap: 10px; }
-        .legend-item strong { color: white; width: 65px; display: inline-block; font-size: 0.75rem; }
-        .l-color { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-        .l-color.warning { background: var(--accent-red); box-shadow: 0 0 5px var(--accent-red-glow); }
-        .l-color.neutral { background: var(--accent-amber); opacity: 0.8; }
-        .l-color.safe { background: #E0B0FF; opacity: 0.8; }
-        .pbi-explainer { margin-top: 10px; font-size: 0.65rem; line-height: 1.5; color: rgba(255,255,255,0.4); font-style: italic; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
-
-        .tactical-node-v62 { display: flex; flex-direction: column; gap: 20px; }
-        .template-box-v62 { 
-          background: rgba(255, 45, 85, 0.12); border: 1px solid var(--accent-red); 
-          padding: 18px; border-radius: 4px; color: #fff; font-size: 1.15rem; 
-          line-height: 1.5; font-family: var(--font-terminal); box-shadow: inset 0 0 15px rgba(255, 45, 85, 0.1);
-        }
-        .nuclear-box { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
-
-        .t-label { font-size: 0.65rem; color: var(--accent-amber); margin-bottom: 8px; display: block; font-family: var(--font-terminal); text-transform: uppercase; font-weight: 800; }
-        .quote-item { font-family: var(--font-terminal); font-size: 1rem; color: #fff; font-style: italic; margin-bottom: 8px; }
-        .ev-text { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
-
-        .blur-overlay { 
-          position: absolute; inset: 0; 
-          background: linear-gradient(rgba(5,5,5,0) 10%, rgba(5,5,5,0.85) 60%, #050505 100%); 
-          pointer-events: none; z-index: 10;
-        }
-        .locked .i-content-v36 p, .locked .i-content-v36 div { filter: blur(12px); opacity: 0.2; }
-
-        .pbi-tease-v63 { padding: 10px 0; }
-        .blurred-chart-v63 { 
-          height: 60px; display: flex; align-items: flex-end; gap: 10px; margin-top: 15px;
-          filter: blur(5px); opacity: 0.3; justify-content: center; position: relative;
-        }
-        .chart-bar-v63 { width: 20px; height: 100%; background: rgba(255,255,255,0.2); border-radius: 2px; }
-        .pbi-value-blur { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; font-weight: 900; }
-
-        .tactical-tease-v63 { margin-top: 10px; }
-        .blurred-template-v63 { 
-          background: rgba(255,255,255,0.03); padding: 15px; border-radius: 4px;
-          filter: blur(6px); opacity: 0.2; font-family: var(--font-terminal);
-          border: 1px dashed rgba(255,255,255,0.1); font-size: 0.9rem;
+        .dyn-label { font-size: 0.65rem; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; }
+        .dyn-value { font-size: 0.9rem; color: white; font-weight: 700; }
+        .archetype-power {
+          font-size: 0.7rem; color: #FFB347; letter-spacing: 0.1em;
+          background: rgba(255,179,71,0.1); padding: 6px 16px;
+          border-radius: 4px; border: 1px solid rgba(255,179,71,0.2);
         }
 
-        .share-btn.download-btn { background: rgba(255, 179, 71, 0.05); border: 1px solid var(--accent-amber); color: var(--accent-amber); margin-top: 15px; }
-        .share-btn.download-btn:hover { background: var(--accent-amber); color: #000; transform: translateY(-2px); }
-        .unlock-btn-v36 { 
-          width: 100%; padding: 22px; background: var(--accent-red); border: none; color: black; 
-          font-family: var(--font-terminal); font-size: 1.15rem; font-weight: 800; cursor: pointer;
-          transition: all 0.2s; box-shadow: 0 0 30px var(--accent-red-glow);
-          border-radius: 8px; text-transform: uppercase; letter-spacing: 0.05em;
+        /* Toxicity */
+        .roast-text { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.5; font-style: italic; }
+        .toxicity-meters { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+        .meter-row { display: flex; align-items: center; gap: 10px; }
+        .meter-label { font-size: 0.7rem; color: rgba(255,255,255,0.5); width: 70px; text-align: left; }
+        .meter-track { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+        .meter-fill { height: 100%; border-radius: 4px; transition: width 1.5s ease; }
+        .meter-fill.toxic { background: linear-gradient(90deg, #FF2D55, #FF6F61); }
+        .meter-fill.ghost { background: linear-gradient(90deg, #8B8BFF, #B8B8FF); }
+        .meter-val { font-size: 0.8rem; font-weight: 800; color: white; width: 40px; text-align: right; font-family: 'Courier New', monospace; }
+        .pbi-box {
+          background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 12px; padding: 20px; text-align: center; width: 100%;
         }
-        .unlock-btn-v36:hover { transform: scale(1.02); box-shadow: 0 0 50px var(--accent-red-glow); }
+        .pbi-label { font-size: 0.6rem; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; margin-bottom: 8px; }
+        .pbi-value { font-size: 3rem; font-weight: 900; color: #FF2D55; font-family: 'Courier New', monospace; }
+        .pbi-status { font-size: 0.7rem; color: #FFB347; letter-spacing: 0.1em; margin-top: 6px; }
 
-        .urgency-timer { font-family: var(--font-terminal); font-size: 0.9rem; color: var(--accent-red); margin-bottom: 30px; animation: blink 1s infinite; font-weight: 700; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        .share-btn { 
-          width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); 
-          color: white; padding: 18px; font-family: var(--font-terminal);
-          font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
-          border-radius: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        /* Receipts */
+        .receipts-list { width: 100%; display: flex; flex-direction: column; gap: 16px; text-align: left; }
+        .receipt-card {
+          background: rgba(255,255,255,0.03); border-left: 3px solid #FF2D55;
+          padding: 16px; border-radius: 0 8px 8px 0;
         }
-        .share-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--accent-amber); color: var(--accent-amber); transform: translateY(-2px); }
-
-        @media (max-width: 768px) {
-          .result-container { padding: 10px 5px; }
-          .report-container-v36 { padding: 15px; }
-          .shareable-zone-v36 { padding: 30px 10px 15px; }
-          .verdict-icon-massive { font-size: 3.5rem; }
-          .veredicto-shock-v36 { font-size: 2rem; }
-          .roast-text { font-size: 0.9rem; }
-          .meme-metrics-grid { grid-template-columns: 1fr; gap: 15px; }
-          .gauge-card.full-width { grid-column: span 1; }
-          .insight-card-v36 { padding: 20px 15px; }
-          .template-box-v62 { font-size: 0.95rem; padding: 12px; }
-          .res-value { font-size: 2.5rem; }
-          .pbi-verdict { font-size: 0.65rem; }
-          .unlock-btn-v36 { font-size: 0.95rem; padding: 16px; }
-          .share-btn { padding: 14px; font-size: 0.8rem; }
-          .dinamica-center-v36 { text-align: center; }
+        .receipt-tactic { font-size: 0.65rem; color: #FFB347; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 8px; text-transform: uppercase; }
+        .receipt-quote { font-size: 0.95rem; color: white; font-style: italic; margin-bottom: 12px; line-height: 1.4; }
+        .receipt-translation {
+          background: rgba(255,179,71,0.08); padding: 12px;
+          border-radius: 6px; border-left: 2px solid #FFB347;
         }
+        .trans-label { font-size: 0.6rem; color: #FFB347; font-weight: 800; letter-spacing: 0.1em; display: block; margin-bottom: 6px; }
+        .receipt-translation p { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin: 0; }
+
+        /* Masterstroke */
+        .move-card {
+          width: 100%; text-align: left;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 8px; padding: 16px;
+        }
+        .move-card.nuclear {
+          border-color: rgba(255,45,85,0.3);
+          background: rgba(255,45,85,0.05);
+        }
+        .move-label { font-size: 0.6rem; color: #FFB347; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 10px; }
+        .move-template {
+          font-size: 1rem; color: white; line-height: 1.5;
+          font-family: 'Courier New', monospace;
+          background: rgba(255,45,85,0.1); padding: 14px;
+          border-radius: 6px; border: 1px solid rgba(255,45,85,0.2);
+        }
+        .move-text { font-size: 0.9rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin: 0; }
+        .viral-quote {
+          font-size: 1.1rem; color: #FFB347; font-style: italic;
+          line-height: 1.4; margin-top: 10px;
+        }
+        .final-watermark {
+          font-size: 0.6rem; color: rgba(255,255,255,0.15);
+          letter-spacing: 0.2em; margin-top: 20px;
+        }
+
+        /* Scrollable overrides for receipts */
+        .slide-receipts { overflow-y: auto; max-height: calc(100vh - 120px); }
+        .slide-receipts::-webkit-scrollbar { width: 2px; }
+        .slide-receipts::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
       `}</style>
     </div>
   );
