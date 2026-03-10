@@ -9,7 +9,7 @@ const getOpenAIClient = () => {
   if (!apiKey) throw new Error('Missing OPENAI_API_KEY environment variable');
   return new OpenAI({ apiKey });
 };
-const DAILY_SCAN_LIMIT = 10;
+const DAILY_SCAN_LIMIT = 1000; // Increased for testing
 
 export async function POST(req) {
   try {
