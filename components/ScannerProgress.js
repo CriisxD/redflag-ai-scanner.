@@ -82,10 +82,10 @@ export default function ScannerProgress({ chatData, onComplete, targetName, cont
       }
     };
 
-    if (imageFiles && imageFiles.length > 0) {
+    if (chatData) {
       startScan();
     }
-  }, [imageFiles, targetName]);
+  }, [chatData, targetName, context]);
 
   // Transition Logic
   useEffect(() => {
