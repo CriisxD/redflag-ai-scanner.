@@ -85,7 +85,10 @@ export default function LandingPage() {
 
   const handleScanComplete = (result) => {
     if (result && !result.error) {
-      router.push('/scan');
+      if (chatData?.stats) {
+        localStorage.setItem('rf_local_stats', JSON.stringify(chatData.stats));
+      }
+      router.push(`/result/${result.scanId}`);
     } else {
       console.error('Scan Error Detailed:', result);
       setStep(STEPS.LANDING);
@@ -260,7 +263,7 @@ export default function LandingPage() {
             REDFLAG <span className="highlight">AI</span>
           </h1>
           <p className="hero-subtitle terminal-text">
-            SaaS de análisis de sentimientos táctico para tus conversaciones. Sin filtros. Sin piedad.
+            Analiza tus chats de WhatsApp con IA y descubre la verdad. Toxicidad, red flags y dinámicas de poder al descubierto.
           </p>
         </div>
 
@@ -288,19 +291,19 @@ export default function LandingPage() {
 
         <div className="features-grid">
           <div className="feature-card">
-            <span className="feature-icon">📈</span>
-            <h3 className="feature-title">Meme-Metrics</h3>
-            <p className="feature-desc">Simp Score, Ghosting Prob y nivel de Delulu real.</p>
+            <span className="feature-icon">💬</span>
+            <h3 className="feature-title">Análisis de Chats</h3>
+            <p className="feature-desc">Sube tu export de WhatsApp (.txt) y descubre la dinámica real.</p>
           </div>
           <div className="feature-card">
-            <span className="feature-icon">💀</span>
-            <h3 className="feature-title">The Receipts</h3>
-            <p className="feature-desc">Identificamos el mensaje exacto donde te humillaron.</p>
+            <span className="feature-icon">🚩</span>
+            <h3 className="feature-title">Detección de Red Flags</h3>
+            <p className="feature-desc">Identificamos pasivo-agresividad, manipulación y ghosting.</p>
           </div>
           <div className="feature-card">
-            <span className="feature-icon">🎮</span>
-            <h3 className="feature-title">Jugada Maestra</h3>
-            <p className="feature-desc">La IA te dicta qué responder para tomar el control.</p>
+            <span className="feature-icon">🧠</span>
+            <h3 className="feature-title">Métricas Despiadadas</h3>
+            <p className="feature-desc">Obtén métricas como el 'Simp Score' y tu nivel de 'Delulu'.</p>
           </div>
         </div>
 

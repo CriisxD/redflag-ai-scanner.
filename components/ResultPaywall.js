@@ -11,6 +11,7 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
   const [showProgressBars, setShowProgressBars] = useState(false);
   const [showSocialProof, setShowSocialProof] = useState(false);
   const [countdown, setCountdown] = useState(600); // 10 min = 600s
+  const [localStats, setLocalStats] = useState(null);
 
   // Sync forcedUnlocked if it changes (e.g. from an API fetch)
   useEffect(() => {
@@ -26,6 +27,9 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
     if (typeof window !== 'undefined') {
       const saved = sessionStorage.getItem('targetName');
       if (saved) setTargetName(saved);
+      
+      const stats = localStorage.getItem('rf_local_stats');
+      if (stats) setLocalStats(JSON.parse(stats));
     }
     const timer = setTimeout(() => setShowProgressBars(true), 500);
     return () => clearTimeout(timer);
@@ -200,21 +204,40 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
                 </div>
               </div>
 
-              {/* Simp Meter - Comparison */}
+              {/* Simp Meter - Comparison (Now Real Stats) */}
               <div className="gauge-card simp full-width">
-                <div className="gauge-header">SIMP_O_METER</div>
+                <div className="gauge-header">SIMP_O_METER (VOLUMEN REAL)</div>
                 <div className="simp-bars">
-                  <div className="simp-bar-row">
-                    <span className="simp-label">TÚ</span>
-                    <div className="simp-track"><div className="simp-fill user" style={{ width: `${aiResult?.meme_metrics?.simp_meter || 0}%` }} /></div>
-                  </div>
-                  <div className="simp-bar-row">
-                    <span className="simp-label uppercase">{targetName.slice(0, 8)}</span>
-                    <div className="simp-track"><div className="simp-fill target" style={{ width: `${100 - (aiResult?.meme_metrics?.simp_meter || 0)}%` }} /></div>
-                  </div>
+                  {localStats ? (
+                    <>
+                      <div className="simp-bar-row">
+                        <span className="simp-label uppercase">{localStats.users[0].name.slice(0, 10)}</span>
+                        <div className="simp-track"><div className="simp-fill user" style={{ width: `${localStats.simpScoreBase[localStats.users[0].name]}%` }} /></div>
+                        <span className="simp-count">{localStats.users[0].count} msgs</span>
+                      </div>
+                      <div className="simp-bar-row">
+                        <span className="simp-label uppercase">{localStats.users[1].name.slice(0, 10)}</span>
+                        <div className="simp-track"><div className="simp-fill target" style={{ width: `${localStats.simpScoreBase[localStats.users[1].name]}%` }} /></div>
+                        <span className="simp-count">{localStats.users[1].count} msgs</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="simp-bar-row">
+                        <span className="simp-label">TÚ</span>
+                        <div className="simp-track"><div className="simp-fill user" style={{ width: `${aiResult?.meme_metrics?.simp_meter || 0}%` }} /></div>
+                      </div>
+                      <div className="simp-bar-row">
+                        <span className="simp-label uppercase">{targetName.slice(0, 8)}</span>
+                        <div className="simp-track"><div className="simp-fill target" style={{ width: `${100 - (aiResult?.meme_metrics?.simp_meter || 0)}%` }} /></div>
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div className="simp-status terminal-text">
-                  {aiResult?.meme_metrics?.simp_meter > 50 ? 'NIVEL: SIMP LEGENDARIO' : 'NIVEL: BAJO CONTROL'}
+                  {localStats 
+                    ? `MÁS INTENSO: ${(localStats.mostTalkative).toUpperCase()}` 
+                    : (aiResult?.meme_metrics?.simp_meter > 50 ? 'NIVEL: SIMP LEGENDARIO' : 'NIVEL: BAJO CONTROL')}
                 </div>
               </div>
             </div>
@@ -549,7 +572,8 @@ export default function ResultPaywall({ onCheckout, aiResult, forcedUnlocked = f
 
         .simp-bars { display: flex; flex-direction: column; gap: 10px; }
         .simp-bar-row { display: flex; align-items: center; gap: 10px; }
-        .simp-label { font-size: 0.6rem; color: rgba(255,255,255,0.5); width: 30px; text-align: left; }
+        .simp-label { font-size: 0.6rem; color: rgba(255,255,255,0.5); width: 50px; text-align: left; }
+        .simp-count { font-size: 0.6rem; color: rgba(255,255,255,0.3); width: 40px; text-align: right; font-family: var(--font-terminal); }
         .simp-track { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
         .simp-fill { height: 100%; transition: width 2s ease; }
         .simp-fill.user { background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red-glow); }
