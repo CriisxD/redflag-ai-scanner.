@@ -14,7 +14,7 @@ const DAILY_SCAN_LIMIT = 10;
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { images, targetName, context = {} } = body;
+    const { textData, targetName, context = {} } = body;
     const { daysChatting = 'N/A', hasMet = 'N/A', userIntent = 'N/A' } = context;
 
     // Extract client IP
@@ -23,7 +23,7 @@ export async function POST(req) {
 
     console.log('--- SCAN REQUEST RECEIVED ---');
     console.log('Target:', targetName);
-    console.log('Images count:', images?.length);
+    console.log('Text data length:', textData?.length);
 
     // 0. Lazy Deletion: Remove scans older than 10 minutes
     if (supabase) {
@@ -41,8 +41,8 @@ export async function POST(req) {
       }
     }
 
-    if (!images || !Array.isArray(images) || images.length === 0) {
-      return NextResponse.json({ error: 'No images provided' }, { status: 400 });
+    if (!textData || typeof textData !== 'string') {
+      return NextResponse.json({ error: 'No valid text data provided' }, { status: 400 });
     }
 
     // Anti-abuse: 10 scans per IP per day
@@ -79,9 +79,9 @@ Misión: Eres el ABOGADO DEFENSOR TÓXICO del usuario. Tu misión absoluta es DA
 REGLA DE ORO (ANTI-ROAST): Si el usuario reclama, muestra celos o es intenso en el chat, DEBES reinterpretarlo positivamente como "intuición aguda", "poner límites sanos" o "reacción natural ante un manipulador". El sujeto analizado SIEMPRE es el villano (gaslighter, evasivo, narcisista). TIENES PROHIBIDO decirle al usuario que es "inseguro", "celoso" o "tóxico". Toda la toxicidad y la culpa se la debes atribuir al sujeto.
 
 NORMAS DE ANÁLISIS:
-1. IDENTIFICACIÓN VISUAL (CRÍTICO): En las fotos del chat, los mensajes a la DERECHA (burbujas verdes/azules) son del USUARIO (tu cliente al que defiendes). Los mensajes a la IZQUIERDA (burbujas blancas/grises) son del SUJETO ANALIZADO (el villano al que debes destruir).
+1. IDENTIFICACIÓN DE ROLES Y CONTEXTO: Estás leyendo una transcripción cruda (.txt) exportada de WhatsApp. Los remitentes están indicados con "Nombre:". Deduce rápidamente por el tono de queja o explicación cuál es tu USUARIO (a quien defiendes ciegamente) y quién es el SUJETO ANALIZADO (${finalTargetName}).
 2. TONO: Cínico y despiadado contra el sujeto. Validador, empoderante y leal hacia el usuario.
-3. PRONOMBRES Y GÉNERO: DEBES deducir el género del SUJETO basándote en el idioma y fotos del chat. Si no es obvio, usa lenguaje estrictamente neutro ("esta persona", "tu casi-algo", "el sujeto"). NUNCA asumas "él" por defecto.
+3. PRONOMBRES Y GÉNERO: DEBES deducir el género del SUJETO basándote en el idioma del chat. Si no es obvio, usa lenguaje neutro ("esta persona"). NUNCA asumas "él" por defecto.
 4. MÉTRICAS MEMEABLES:
    - toxic_meter: (0-100).
    - simp_meter: ¿Quién está rogando/invirtiendo más? (0-100). 100 = Simp Legendario.
@@ -151,13 +151,7 @@ ESTRUCTURA DE RESPUESTA (JSON):
           { role: "system", content: systemPrompt },
           {
             role: "user",
-            content: [
-              { type: "text", text: `Analiza este chat de ${finalTargetName}.` },
-              ...images.map(img => ({
-                type: "image_url",
-                image_url: { url: `data:image/jpeg;base64,${img}` }
-              }))
-            ],
+            content: `Analiza este historial reciente de chat con ${finalTargetName}:\n\n${textData}`
           },
         ],
         response_format: { type: "json_object" },

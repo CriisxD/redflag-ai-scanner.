@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLang } from '@/lib/LangContext';
 import ScannerProgress from '@/components/ScannerProgress';
-import imageCompression from 'browser-image-compression';
+import { parseWhatsAppChat, extractLocalStats, condenseForAI } from '@/lib/whatsappParser';
 
 const STEPS = {
   LANDING: 'LANDING',
@@ -21,8 +21,8 @@ export default function LandingPage() {
   const fileInputRef = useRef(null);
   
   const [step, setStep] = useState(STEPS.LANDING);
-  const [scanningFiles, setScanningFiles] = useState([]);
-  const [isCompressing, setIsCompressing] = useState(false);
+  const [chatData, setChatData] = useState(null); // { stats, condensedText }
+  const [isParsing, setIsParsing] = useState(false);
   
   // Survey State
   const [targetName, setTargetName] = useState('');
@@ -31,34 +31,55 @@ export default function LandingPage() {
   const [userIntent, setUserIntent] = useState('');
 
   const handleFileChange = async (e) => {
-    const files = Array.from(e.target.files || []);
-    
-    if (files.length > 3) {
-      alert('⚠️ Solo puedes subir un máximo de 3 capturas o fotos a la vez.');
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.txt') && file.type !== 'text/plain') {
+      alert('⚠️ Por favor sube un archivo de chat exportado de WhatsApp (.txt)');
       if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
 
-    if (files.length > 0) {
-      setIsCompressing(true);
-      try {
-        const options = { maxWidthOrHeight: 800, useWebWorker: true, maxSizeMB: 0.5 };
-        const compressedFiles = await Promise.all(
-          files.slice(0, 3).map(file => imageCompression(file, options))
-        );
-        setScanningFiles(compressedFiles);
-        
-        // Transition to Micro-Loading
-        setStep(STEPS.MICRO_LOADING);
-        setTimeout(() => setStep(STEPS.SURVEY), 1500);
-      } catch (error) {
-        console.error('Compression error:', error);
-        setScanningFiles(files.slice(0, 3));
-        setStep(STEPS.MICRO_LOADING);
-        setTimeout(() => setStep(STEPS.SURVEY), 1500);
-      } finally {
-        setIsCompressing(false);
-      }
+    setIsParsing(true);
+    setStep(STEPS.MICRO_LOADING);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const rawText = event.target.result;
+          const messages = parseWhatsAppChat(rawText);
+          
+          if (messages.length < 10) {
+            throw new Error('El chat es demasiado corto o el formato no es compatible.');
+          }
+
+          const stats = extractLocalStats(messages);
+          const condensedText = condenseForAI(messages);
+
+          setChatData({ stats, condensedText });
+          setTimeout(() => setStep(STEPS.SURVEY), 1500);
+        } catch (err) {
+          console.error('Parsing error:', err);
+          alert('❌ ' + (err.message || 'Error al analizar el chat. Asegúrate de exportarlo sin multimedia.'));
+          setStep(STEPS.UPLOAD);
+        } finally {
+          setIsParsing(false);
+        }
+      };
+      
+      reader.onerror = () => {
+        alert('❌ Error leyendo el archivo.');
+        setStep(STEPS.UPLOAD);
+        setIsParsing(false);
+      };
+
+      reader.readAsText(file);
+      
+    } catch (error) {
+      console.error('File read error:', error);
+      setIsParsing(false);
+      setStep(STEPS.UPLOAD);
     }
   };
 
@@ -68,7 +89,7 @@ export default function LandingPage() {
     } else {
       console.error('Scan Error Detailed:', result);
       setStep(STEPS.LANDING);
-      setScanningFiles([]);
+      setChatData(null);
     }
   };
 
@@ -76,9 +97,9 @@ export default function LandingPage() {
   if (step === STEPS.SCANNING) {
     return (
       <ScannerProgress 
-        imageFiles={scanningFiles} 
+        chatData={chatData} 
         onComplete={handleScanComplete} 
-        targetName={targetName}
+        targetName={targetName || (chatData?.stats?.users?.[1]?.name || 'Sujeto')}
         context={{ daysChatting, hasMet, userIntent }}
       />
     );
@@ -112,26 +133,42 @@ export default function LandingPage() {
     return (
       <div className="step-container upload-step">
         <div className="upload-box" onClick={() => fileInputRef.current?.click()}>
-          <span className="upload-icon">📸</span>
-          <h2 className="upload-title">Sube la conversación que quieres analizar</h2>
-          <p className="upload-subtitle">Puedes subir hasta 3 capturas o fotos para mayor precisión.</p>
-          <div className="upload-btn-secondary">Hacer clic para seleccionar</div>
-          <p className="upload-hint">Drag & Drop soportado</p>
+          <span className="upload-icon">📄</span>
+          <h2 className="upload-title">Sube tu Chat Exportado (.txt)</h2>
+          <p className="upload-subtitle">No te preocupes, el análisis se hace 100% en tu dispositivo y nada se guarda.</p>
+          <div className="upload-btn-secondary">Seleccionar Archivo .TXT</div>
+          
+          <div className="howto-box">
+            <h4>¿Cómo exporto mi chat desde WhatsApp?</h4>
+            <ol>
+              <li>Abre el chat que quieres analizar.</li>
+              <li>Toca el nombre del contacto arriba.</li>
+              <li>Baja del todo y presiona <b>"Exportar Chat"</b>.</li>
+              <li>Elige <b>"Sin archivos multimedia"</b>.</li>
+              <li>Guarda o comparte el archivo <code>.txt</code> y súbelo aquí.</li>
+            </ol>
+          </div>
         </div>
         
         <button className="back-btn" onClick={() => setStep(STEPS.LANDING)}>← Volver</button>
 
-        <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleFileChange} style={{ display: 'none' }} />
+        <input ref={fileInputRef} type="file" accept=".txt,text/plain" onChange={handleFileChange} style={{ display: 'none' }} />
 
         <style jsx>{`
           .upload-step { background: #050505; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-          .upload-box { width: 100%; max-width: 500px; border: 2px dashed rgba(175, 82, 222, 0.4); border-radius: 24px; padding: 60px 40px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(175, 82, 222, 0.02); }
-          .upload-box:hover { border-color: #ff2d55; background: rgba(255, 45, 85, 0.05); }
-          .upload-icon { font-size: 4rem; display: block; margin-bottom: 24px; }
-          .upload-title { font-family: 'Inter Black', sans-serif; color: white; font-size: 1.8rem; margin-bottom: 12px; line-height: 1.2; }
-          .upload-subtitle { color: rgba(255,255,255,0.6); margin-bottom: 30px; }
-          .upload-btn-secondary { display: inline-block; background: #ff2d55; color: black; font-weight: 900; padding: 12px 24px; border-radius: 12px; text-transform: uppercase; font-size: 0.9rem; }
-          .upload-hint { margin-top: 20px; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+          .upload-box { width: 100%; max-width: 500px; border: 2px dashed rgba(175, 82, 222, 0.4); border-radius: 24px; padding: 50px 30px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(175, 82, 222, 0.02); }
+          .upload-box:hover { border-color: #af52de; background: rgba(175, 82, 222, 0.05); }
+          .upload-icon { font-size: 4rem; display: block; margin-bottom: 24px; animation: float 3s ease-in-out infinite; }
+          .upload-title { font-family: 'Inter Black', sans-serif; color: white; font-size: 1.6rem; margin-bottom: 12px; line-height: 1.2; }
+          .upload-subtitle { color: rgba(255,255,255,0.6); margin-bottom: 30px; font-size: 0.9rem; }
+          .upload-btn-secondary { display: inline-block; background: #af52de; color: white; font-weight: 900; padding: 14px 28px; border-radius: 12px; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 30px; transition: transform 0.2s; }
+          .upload-box:hover .upload-btn-secondary { transform: scale(1.05); }
+          
+          .howto-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; text-align: left; }
+          .howto-box h4 { margin: 0 0 10px 0; color: #af52de; font-size: 0.95rem; }
+          .howto-box ol { margin: 0; padding-left: 20px; color: rgba(255,255,255,0.7); font-size: 0.85rem; line-height: 1.6; }
+          .howto-box b { color: white; }
+          .howto-box code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: monospace; }
           .back-btn { position: absolute; top: 40px; left: 40px; background: transparent; border: none; color: rgba(255,255,255,0.5); font-weight: 700; cursor: pointer; }
         `}</style>
       </div>
@@ -239,8 +276,8 @@ export default function LandingPage() {
              </div>
           </div>
           <div className="glow-ring"></div>
-          <button 
-            className={`scan-btn glitch-btn ${isCompressing ? 'loading' : ''}`} 
+           <button 
+            className={`scan-btn glitch-btn ${isParsing ? 'loading' : ''}`} 
             onClick={() => setStep(STEPS.UPLOAD)}
           >
             <div className="glitch-overlay"></div>
@@ -282,8 +319,7 @@ export default function LandingPage() {
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
-        multiple
+        accept=".txt,text/plain"
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />

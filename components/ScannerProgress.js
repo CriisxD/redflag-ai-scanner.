@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react';
 
-export default function ScannerProgress({ imageFiles, onComplete, targetName, context = {} }) {
+export default function ScannerProgress({ chatData, onComplete, targetName, context = {} }) {
   const [progress, setProgress] = useState(0);
   const [phraseIndex, setPhraseIndex] = useState(0);
-  const [imageUrls, setImageUrls] = useState([]);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [scanResult, setScanResult] = useState(null);
   const [error, setError] = useState(null);
   const [showPreHook, setShowPreHook] = useState(false);
@@ -20,24 +18,7 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
     `💀 Casi listo para destruir tu esperanza...`
   ];
 
-  // ... Load the images into URLs ...
-  useEffect(() => {
-    if (imageFiles && imageFiles.length > 0) {
-      const urls = imageFiles.map(file => URL.createObjectURL(file));
-      setImageUrls(urls);
-      return () => urls.forEach(url => URL.revokeObjectURL(url));
-    }
-  }, [imageFiles]);
-
-  // Cycle through images
-  useEffect(() => {
-    if (imageUrls.length > 1) {
-      const cycleInterval = setInterval(() => {
-        setActiveImageIndex(prev => (prev + 1) % imageUrls.length);
-      }, 2000);
-      return () => clearInterval(cycleInterval);
-    }
-  }, [imageUrls]);
+  // Removed image loading effects
 
   // Loading bar effect (5 seconds total)
   useEffect(() => {
@@ -71,21 +52,12 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
   useEffect(() => {
     const startScan = async () => {
       try {
-        const base64Images = await Promise.all(
-          imageFiles.map(file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = error => reject(error);
-          }))
-        );
-
         const response = await fetch('/api/scan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            images: base64Images,
-            targetName,
+            textData: chatData?.condensedText,
+            targetName: targetName || 'Sujeto Anónimo',
             context
           })
         });
@@ -130,13 +102,7 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
 
   return (
     <div className="scanner-container">
-      {imageUrls.length > 0 && (
-        <div 
-          className="bg-image"
-          style={{ backgroundImage: `url(${imageUrls[activeImageIndex]})` }}
-          key={activeImageIndex}
-        />
-      )}
+      <div className="bg-matrix" />
       <div className="bg-overlay" />
       <div className="laser-scanner" />
 
@@ -174,12 +140,12 @@ export default function ScannerProgress({ imageFiles, onComplete, targetName, co
           display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
           font-family: var(--font-body);
         }
-        .bg-image {
-          position: absolute; inset: 0; background-size: cover; background-position: center;
-          filter: grayscale(100%) brightness(0.4) contrast(1.2); z-index: 1;
-          animation: fadeZoom 2.5s ease-out forwards;
+        .bg-matrix {
+          position: absolute; inset: 0; background: #050505;
+          background-image: linear-gradient(rgba(175, 82, 222, 0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(175, 82, 222, 0.1) 1px, transparent 1px);
+          background-size: 20px 20px; z-index: 1; opacity: 0.3;
         }
-        @keyframes fadeZoom { from { opacity: 0; transform: scale(1.1); } to { opacity: 1; transform: scale(1); } }
         .bg-overlay { position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%); z-index: 2; }
         .laser-scanner {
           position: absolute; left: 0; width: 100%; height: 2px; background: var(--accent-red);
