@@ -24,11 +24,6 @@ export default function LandingPage() {
   const [chatData, setChatData] = useState(null); // { stats, condensedText }
   const [isParsing, setIsParsing] = useState(false);
   
-  // Survey State
-  const [targetName, setTargetName] = useState('');
-  const [daysChatting, setDaysChatting] = useState('');
-  const [hasMet, setHasMet] = useState('');
-  const [userIntent, setUserIntent] = useState('');
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
@@ -58,7 +53,7 @@ export default function LandingPage() {
           const condensedText = condenseForAI(messages);
 
           setChatData({ stats, condensedText });
-          setTimeout(() => setStep(STEPS.SURVEY), 1500);
+          setTimeout(() => setStep(STEPS.SCANNING), 1500);
         } catch (err) {
           console.error('Parsing error:', err);
           alert('❌ ' + (err.message || 'Error al analizar el chat. Asegúrate de exportarlo sin multimedia.'));
@@ -102,8 +97,7 @@ export default function LandingPage() {
       <ScannerProgress 
         chatData={chatData} 
         onComplete={handleScanComplete} 
-        targetName={targetName || (chatData?.stats?.users?.[1]?.name || 'Sujeto')}
-        context={{ daysChatting, hasMet, userIntent }}
+        targetName={chatData?.stats?.users?.[1]?.name || 'Sujeto'}
       />
     );
   }
@@ -178,71 +172,6 @@ export default function LandingPage() {
     );
   }
 
-  // STEP: SURVEY
-  if (step === STEPS.SURVEY) {
-    return (
-      <div className="step-container survey-step">
-        <div className="survey-card">
-          <h2 className="survey-title">Necesitamos un poco más de contexto para mayor precisión</h2>
-          
-          <div className="question-item">
-            <label>¿Cuánto tiempo llevan hablando?</label>
-            <div className="options-grid">
-              {['1-3 días', '1 semana', '2+ semanas', 'Meses'].map(o => (
-                <button key={o} className={`opt-btn ${daysChatting === o ? 'active' : ''}`} onClick={() => setDaysChatting(o)}>{o}</button>
-              ))}
-            </div>
-          </div>
-
-          <div className="question-item">
-            <label>¿Ya se han visto en persona?</label>
-            <div className="options-grid">
-              {['Sí', 'No'].map(o => (
-                <button key={o} className={`opt-btn ${hasMet === o ? 'active' : ''}`} onClick={() => setHasMet(o)}>{o}</button>
-              ))}
-            </div>
-          </div>
-
-          <div className="question-item">
-            <label>¿Qué estás buscando?</label>
-            <div className="options-grid">
-              {['Algo serio', 'Casual', 'No estoy seguro/a'].map(o => (
-                <button key={o} className={`opt-btn ${userIntent === o ? 'active' : ''}`} onClick={() => setUserIntent(o)}>{o}</button>
-              ))}
-            </div>
-          </div>
-
-          <div className="question-item">
-            <label>Nombre de la persona (Opcional)</label>
-            <input type="text" className="survey-input" placeholder="Ej: Juan, Sofía..." value={targetName} onChange={(e) => setTargetName(e.target.value)} />
-          </div>
-
-          <button 
-            className="generate-btn" 
-            disabled={!daysChatting || !hasMet || !userIntent}
-            onClick={() => setStep(STEPS.SCANNING)}
-          >
-            GENERAR ANÁLISIS
-          </button>
-        </div>
-
-        <style jsx>{`
-          .survey-step { background: #050505; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; overflow-y: auto; }
-          .survey-card { width: 100%; max-width: 480px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 40px; }
-          .survey-title { font-family: 'Inter Black', sans-serif; font-size: 1.5rem; text-align: center; margin-bottom: 40px; color: #af52de; line-height: 1.3; }
-          .question-item { margin-bottom: 30px; }
-          .question-item label { display: block; font-weight: 700; margin-bottom: 12px; color: rgba(255,255,255,0.8); font-size: 0.95rem; }
-          .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-          .opt-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; }
-          .opt-btn.active { background: #af52de; border-color: #af52de; color: white; }
-          .survey-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; color: white; outline: none; text-align: center; }
-          .generate-btn { width: 100%; background: #ff2d55; color: black; font-weight: 900; padding: 18px; border-radius: 14px; margin-top: 20px; cursor: pointer; border: none; transition: all 0.3s; }
-          .generate-btn:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
-          .generate-btn:hover:not(:disabled) { transform: scale(1.02); box-shadow: 0 0 30px rgba(255, 45, 85, 0.3); }
-        `}</style>
-      </div>
-    );
-  }
 
   // STEP: LANDING
   return (
