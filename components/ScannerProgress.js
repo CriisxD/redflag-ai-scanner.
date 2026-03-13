@@ -56,7 +56,7 @@ export default function ScannerProgress({ chatData, onComplete, targetName }) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            textData: chatData?.condensedText,
+            textChunks: chatData?.textChunks,
             targetName: targetName || 'Sujeto Anónimo'
           })
         });

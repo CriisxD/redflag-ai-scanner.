@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLang } from '@/lib/LangContext';
 import ScannerProgress from '@/components/ScannerProgress';
-import { parseWhatsAppChat, extractLocalStats, condenseForAI } from '@/lib/whatsappParser';
+import { parseWhatsAppChat, extractLocalStats, condenseForAI, chunkForAI } from '@/lib/whatsappParser';
 
 const STEPS = {
   LANDING: 'LANDING',
@@ -51,8 +51,9 @@ export default function LandingPage() {
 
           const stats = extractLocalStats(messages);
           const condensedText = condenseForAI(messages);
+          const textChunks = chunkForAI(messages);
 
-          setChatData({ stats, condensedText });
+          setChatData({ stats, condensedText, textChunks });
           setTimeout(() => setStep(STEPS.SCANNING), 1500);
         } catch (err) {
           console.error('Parsing error:', err);
